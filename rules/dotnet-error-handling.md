@@ -22,7 +22,7 @@ The shared library's global + validation exception handlers are auto-registered 
 
 ## LLM / AI response parsing
 
-When the shared infrastructure provides an AI-response helper (e.g. `AiResponseHelper.CleanJsonResponse`, `AiResponseHelper.DeserializeResponse<T>`), use it for any LLM JSON. It strips ```` ```json ```` fences and deserializes safely; failures translate to HTTP 409. No ad-hoc fence-stripping or `JsonSerializer.Deserialize` on LLM output.
+When the shared infrastructure provides an AI-response helper (e.g. `AiResponseHelper.CleanJsonResponse`, `AiResponseHelper.DeserializeResponse<T>`), use it for any LLM JSON. It strips ` ```json ` fences and deserializes safely; failures translate to HTTP 409. No ad-hoc fence-stripping or `JsonSerializer.Deserialize` on LLM output.
 
 ## Client-facing errors
 

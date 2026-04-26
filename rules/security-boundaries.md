@@ -25,11 +25,7 @@ Every repository SHOULD ship `.claude/settings.json` with a `permissions.deny` l
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
-    "deny": [
-      "Read(./.env)",
-      "Read(./.env.*)",
-      "Read(./secrets/**)"
-    ]
+    "deny": ["Read(./.env)", "Read(./.env.*)", "Read(./secrets/**)"]
   }
 }
 ```
