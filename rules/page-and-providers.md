@@ -5,18 +5,16 @@ paths:
   - 'src/index.tsx'
 ---
 
-> Type: Rule (normative constraints)
+# Page, Providers, Auth Guards (consumer apps)
 
-# Page, Providers, and Auth Guards (consumer apps)
+## Lazy routes
 
-## Lazy Routes
+- Every route component MUST be `lazy(() => import('~/pages/<Name>'))`
+- Page modules stay thin (~10–25 lines): `<Page>` + selection providers + the real feature component from `~/components/<feature>/<Feature>/<Feature>`
 
-- Every route component in the router MUST be `lazy(() => import('~/pages/<Name>'))`
-- Page modules stay thin (~10–25 lines): wrap with `<Page>` + selection providers + the real feature component imported from `~/components/<feature>/<Feature>/<Feature>`
+## Canonical page layering
 
-## Canonical Page Layering
-
-```
+```tsx
 <Page roles={[...]} unauthorizedBehavior="redirect">
   <FeatureSelectionContext.Provider value={createFeatureSelection()}>
     <Feature />
@@ -24,17 +22,18 @@ paths:
 </Page>
 ```
 
-- `<Page>` is the auth boundary; selection providers MUST sit INSIDE `<Page>` so unauthenticated visitors do not allocate feature state
-- Public routes (landing, privacy, 404) skip `<Page>` entirely
-- Feature-selection factories live in `src/store/<feature>.ts` and expose a typed Context plus a `use<Feature>Selection()` hook that throws on missing provider
+- `<Page>` is the auth boundary; selection providers MUST sit INSIDE so unauthenticated visitors do not allocate feature state
+- Public routes (landing, privacy, 404) skip `<Page>`
+- Selection factories live in `src/store/<feature>.ts` and expose a typed Context + `use<Feature>Selection()` hook that throws on missing provider
 
-## Layout Composition
+## Layout composition
 
-- Authenticated routes share a `MainLayout` mounted as a layout-route in the router
+- Authenticated routes share a `MainLayout` mounted as a layout-route
 - Unauthenticated flows (e.g. onboarding) sit OUTSIDE the main layout
-- Navigation items are declared as a typed config (`NavItemConfig[]`) with `requiredRoles?: Role[]`; layout consumes them through a single resolver
+- Navigation items declared as typed config (`NavItemConfig[]`) with `requiredRoles?: Role[]`; layout consumes them via a single resolver
 
-## Provider Composition Order
+## Provider order
 
-`ErrorBoundary` -> `ThemeProvider` -> `I18nProvider` -> `QueryClientContext` -> `AuthProvider` -> `ToastProvider` -> app tree.
-Use `VelvetProvider` to get this order automatically; do not reassemble providers manually unless replacing one specific layer.
+`ErrorBoundary` → `ThemeProvider` → `I18nProvider` → `QueryClientContext` → `AuthProvider` → `ToastProvider` → app tree.
+
+Use `VelvetProvider` for this order automatically; do not reassemble manually unless replacing one specific layer.

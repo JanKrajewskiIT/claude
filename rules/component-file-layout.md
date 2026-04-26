@@ -5,46 +5,44 @@ paths:
   - 'src/index.ts'
 ---
 
-> Type: Rule (normative constraints)
+# Component File Layout & Barrel Exports
 
-# Component File Layout and Barrel Exports
-
-## Folder Layout
+## Folder layout
 
 - One folder per component: `src/components/<category>/<Name>/<Name>.tsx` + `<Name>.module.css`
-- File name MUST match folder name exactly
-- Sub-parts of a compound component live in sibling folders under the same parent (e.g. `Dialog/`, `DialogTitle/`, `DialogBody/`, `DialogActions/`)
-- Local Context for a compound component lives in `<Name>Context.ts` next to the parent
+- File name MUST match folder name
+- Compound parts live in sibling folders under the same parent (`Dialog/`, `DialogTitle/`, `DialogBody/`)
+- Compound Context lives in `<Name>Context.ts` next to the parent
 - No `index.ts` re-exports inside component folders
 
-## Default vs Named Exports
+## Default vs named exports
 
-- Components: `export default` the component
-- Hooks: `export default` the hook
-- Factories, providers, and primitive utilities (e.g. `createAppQuery`, `AuthProvider`, `configureVelvet`, `useAuth`): named exports
-- Variant unions, `*Props`, `*OwnProps`, `*Messages`: named exports from the same file as the component
+- Components: `export default`
+- Hooks: `export default`
+- Factories, providers, primitive utilities (`createAppQuery`, `AuthProvider`, `configureVelvet`, `useAuth`): named
+- Variant unions, `*Props`, `*OwnProps`, `*Messages`: named, from the same file as the component
 
-## Props Type Naming
+## Props naming
 
-- `<Name>Props` is the full props type the component accepts
-- `<Name>OwnProps` is the additions over a native element when the component is polymorphic or extends a primitive
-- Always export `<Name>Props` for components that take any non-trivial props
+- `<Name>Props` — full props
+- `<Name>OwnProps` — additions over a native element when polymorphic/extending a primitive
+- Always export `<Name>Props` for non-trivial components
 - Export `<Name>OwnProps` only when the component extends/forwards a base set
 
-## Variant and Lookup Tables
+## Variants & lookups
 
-- Size and variant maps live in `shared/<name>Variants.ts` next to the family, or in `~/utils/`
-- Never inline string-template class lookups inside the component
-- Reuse `getInputSizeClass()` and similar shared helpers instead of redefining size maps per component
+- Size/variant maps live in `shared/<name>Variants.ts` next to the family, or in `~/utils/`
+- Never inline string-template class lookups in components
+- Reuse `getInputSizeClass()` and similar shared helpers
 
 ## Barrel: `src/index.ts`
 
 - Strictly alphabetized export blocks
 - Group `export { default as X }` and `export type { XProps, XVariant }` from the same file as adjacent statements
-- Do NOT use dot-notation compound APIs (no `Dialog.Title`); each compound part is a separate flat export
-- Hooks intended as public API are re-exported from `src/index.ts`; internal hooks stay unexported
+- No dot-notation compound APIs (no `Dialog.Title`); each compound part is a flat export
+- Public hooks re-exported from `src/index.ts`; internal hooks stay unexported
 
-## CSS Module Pairing
+## CSS module pairing
 
-- `ComponentName.tsx` MUST pair with `ComponentName.module.css` when the component owns any styles
-- Drop the `.module.css` file when no styles remain; never leave orphaned modules
+- `ComponentName.tsx` MUST pair with `ComponentName.module.css` when it owns styles
+- Drop the `.module.css` when no styles remain; never leave orphans

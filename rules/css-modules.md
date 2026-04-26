@@ -3,31 +3,28 @@ paths:
   - 'src/**/*.module.css'
 ---
 
-> Type: Rule (normative constraints)
-> Source of truth: Rules define mandatory constraints; skills define operational playbooks.
-
 # CSS Modules
 
 - camelCase classes only
 - Use design tokens from `src/theme/globals.css`
 - Never hardcode colors, spacing, radius, or shadows
 - Do not use `composes`
-- Reuse shared styles by importing CSS modules in TSX and combining classes with `classNames()`
+- Reuse shared styles by importing modules in TSX and combining with `classNames()`
 - Prefer `ComponentName.tsx` + `ComponentName.module.css` pairs
-- Shared standalone style modules are allowed only when they are truly reused across multiple primitives
-- Dark theme should flow through semantic tokens, never manual `[data-theme="dark"]` targeting
+- Shared standalone style modules only when truly reused across multiple primitives
+- Dark theme flows through semantic tokens, never `[data-theme="dark"]` targeting
 
-## Neutral Primitive Styling
+## Neutral primitive styling
 
-- Base primitives and shared surfaces must stay visually neutral by default
-- Do not add gradients, glow, spotlight effects, hover lift, scale, or translate motion to default primitive styles
-- `Card` is a baseline surface, not an attention-seeking one
-- If hover elevation or promotional emphasis is needed, create an explicit opt-in variant or separate component
-- Parent components may position primitives, but should not reskin their core visual semantics from host CSS
+- Base primitives stay visually neutral by default
+- No gradients, glow, spotlight, hover lift, scale, or translate motion in default primitive styles
+- `Card` is a baseline surface, not attention-seeking
+- For hover elevation or promotional emphasis, create an opt-in variant or separate component
+- Parents may position primitives but must not reskin their core visuals from host CSS
 
-## CSS Custom Properties for Dynamic Values
+## CSS custom properties for dynamic values
 
-- JS-driven values should be passed as CSS custom properties via `style={{ "--my-var": value }}`
-- Consume them with `var(--my-var, <fallback>)` in CSS
-- Prefer this over direct inline CSS properties when CSS can own the styling
-- Fixed discrete variants should use classes, not runtime custom properties
+- JS-driven values pass as custom properties: `style={{ "--my-var": value }}`
+- Consume with `var(--my-var, <fallback>)` in CSS
+- Prefer this over inline CSS when CSS can own the styling
+- Fixed discrete variants use classes, not runtime custom properties

@@ -3,56 +3,54 @@ paths:
   - 'src/**/*.tsx'
 ---
 
-> Type: Rule (normative constraints)
-> Source of truth: Rules define mandatory constraints; skills define operational playbooks.
-
 # DOM Hygiene
 
-Keep the rendered tree as shallow as possible. Every `div`, `span`, `Fragment`, or `<Show>` must justify itself with real semantics, real state, or layout that cannot move onto the child.
+Keep the rendered tree shallow. Every `div`, `span`, `Fragment`, or `<Show>` must justify itself with semantics, state, or layout that cannot move onto the child.
 
-## No Wrapper-Only Nodes
+## No wrapper-only nodes
 
-- Do not introduce a `div`/`span` whose sole purpose is to carry a class for a single child; move the class onto the child via its `class` prop
-- Do not introduce a wrapper just to hold a `style={{ ... }}` on behalf of a single child; pass the style to the child directly or expose a CSS custom property on the child's class
-- Do not introduce a wrapper for a trivial gap/flex row when the parent already controls that layout or when the child accepts the same class
-- Drop the wrapper's CSS rule when the wrapper is removed; never leave orphaned `.module.css` classes
-- When deleting a wrapper, transfer every meaningful style (including `display`, `gap`, `flex-*`) onto the child's merged class list -- do not silently lose layout
+- No `div`/`span` whose sole purpose is to carry a class for a single child — move the class onto the child
+- No wrapper just to hold a `style={{ ... }}` for a single child — pass the style or a CSS custom property to the child
+- No wrapper for a trivial gap/flex row when the parent already controls the layout
+- Drop the wrapper's CSS rule when the wrapper is removed; never leave orphaned classes
+- When deleting a wrapper, transfer every meaningful style (`display`, `gap`, `flex-*`) onto the child's merged class list
 
-## Primitive Class Merging
+## Primitive class merging
 
-- Prefer primitives with first-class style-extension props (`class`, `contentClass`, `frontClass`, `backClass`, `containerClass`) over wrapping them in a host `div`
-- When a consumer repeatedly needs to style an internal part of a primitive, add a dedicated `*Class` prop to the primitive instead of growing an external wrapper
-- New `*Class` props must merge with internal defaults through `classNames()`, never replace them silently
-- Keep class extension props opt-in and additive so default appearance is unchanged
+- Prefer primitives with style-extension props (`class`, `contentClass`, `frontClass`, `backClass`, `containerClass`) over wrapping in a host `div`
+- When consumers repeatedly need to style an internal part, add a dedicated `*Class` prop to the primitive instead of growing an external wrapper
+- New `*Class` props merge with internal defaults via `classNames()`, never replace silently
+- Class extension props are opt-in and additive; default appearance unchanged
 
-## Semantic Elements via `as` / `role`
+## Semantic elements via `as` / `role`
 
-- Do not wrap a primitive in a semantic element (`article`, `section`, `nav`, etc.) just to gain semantics; pass `as="article"` (or equivalent) to the primitive and push the semantic attributes (`draggable`, `role`, `aria-*`) onto it
-- Do not add an outer wrapper purely to carry `role="search"`, `role="switch"`, or other ARIA roles when the already-rendered child is the correct role holder
-- Shared primitive APIs should accept the semantic props they legitimately need (`as`, `role`, `draggable`, `aria-*`) so parents never have to wrap them
+- Don't wrap a primitive in `article`/`section`/`nav` for semantics — pass `as="article"` and put `draggable`/`role`/`aria-*` on the primitive
+- Don't add an outer wrapper just to carry `role="search"` etc. when the rendered child is the correct role holder
+- Shared primitive APIs accept the semantic props they need (`as`, `role`, `draggable`, `aria-*`)
 
-## Structural vs Presentational CSS in Primitives
+## Structural vs presentational CSS in primitives
 
-- Primitives that use absolute positioning, flip/translate animations, or stacking contexts must split their CSS:
-  - Structural layer (positioning, `transform`, `backface-visibility`, size constraints) stays unconditional
-  - Presentational defaults (background, border, radius, shadow, padding) live in a separate default class that is only applied when no consumer-provided class is passed
-- This lets consumers pass `frontClass`/`backClass` (or similar) to restyle faces without breaking animations or positioning
-- Never let a host component override structural behavior through class injection; only presentational layers are overridable
+Primitives using absolute positioning, flip/translate animations, or stacking contexts MUST split their CSS:
 
-## Conditional Rendering Discipline
+- Structural layer (positioning, `transform`, `backface-visibility`, size constraints): unconditional
+- Presentational defaults (background, border, radius, shadow, padding): separate default class, applied only when no consumer-provided class is passed
 
-- Do not wrap `<Dialog>` (or other components that already manage their own open/close through `showModal()`/`close()`) in an outer `<Show when={open}>`; gate open state through the component's own `open` prop
-- Use `<Show fallback={...}>` to avoid rendering an otherwise-useless wrapper when the optional parts (label, description, icon) are absent; prefer rendering the single child directly in the fallback over an empty `div`
-- When conditional branches produce the same child with slightly different wrappers, factor the child out into a local variable and switch the wrapper via `<Show fallback={...}>` -- do not duplicate JSX
-- Reserve outer `<Show>` gates around heavy children only when the goal is genuine unmount (e.g. to unmount a virtualized tree), not merely visibility
+This lets consumers pass `frontClass`/`backClass` to restyle faces without breaking animations. Hosts can override only presentational layers, never structural.
 
-## Examples of Acceptable Wrappers
+## Conditional rendering
+
+- Don't wrap `<Dialog>` (or anything managing its own `showModal()`/`close()`) in `<Show when={open}>` — gate via the component's `open` prop
+- Use `<Show fallback={...}>` to avoid an otherwise-useless wrapper when optional parts (label, description, icon) are absent
+- When conditional branches produce the same child with different wrappers, factor the child into a local variable and switch the wrapper via `<Show fallback={...}>`
+- Reserve outer `<Show>` gates around heavy children only when the goal is genuine unmount (e.g. virtualized tree)
+
+## Acceptable wrappers
 
 Wrappers are allowed when they provide at least one of:
 
-- Real semantics not already expressed by the child (landmark role, form grouping, list container)
-- Layout that intentionally composes more than one child (flex row/column, grid container)
+- Real semantics not expressible by the child (landmark role, form grouping, list container)
+- Layout composing more than one child (flex row/column, grid container)
 - State-bearing or focus-management behavior (focus traps, scroll containers, intersection roots)
-- A reusable primitive contract (a `Field`, `Card`, `LabelText`, etc. that owns its own styles and state)
+- A reusable primitive contract (`Field`, `Card`, `LabelText`, etc. that owns its own styles and state)
 
-If none of the above applies, the wrapper is redundant and must be inlined into its child.
+If none of the above applies, the wrapper is redundant.

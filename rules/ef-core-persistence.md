@@ -3,53 +3,53 @@ paths:
   - '**/*'
 ---
 
-> Type: Rule (normative constraints)
-> Source of truth: Rules define mandatory constraints; skills define operational playbooks.
-
 # EF Core Persistence
 
-## Read Paths
+## Read paths
 
-- Use `AsNoTracking()` on read paths unless tracked entities are genuinely required
-- Prefer projection-first queries that select directly into response or intermediate models
-- Avoid broad `Include` chains when a narrower projection can express the result more clearly
-- Be alert to N+1 patterns when traversing child collections or issuing per-row lookups
+- `AsNoTracking()` unless tracked entities are genuinely required
+- Projection-first queries selecting directly into response/intermediate models
+- Avoid broad `Include` chains when a narrower projection works
+- Watch for N+1 patterns when traversing child collections
 
-## Write Paths
+## Write paths
 
-- Keep write handlers focused on one use case and one unit of work
-- Load only the data needed to validate and perform the write
-- Persist explicit state changes; avoid hidden side effects spread across unrelated infrastructure code
+- One handler = one use case = one unit of work
+- Load only what's needed to validate and perform the write
+- Persist explicit state changes; no hidden side effects across infrastructure
 
 ## Boundaries
 
-- Entity configuration, migrations, and context wiring belong in infrastructure
-- Business decisions, filtering rules, and orchestration should stay in handlers or domain logic, not in EF configuration
-- Seed data and migrations should be intentional and reviewable, not incidental fallout from unrelated changes
+- Entity configuration, migrations, context wiring → infrastructure
+- Business decisions, filtering, orchestration → handlers/domain, not EF configuration
+- Seed data and migrations are intentional, not incidental fallout
 
-## Audit and User Scoping
+## Audit & user scoping
 
-When the project's shared infrastructure provides an audit base entity + interceptor (see `dotnet-shared-infrastructure`):
+When the project ships a base entity hierarchy + audit interceptor (see `dotnet-shared-infrastructure`):
 
-- User-scoped entities MUST inherit the shared `AuditEntity` (or equivalent); this auto-applies a `HasQueryFilter(e => e.CreatedBy == CurrentUserId)` on every DbSet through the shared `BaseApplicationDbContext`
-- NEVER set `CreatedBy` / `CreatedOn` / `ModifiedBy` / `ModifiedOn` manually — the audit interceptor stamps them on `SaveChanges`
-- Audit entities use `builder.ToAuditTable("<table>")`; non-audit entities use `builder.ToBasicTable("<table>")`. Never call `builder.ToTable(...)` directly when these helpers exist
-- Resolve the current user with `ICurrentUserService`; design-time uses the matching `DesignTimeCurrentUserService` so query filters compile under `dotnet ef`
+- Two-tier hierarchy: `BaseEntity` (abstract, `Guid Id { get; init; }`) is root; `AuditEntity : BaseEntity` adds `CreatedBy`/`CreatedOn`/`ModifiedBy`/`ModifiedOn`
+- User-scoped entities MUST inherit `AuditEntity`; this auto-applies `HasQueryFilter(e => e.CreatedBy == CurrentUserId)` on every DbSet via the shared `BaseApplicationDbContext`
+- Non-user-scoped entities (lookups, system data) inherit `BaseEntity` directly
+- NEVER set `CreatedBy`/`CreatedOn`/`ModifiedBy`/`ModifiedOn` manually — the audit interceptor stamps them
+- Audit entities use `builder.ToAuditTable("<table>")`; non-audit use `builder.ToBasicTable("<table>")`. Never call `builder.ToTable(...)` directly when these helpers exist (they wire PK + audit columns + `CURRENT_TIMESTAMP` defaults)
+- Resolve current user with `ICurrentUserService` (NEVER `ICurrentUserContext` or other variants); design-time uses `DesignTimeCurrentUserService`
 - Entity configurations are `internal sealed class : IEntityTypeConfiguration<T>`, auto-discovered by the base context
 
-## Postgres Specifics
+## Postgres specifics
 
-- JSONB columns: `.HasColumnType(PostgresCommandConsts.JsonDataType)` (or the project's equivalent constant) — never the literal `"jsonb"`
+- JSONB columns: `.HasColumnType(PostgresCommandConsts.JsonDataType)` — never literal `"jsonb"`
+- Length constants from shared infrastructure (`DataTypeConsts.NameLength`, `DataTypeConsts.TextLength`) used in BOTH `HasMaxLength(...)` AND the matching FluentValidation rule
 - At-rest encryption for tokens/secrets: `.HasConversion(new EncryptedStringConverter(encryptionKey))` (AES-256-GCM)
-- Postgres enums must be declared in `Domain/Enums/` and registered in THREE places that MUST stay in sync:
+- Postgres enums declared in `Domain/Enums/` and registered in THREE places that MUST stay in sync:
   1. `Program.cs` Aspire `AddPostgresDbContext` callback (`MapEnum<T>(...)`)
   2. `ApplicationDbContext.ConfigureModel` (`HasPostgresEnum<T>(...)`)
   3. `DesignTimeDbContextFactory` (`MapEnum<T>` on both `dataSourceBuilder` and `npgsqlOptions`)
 
-## Migrations Workflow
+## Migrations workflow
 
-- Migrations applied at startup via the shared `MigrateDatabase<ApplicationDbContext>(ct)` helper in the bootstrap `beforeRun` callback
+- Applied at startup via shared `MigrateDatabase<ApplicationDbContext>(ct)` in the bootstrap `beforeRun`
 - Each service owns its own `Migrations/` folder
 - Migrations are NOT historical artifacts; rebases happen freely. Do not preserve old migrations as "audit"
-- Every service requires a `DesignTimeDbContextFactory` for the EF CLI; mirror the existing one (localhost / postgres / postgres + the shared design-time current-user service)
+- Every service requires a `DesignTimeDbContextFactory` (mirror existing: localhost / postgres / postgres + shared design-time current-user service)
 - `dotnet ef migrations add <Name>` is run from inside `<Service>.Api`

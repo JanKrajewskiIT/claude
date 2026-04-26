@@ -3,36 +3,30 @@ name: overlay-patterns
 description: Shared overlay guidance for dialogs, drawers, popovers, and similar interactive surfaces in VelvetUi. Use when building or refactoring focus-managed overlays.
 ---
 
-> Type: Skill (operational playbook)
-> Source of truth: Rules define mandatory constraints; skills describe execution patterns.
+## Shared overlay pattern
 
-Use this playbook for overlays and other focus-managed floating surfaces.
+Overlays usually combine:
 
-## Shared Overlay Pattern
+- `useEscapeKey` — keyboard dismissal
+- `useFocusTrap` — contained keyboard navigation
+- `useOverlayAnimation` — enter/exit transitions
+- `classNames()` — conditional class composition
+- `Heading` for titles, `IconButton` for close actions
 
-Overlays should usually combine:
+## Interaction expectations
 
-- `useEscapeKey` for keyboard dismissal
-- `useFocusTrap` for contained keyboard navigation
-- `useOverlayAnimation` for enter and exit transitions
-- `classNames()` for conditional class composition
-- `Heading` for titles
-- `IconButton` for close actions
+- Plan open flow, close flow, return-focus target together
+- Treat keyboard operation as part of the design, not post-fix polish
+- Use shared focus and escape-key hooks so interaction stays consistent across overlay families
 
-## Interaction Expectations
+## Rendering
 
-- Plan the open flow, close flow, and return-focus target together
-- Treat keyboard operation as part of the component design, not post-fix polish
-- Use shared focus and escape-key hooks so the interaction stays consistent across overlay families
-
-## Rendering Guidance
-
-- Keep open and close mechanics localized to the overlay component
+- Open/close mechanics localized to the overlay component
 - Avoid extra wrapper layers around the main surface unless they add layout, semantics, or behavior
-- Keep overlay structure predictable: backdrop, positioned surface, title area, content area, actions when needed
+- Keep structure predictable: backdrop → positioned surface → title → content → actions
 
-## Styling Guidance
+## Styling
 
-- Keep interaction-critical structure in the overlay module
-- Put shared spacing, radius, shadow, and motion on tokens and reusable classes
-- Avoid host-level CSS that reskins overlay internals in ad hoc ways
+- Interaction-critical structure stays in the overlay module
+- Shared spacing, radius, shadow, motion → tokens and reusable classes
+- No host-level CSS reskinning overlay internals ad hoc

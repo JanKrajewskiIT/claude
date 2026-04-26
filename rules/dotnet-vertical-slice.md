@@ -3,37 +3,35 @@ paths:
   - '**/*.cs'
 ---
 
-> Type: Rule (normative constraints)
-
 # .NET Vertical Slice Architecture
 
-For .NET backend services that follow a vertical-slice architecture with custom CQRS primitives (no MediatR/Wolverine), Minimal API endpoints, FluentValidation, and EF Core.
+For .NET backend services with vertical-slice architecture, custom CQRS primitives (no MediatR/Wolverine), Minimal API endpoints, FluentValidation, EF Core.
 
-## Slice Structure
+## Slice structure
 
-- One slice folder per use case: `Features/<Area>/<Action>/`
-- `<Area>` is a plural noun (`Offers`, `Profile`); `<Action>` is a PascalCase verb (`Add`, `GetList`, `UpdateState`, `OAuthCallback`)
-- Slice file roles and naming:
-  - `<Action><Subject>Command.cs` / `<Action><Subject>Query.cs` — `public sealed record` implementing the project's command/query contract (e.g. `ICommand` / `ICommand<T>` / `IQuery<T>`)
-  - `<Action><Subject>Request.cs` — `public sealed record`, ONLY when route/header data must be merged into a `Command`, or when the wire contract must stay decoupled from the internal one
+- One folder per use case: `Features/<Area>/<Action>/`
+- `<Area>` = plural noun (`Offers`, `Profile`); `<Action>` = PascalCase verb (`Add`, `GetList`, `UpdateState`, `OAuthCallback`)
+- File roles:
+  - `<Action><Subject>Command.cs` / `Query.cs` — `public sealed record` implementing project's `ICommand`/`ICommand<T>`/`IQuery<T>`
+  - `<Action><Subject>Request.cs` — `public sealed record`, ONLY when route/header data must merge into a `Command` or wire contract must stay decoupled from the internal one
   - `<Action><Subject>Response.cs` / `<Subject>Response.cs` — `public sealed record`
   - `<Action><Subject>Validator.cs` — `public sealed class : AbstractValidator<TCommand>`
-  - `<Action><Subject>Handler.cs` — `public sealed class` with primary-constructor DI; single `ExecuteAsync(request, ct = default)` method
+  - `<Action><Subject>Handler.cs` — `public sealed class`, primary-constructor DI, single `ExecuteAsync(request, ct = default)`
   - `<Action><Subject>Endpoint.cs` — `public static class` with one `Map<Action><Subject>(this IEndpointRouteBuilder app)` extension
-- Slice family helpers live in `Features/<Area>/Shared/`
-- Endpoints register in a per-service `Features/FeaturesExtensions.MapFeatures(app)`
-- Handlers and validators auto-register from the assembly via the project's shared registration helper; do NOT call `AddScoped` for them manually
+- Slice family helpers → `Features/<Area>/Shared/`
+- Endpoints register in per-service `Features/FeaturesExtensions.MapFeatures(app)`
+- Handlers/validators auto-register from assembly via the project's shared registration helper; do NOT call `AddScoped` for them manually
 
-## CQRS Primitives
+## CQRS primitives
 
-- Commands and queries are `sealed record` types implementing the project's `ICommand` / `ICommand<TResponse>` / `IQuery<TResponse>` interfaces
-- Handlers implement `ICommandHandler<...>` / `IQueryHandler<...>` with a single `ExecuteAsync(request, CancellationToken cancellationToken = default)` method
+- Commands/queries are `sealed record` implementing `ICommand`/`ICommand<TResponse>`/`IQuery<TResponse>`
+- Handlers implement `ICommandHandler<...>`/`IQueryHandler<...>` with single `ExecuteAsync(request, CancellationToken cancellationToken = default)`
 - Endpoints inject the CONCRETE handler type, not an interface
-- Do not introduce `IMediator` / `ISender` indirection on top of an existing direct-handler convention
+- Do not introduce `IMediator`/`ISender` indirection
 
-## Endpoint Recipe
+## Endpoint recipe
 
-Canonical fluent order (auth first, validation, then OpenAPI metadata, then cross-cutting):
+Canonical fluent order (auth → validation → OpenAPI → cross-cutting):
 
 ```csharp
 app.MapPost("/offers", async (AddOfferCommand request, AddOfferHandler handler, CancellationToken ct) =>
@@ -47,38 +45,36 @@ app.MapPost("/offers", async (AddOfferCommand request, AddOfferHandler handler, 
 .WithTags("Offers");
 ```
 
-- Authorization uses named policy constants from a shared `AuthPolicies` (or equivalent) static class — never inline policy strings
-- Validation via `.WithValidation<TRequest>()`; when a `Command` is built by merging route data with a `Request` body, inject `IValidator<TCommand>` and call `await validator.ValidateAndThrowAsync(command, ct)` manually
-- `.WithName(...)` is PascalCase and matches the OpenAPI `operationId`
+- Authorization uses named policy constants from `AuthPolicies` — never inline strings
+- Validation via `.WithValidation<TRequest>()`; when `Command` is built by merging route + `Request`, inject `IValidator<TCommand>` and call `await validator.ValidateAndThrowAsync(command, ct)` manually
+- `.WithName(...)` PascalCase, matches OpenAPI `operationId`
 - `.WithTags("<Area>")` matches the slice area folder
-- Use `Results.Created()` / `Results.Ok(result)` / `Results.NoContent()` consistently across the codebase; do not mix with `TypedResults.*` mid-codebase
-- Avoid `MapGroup` route prefixes unless the codebase already uses them; every endpoint registers its own absolute path
+- Use `Results.Created()` / `Results.Ok(result)` / `Results.NoContent()`; do not mix with `TypedResults.*`
+- Avoid `MapGroup` route prefixes unless the codebase already uses them
 
-## Handler Shape
+## Handler shape
 
 - Primary-constructor injection
 - Accept and pass `CancellationToken`
-- Query handlers project directly to response models with `AsNoTracking()` for read paths
-- Write handlers use the feature `DbContext` directly; no repository indirection unless the project already has a real shared need
-- Resolve current user via the project's `ICurrentUserService`; throw `InvalidOperationException` / `UnauthorizedAccessException` when the user identity is missing
+- Query handlers project directly to response models with `AsNoTracking()`
+- Write handlers use the feature `DbContext` directly; no repository indirection
+- Resolve current user via `ICurrentUserService`; throw `InvalidOperationException`/`UnauthorizedAccessException` when identity is missing
 
-## Validation and Length Constants
+## Validation & length constants
 
-- Validators reuse shared length/format constants (e.g. `DataTypeConsts.NameLength`) so that DB column constraints and validator rules stay aligned
-- The same constants MUST appear in the matching `IEntityTypeConfiguration<T>.HasMaxLength(...)`
+- Validators reuse shared constants (e.g. `DataTypeConsts.NameLength`) so DB column constraints and validator rules stay aligned
+- The same constants MUST appear in `IEntityTypeConfiguration<T>.HasMaxLength(...)`
 
-## File Naming Invariants
+## File naming
 
 - Domain types end with `Entity`; configurations with `Configuration`; handlers with `Handler`; endpoints with `Endpoint`; validators with `Validator`
-- Mismatches break grep-ability and rule discoverability
+- Mismatches break grep-ability
 
-## Code Style
+## Code style
 
-- Follow the project's `.editorconfig` for indentation (tabs vs spaces), line endings, and namespace style
-- File-scoped namespaces, `using` outside namespace, primary constructors preferred
-- No comments inside slice handlers/endpoints/commands; XML doc comments belong on shared infrastructure (base classes, framework helpers), not on slice classes
+- No comments inside slice handlers/endpoints/commands — slice code is self-documenting
 
 ## Boundaries
 
-- Cross-service mechanics belong in shared infrastructure libraries; never duplicate the same helper across two services
-- Feature-specific mapping, filtering, and ordering rules stay inside the owning slice
+- Cross-service mechanics → shared infrastructure libraries
+- Feature-specific mapping/filtering/ordering stays inside the owning slice

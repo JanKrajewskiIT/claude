@@ -6,48 +6,45 @@ paths:
   - 'demo/**/*.tsx'
 ---
 
-> Type: Rule (normative constraints)
-> Source of truth: Rules define mandatory constraints; skills define operational playbooks.
+# State & Data Flow
 
-# State and Data Flow
+## Separate UI state from server state
 
-## Separate UI State from Server State
+- Ephemeral UI state (`open`, selection, local draft, highlighted item) → local signals or focused stores
+- Server-owned collections and remote async state → query signals; do not mirror fetched data into ad-hoc writable signals unless creating an intentional local draft
+- Persist only state that should survive navigation/reload (selection, filters, layout preferences)
 
-- Keep ephemeral UI state (`open`, selection, local draft mode, highlighted item) in local signals or focused stores
-- Keep server-owned collections and remote async state in query signals; do not mirror fetched query data into ad hoc writable signals unless you are creating an intentional local draft
-- Persist only state that should survive navigation or reload, such as user selection, filters, or layout preferences
+## Prefer shared state primitives
 
-## Prefer Shared State Primitives
+- Use `createPersistedSignal`, `createSelectionStore`, `createEntityStore`, query helpers before inventing one-off store shapes
+- In app code on VelvetUi query primitives, prefer `createAppQuery`, `createAppMutation`, `invalidateQuery` over hand-rolled async state
+- Namespace persisted keys with a stable feature prefix
+- Reuse shared collection/store helpers when the shape is generic; do not hand-roll the same entity/selection pattern per feature
 
-- Use shared helpers such as `createPersistedSignal`, `createSelectionStore`, `createEntityStore`, or query helpers before inventing one-off store shapes
-- In app code built on VelvetUi query primitives, prefer `createAppQuery`, `createAppMutation`, and `invalidateQuery` over hand-rolled async state
-- Namespace persisted storage keys with a stable feature prefix
-- Reuse shared collection/store helpers when the shape is generic; do not hand-roll the same entity or selection pattern per feature
+## Query keys & watch
 
-## Query Key and Watch Discipline
+- Query keys MUST include every input that changes the remote result
+- `watch` dependencies and query-key inputs describe the same reactive inputs
+- When a query requires a selected id/mode/enabled toggle, gate with `enabled` instead of letting it fire with placeholder values
+- Normalize default filters and empty values BEFORE the API boundary so equivalent UI states produce equivalent query keys
 
-- Query keys must include every input that changes the remote result
-- `watch` dependencies and query-key inputs must describe the same reactive inputs
-- When a query requires a selected id, mode, or enabled toggle, gate it with `enabled` instead of letting the request fire with placeholder values
-- Normalize default filters and empty values before they reach the API boundary so equivalent UI states produce equivalent query keys and requests
+## Mutations & invalidation
 
-## Mutation and Invalidation Discipline
-
-- Mutations should invalidate only the query keys affected by the write
-- When a feature touches the same query family from multiple mutations, centralize invalidation in a local helper instead of repeating scattered key lists
+- Mutations invalidate ONLY the keys affected by the write
+- When a feature touches the same query family from multiple mutations, centralize invalidation in a local helper
 - Prefer query invalidation or explicit cache updates over duplicating server state into parallel local stores
 
-## API Boundary Mapping
+## API boundary mapping
 
-- Map UI models to API contracts in a dedicated helper near the mutation or client boundary, not inline inside JSX or event handlers
-- Keep result-to-form and form-to-request transforms in named helpers rather than anonymous callback bodies
-- Keep transport normalization at the boundary: unwrap collection envelopes, coerce optional fields, and translate app-specific draft shapes before the request is sent
-- Do not leak transport-only naming or nullability rules deep into view components
+- Map UI models to API contracts in a dedicated helper near the mutation/client boundary, NOT inline in JSX/event handlers
+- Keep result-to-form and form-to-request transforms in named helpers
+- Keep transport normalization at the boundary: unwrap collection envelopes, coerce optional fields, translate app-specific draft shapes before the request
+- Do not leak transport-only naming/nullability rules into view components
 
-## Mapping Helper Naming
+## Mapping helper naming
 
-- Form -> request: `build<Domain>FromForm(state, existing?)` or `map<Domain>ToApi(domain, ...)`
-- Server -> form: `map<Domain>ToFormState(domain)` / `mapParseResultToForm(parsed)`
+- Form → request: `build<Domain>FromForm(state, existing?)` or `map<Domain>ToApi(domain, ...)`
+- Server → form: `map<Domain>ToFormState(domain)` / `mapParseResultToForm(parsed)`
 - Use VelvetUi normalizers (`orEmpty`, `emptyToNull`, `numberToString`, `parseFloatOrNull`) for boundary coercion; do not write `String(value ?? '')` inline
-- A helper used by more than one feature MUST be hoisted to a shared module; never duplicate the same `mapXToApi` between two `store/<feature>.ts` files
-- Use `unwrapCollectionResponse(...)` from VelvetUi for any endpoint that returns an envelope; apply it consistently across stores
+- Helpers used by more than one feature MUST be hoisted to a shared module; never duplicate `mapXToApi` between two `store/<feature>.ts`
+- Use `unwrapCollectionResponse(...)` from VelvetUi for envelope endpoints

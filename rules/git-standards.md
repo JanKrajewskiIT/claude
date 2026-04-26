@@ -3,57 +3,44 @@ paths:
   - '**/*'
 ---
 
-> Type: Rule (normative constraints)
-> Source of truth: Rules define mandatory constraints; skills define operational playbooks.
+# Git & Workflow Standards
 
-# Git and Workflow Standards
-
-## Branching and Flow
+## Branching
 
 - Base branch: `main`
-- Create feature branches from `main`
-- Keep branches focused on a clear, single responsibility when possible
+- Feature branches from `main`, single-responsibility when possible
 
-## Commit Messages
+## Commit messages
 
-- Conventional commit prefixes:
-  - `feat:` - new feature
-  - `fix:` - bug fix
-  - `refactor:` - internal refactor without behavior change
-  - `docs:` - documentation-only changes
-- Commit messages should:
-  - Describe the intent of the change, not just file names
-  - Be written in the imperative mood (e.g. "add button variant")
+- Conventional prefixes: `feat:`, `fix:`, `refactor:`, `docs:`
+- Imperative mood, describe intent (not file names)
 
-## Versioning and Public API Changes
+## Versioning & public API
 
-- Treat public exports from `src/index.ts` and public props as semver-governed API
-- Typical release intent mapping:
-  - `fix:` -> patch
-  - `feat:` -> minor (unless explicitly breaking)
-  - breaking API changes -> major
-- For public API changes, include a short migration note in the PR or changes description
-- Prefer additive evolution first; only remove or rename public API with explicit migration guidance
+- Public exports from `src/index.ts` and public props are semver-governed
+- `fix:` → patch; `feat:` → minor (unless explicitly breaking); breaking → major
+- Public API changes include a short migration note in PR
+- Prefer additive evolution; only remove/rename with explicit migration guidance
 
-## Deprecation Policy
+## Deprecation policy
 
-- Before removing a public prop or export, mark it as deprecated for at least one minor cycle
-- Keep deprecated APIs functional while providing the replacement path
-- Demo usage should migrate to the replacement API as soon as deprecation is introduced
+- Mark deprecated for at least one minor cycle before removal
+- Keep deprecated APIs functional with a replacement path
+- Demo migrates to the replacement immediately
 
-## Commands and Quality Gates
+## Commands
 
-Available npm scripts in the library:
+Available npm scripts:
 
 - `npm run verify` — typecheck + lint + build + test
-- `npm run build` — build library
-- `npm run lint:fix` — fix lint issues when possible
-- `npm run format` — apply formatting
-- `npm test` — run tests
+- `npm run build`
+- `npm run lint:fix`
+- `npm run format`
+- `npm test`
 
-**Agents MUST NOT run these commands after implementing or changing code unless the user explicitly asks for it.** See `rules/project-core.md` "Agent Execution Policy". The user is responsible for deciding when to run verify before merging.
+**Agents MUST NOT run these after implementing/changing code unless the user explicitly asks.** See `rules/project-core.md` "Agent Execution Policy".
 
-## CI and Publishing
+## CI
 
 - CI publishes on push to `main`
-- Keep `main` green and releasable; avoid pushing broken builds
+- Keep `main` green and releasable

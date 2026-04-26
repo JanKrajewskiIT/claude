@@ -5,28 +5,28 @@ paths:
   - '**/Directory.Packages.props'
 ---
 
-> Type: Rule (normative constraints)
-
 # .NET Shared Infrastructure Library
 
-Many projects in this style ship a dedicated shared-infrastructure library (an internal NuGet, a sibling project, or a workspace package — commonly named `Extensions.*`, `<Org>.Common.*`, or `<Org>.Infrastructure.*`) that owns cross-cutting concerns: CQRS primitives, base DbContext, auth helpers, error handlers, validation filter, OpenAPI wiring, telemetry, rate limiting, and HTTP message handlers.
+Many projects ship a shared-infrastructure library (internal NuGet, sibling project, workspace package — commonly `Extensions.*`, `<Org>.Common.*`, `<Org>.Infrastructure.*`) owning cross-cutting concerns: CQRS primitives, base DbContext, auth helpers, error handlers, validation filter, OpenAPI wiring, telemetry, rate limiting, HTTP message handlers.
 
-When such a library exists in the codebase, follow these rules.
+When such a library exists, follow these rules.
 
-## Discovery and Use
+## Discovery and use
 
 - Before writing any cross-cutting helper (auth policy, exception handler, value converter, query extension, options binder, message handler), grep the shared library for an existing primitive
-- Read the library's XML docs / README before reaching for a third-party equivalent
-- The shared library is the source of truth for: handler-registration helper, base `DbContext`, base entities (`BaseEntity`, `AuditEntity` or equivalent), audit interceptor, current-user service, auth policies, error handlers, validation filter, length/format constants, encryption converters, SSRF validators, service-to-service HTTP handlers, structured logging, metrics, OpenAPI defaults, rate-limit policies
+- The shared library owns: handler-registration helper, base `DbContext`, base entities (`BaseEntity`, `AuditEntity`), audit interceptor, current-user service, auth policies, error handlers, validation filter, length/format constants, encryption converters, SSRF validators, service-to-service HTTP handlers, structured logging, metrics, OpenAPI defaults, rate-limit policies
 
 ## Discipline
 
-- Cross-service mechanics belong in the shared library; do NOT duplicate the same helper across two service projects
-- When the right primitive is missing, add it to the shared library and bump its version, not to a one-off local helper
-- Service code consumes named constants and policies from the shared library — never re-declares the same string/policy/role name locally
-- Configuration sections, options classes, and binding paths owned by the shared library MUST stay consistent across services
+- Cross-service mechanics → shared library; never duplicate across services
+- When the right primitive is missing, add it to the shared library and bump version, not a one-off local helper
+- Service code consumes named constants/policies from the shared library — never re-declares the same string/policy/role locally
 
-## Versioning
+## Default bootstrap
 
-- Pin the shared library version centrally (e.g. `Directory.Packages.props` for .NET) so all services use the same version
-- Bumping the shared library version is a deliberate change; review every consumer for the bump in the same PR
+The shared bootstrap helper (`AddServiceDefaults`, `RunModuleAsync`, equivalent) is opt-out — every consumer inherits whatever it does.
+
+- Add to default bootstrap ONLY when every consumer service genuinely needs it
+- Otherwise expose as opt-in extension method (`AddX()` / `UseX()`)
+
+Library structure, versioning, release workflow → `skills/dotnet-nuget-package`.
