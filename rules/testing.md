@@ -8,9 +8,11 @@ paths:
 
 # Testing
 
-Projects in this workspace currently ship without automated test suites.
+Projects in this workspace currently ship without automated test suites. This applies to BOTH the frontend (SolidJS / VelvetUi / consumer apps) AND the backend (.NET services, Aspire-composed solutions).
 
-**Agents MUST NOT write tests, scaffold test infrastructure, or add test files unless the user explicitly requests it.** See `rules/project-core.md` "Agent Execution Policy".
+**Agents MUST NOT write tests, scaffold test infrastructure, or add test files — frontend or backend — unless the user explicitly requests it in the current request.** See `rules/project-core.md` "Agent Execution Policy".
+
+This rule file is the contract for HOW to write tests IF the user asks. It is never a trigger to write them.
 
 ## Stack (when asked)
 

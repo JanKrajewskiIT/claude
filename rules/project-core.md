@@ -38,7 +38,9 @@ Operational workflow → `skills/extract-to-velvetui`.
 
 ## Code style
 
-- Self-documenting: no comments explaining obvious behavior, no commented-out code, no `eslint-disable`
+- Self-documenting code only. NO comments of any kind in source files (frontend or backend)
+- This includes: `//`, `/* */`, `///` XML doc comments, JSDoc/TSDoc blocks, `#region`, file headers, banner comments, and inline explanatory notes
+- No commented-out code, no `eslint-disable`
 - No hardcoded secrets
 
 ## Agent Execution Policy
@@ -48,10 +50,19 @@ These rules apply to AI/agent work and OVERRIDE any "verify after every change" 
 ### Tests
 
 - Do NOT write, scaffold, or modify tests unless the user explicitly asks in the current request
+- Applies to BOTH frontend (Vitest, `@solidjs/testing-library`, etc.) AND backend (xUnit, `Microsoft.AspNetCore.Mvc.Testing`, etc.)
 - Do NOT add test files, runners, fixtures, or CI test gating as a side effect
-- "New reusable component" or "public API change" is NOT a trigger to write tests
+- "New reusable component", "new endpoint", "new handler", or "public API change" is NOT a trigger to write tests
 - When existing tests would obviously break, mention it — do not silently update or delete them
 - `rules/testing.md` is the contract for HOW to write tests IF asked; never a trigger to write them
+
+### Comments & documentation
+
+- Do NOT add comments of any kind to source files (frontend or backend) unless the user explicitly requests it in the current request
+- This covers: `//`, `/* */`, `///` XML doc comments, JSDoc/TSDoc, `#region`, file headers, banner/section dividers, "why" notes, TODO/FIXME, commented-out code
+- Do NOT create or expand README/`*.md` documentation files as a side effect; only when the user explicitly asks
+- When editing an existing source file, REMOVE any comments/XML docs/JSDoc you encounter in that file as part of the edit (cleanup-on-touch). Do not touch files you were not otherwise editing
+- Code must communicate intent through naming, types, and structure — not prose
 
 ### Build / lint / typecheck / verify
 
