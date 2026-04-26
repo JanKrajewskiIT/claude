@@ -10,7 +10,7 @@ paths:
 
 ## Language and Reactivity
 
-- Arrow functions only, never `function` declarations
+- Prefer arrow functions for components and local helpers; use `function` only when it clearly improves typing or hoisting
 - Never JS-destructure props
 - Never React patterns (`useState`, `useEffect`, `className`)
 - `splitProps` + `{...rest}` only for real HTML wrapper components with intentional passthrough
@@ -24,7 +24,8 @@ paths:
 - Reuse shared contracts from `~/models/Props.ts` instead of redefining common `aria-*`, `label`, or native props
 - Never expose full `JSX.*HTMLAttributes` on public component APIs; use narrow shared subsets plus explicit semantic props
 - Keep `name` local to form-like controls only
-- `export default` unless generic typing makes a named export clearly better
+- Prefer `export default` for public components unless named export is materially clearer
+- Public components must be exported from `src/index.ts`
 
 ## Imports and Shared Utilities
 
@@ -43,17 +44,14 @@ paths:
 - Prefer `label` over `title` for component-level labels; reserve `title` for real domain data
 - Use `LabelText` for label/description rendering instead of duplicating inline text stacks
 
-## Style Prop and Dynamic Styling
+## Style Prop
 
 - Always use object syntax: `style={{ key: value }}`
-- Dynamic CSS values should go through CSS custom properties
-- Static styles belong in `.module.css`
-- Inline style is reserved for truly runtime-driven values
+- Inline style is reserved for truly runtime-driven values; for everything else see `rules/css-modules`
 
-## Accessibility Definition of Done
+## Accessibility
 
-- Every interactive control must be keyboard reachable and operable
-- Focus state must be visible and use shared focus tokens
-- Field-like components must wire `aria-invalid`, `aria-errormessage`, and `aria-describedby` via shared aria helpers
-- Component semantics must expose correct role and accessible name by default
-- If label text is visually hidden or composed, keep semantic labeling intact
+- Every interactive control must be keyboard reachable and operable with a visible focus state using shared focus tokens
+- Component semantics must expose correct role and accessible name by default; preserve semantic labeling when labels are visually hidden or composed
+- ARIA wiring for field-shaped components: see `rules/aria-wiring`
+- Overlay focus and dismissal contracts: see `skills/overlay-patterns`

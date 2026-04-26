@@ -17,12 +17,12 @@ paths:
 ## Commit Messages
 
 - Conventional commit prefixes:
-  - `feat:` – new feature
-  - `fix:` – bug fix
-  - `refactor:` – internal refactor without behavior change
-  - `docs:` – documentation-only changes
+  - `feat:` - new feature
+  - `fix:` - bug fix
+  - `refactor:` - internal refactor without behavior change
+  - `docs:` - documentation-only changes
 - Commit messages should:
-  - Describe the _intent_ of the change, not just file names
+  - Describe the intent of the change, not just file names
   - Be written in the imperative mood (e.g. "add button variant")
 
 ## Versioning and Public API Changes
@@ -32,7 +32,7 @@ paths:
   - `fix:` -> patch
   - `feat:` -> minor (unless explicitly breaking)
   - breaking API changes -> major
-- For public API changes, include a short migration note in the PR/changes description
+- For public API changes, include a short migration note in the PR or changes description
 - Prefer additive evolution first; only remove or rename public API with explicit migration guidance
 
 ## Deprecation Policy
@@ -43,14 +43,15 @@ paths:
 
 ## Commands and Quality Gates
 
-- Prefer these npm scripts when working on the library:
-  - `npm run verify` – typecheck + lint + build + test
-  - `npm run build` – build library
-  - `npm run lint:fix` – fix lint issues when possible
-  - `npm run format` – apply formatting
-  - `npm test` – run tests
-- Before merging significant changes, aim to run at least:
-  - `npm run verify`
+Available npm scripts in the library:
+
+- `npm run verify` — typecheck + lint + build + test
+- `npm run build` — build library
+- `npm run lint:fix` — fix lint issues when possible
+- `npm run format` — apply formatting
+- `npm test` — run tests
+
+**Agents MUST NOT run these commands after implementing or changing code unless the user explicitly asks for it.** See `rules/project-core.md` "Agent Execution Policy". The user is responsible for deciding when to run verify before merging.
 
 ## CI and Publishing
 

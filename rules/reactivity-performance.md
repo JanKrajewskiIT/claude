@@ -27,7 +27,7 @@ paths:
 
 ## High-frequency Events
 
-- Listeners bound to `scroll`, `resize`, `wheel`, `mousemove`, `pointermove`, `touchmove`, and drag-resize loops MUST be routed through `requestAnimationFrame` with explicit cancellation in `onCleanup`
+- For listeners bound to `scroll`, `resize`, `wheel`, `mousemove`, `pointermove`, `touchmove`, and drag-resize loops, prefer routing signal writes and expensive work through `requestAnimationFrame` with explicit cancellation in `onCleanup`
 - Store the latest event payload in a local variable (`pendingX`, `pendingClientX`, ...) and commit it inside the rAF callback; never call `set*` synchronously from the raw event
 - On drag/resize end, flush any in-flight rAF with the last pending value before clearing the scheduler
 - Pass `{ passive: true }` to scroll/wheel/touch listeners whose callbacks never call `preventDefault`
