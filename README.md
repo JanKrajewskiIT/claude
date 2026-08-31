@@ -73,19 +73,37 @@ Copy a skill directory into a location supported by the target client:
 Keep the skill contents identical between clients. Document integration differences
 outside the package or use `compatibility` only when they are actual requirements.
 
-### Git Submodules Without Copying
+### Install from One Git Submodule
 
-Add this repository twice when Claude Code and Agent Skills compatible clients must
-discover the same skills without generated or copied files:
+Add this repository once as the canonical project source:
 
 ```powershell
 git submodule add <repository-url> .agents
-git submodule add <repository-url> .claude
 ```
 
-This produces the client discovery paths `.agents/skills/` and
-`.claude/skills/`. Claude Code also loads `.claude/CLAUDE.md`, which imports the
-shared `AGENTS.md` from this repository.
+Then run the helper from the consuming repository root:
+
+```powershell
+.\.agents\scripts\install-consumer.ps1
+```
+
+The helper copies the canonical skills to `.claude/skills/` and `.github/skills/`,
+creates root `AGENTS.md` and `CLAUDE.md` entry points when absent, and leaves
+existing entry-point files unchanged. Each synchronization deletes and recreates
+both client skill directories as exact copies of `.agents/skills/`; do not keep
+project-owned skills in those directories. The helper adds both generated paths to
+the consuming repository's `.gitignore`. The `.agents` submodule, `.gitmodules`,
+`AGENTS.md`, and `CLAUDE.md` remain versioned. Use `-WhatIf` to preview operations.
+
+Update and synchronize later with:
+
+```powershell
+git submodule update --remote .agents
+.\.agents\scripts\install-consumer.ps1
+```
+
+This produces the client discovery paths `.agents/skills/`, `.claude/skills/`,
+and `.github/skills/` while keeping `.agents/` as the only submodule.
 
 Add a small `AGENTS.md` at the consuming project root so Codex and clients that
 support repository agent instructions can reach the submodule guidance:
@@ -97,9 +115,8 @@ support repository agent instructions can reach the submodule guidance:
 - Treat `.agents/` as shared guidance and this file as project-specific guidance.
 ```
 
-Add a project-root `CLAUDE.md` only when the consuming project needs additional
-Claude-specific instructions. Skills and shared rules already load through the
-`.claude` submodule.
+The generated root `CLAUDE.md` imports `.agents/AGENTS.md`. Extend it only when the
+consuming project needs additional Claude-specific instructions.
 
 Rules use client-specific installation formats. See the
 [`rules` installation guide](rules/README.md) before copying them into a project.
