@@ -39,6 +39,8 @@ function Add-GeneratedPathsToGitIgnore {
         @()
     }
     $missingEntries = @(
+        '/AGENTS.md'
+        '/CLAUDE.md'
         '/.claude/skills/'
         '/.github/skills/'
     ) | Where-Object { $_ -notin $existingLines }
@@ -59,6 +61,17 @@ function Add-GeneratedPathsToGitIgnore {
     }
 }
 
+function Remove-GeneratedPathsFromGitIndex {
+    if (-not $PSCmdlet.ShouldProcess($targetRoot, 'Stop tracking generated agent files')) {
+        return
+    }
+
+    & git -C $targetRoot rm -r --cached --ignore-unmatch -f -- AGENTS.md CLAUDE.md .claude/skills .github/skills
+    if ($LASTEXITCODE -ne 0) {
+        throw 'Failed to remove generated agent files from the Git index.'
+    }
+}
+
 if (-not (Test-Path (Join-Path $targetRoot '.git'))) {
     throw "Target is not a Git repository: $targetRoot"
 }
@@ -75,29 +88,20 @@ $agentsInstructions = @'
 - Treat `.agents/` as shared guidance and this file as project-specific guidance.
 '@
 
-if (-not (Test-Path $agentsFile)) {
-    if ($PSCmdlet.ShouldProcess($agentsFile, 'Create repository agent instructions')) {
-        Set-Content -Path $agentsFile -Value $agentsInstructions -Encoding UTF8
-    }
-}
-else {
-    Write-Warning "AGENTS.md already exists; leaving it unchanged. Ensure it references '.agents/AGENTS.md'."
+if ($PSCmdlet.ShouldProcess($agentsFile, 'Replace repository agent instructions')) {
+    Set-Content -Path $agentsFile -Value $agentsInstructions -Encoding UTF8
 }
 
 $claudeFile = Join-Path $targetRoot 'CLAUDE.md'
 $claudeInstructions = '@.agents/AGENTS.md'
 
-if (-not (Test-Path $claudeFile)) {
-    if ($PSCmdlet.ShouldProcess($claudeFile, 'Create Claude repository instructions')) {
-        Set-Content -Path $claudeFile -Value $claudeInstructions -Encoding UTF8
-    }
-}
-else {
-    Write-Warning "CLAUDE.md already exists; leaving it unchanged. Ensure it imports '@.agents/AGENTS.md'."
+if ($PSCmdlet.ShouldProcess($claudeFile, 'Replace Claude repository instructions')) {
+    Set-Content -Path $claudeFile -Value $claudeInstructions -Encoding UTF8
 }
 
 Add-GeneratedPathsToGitIgnore
 Sync-Skills -DestinationRoot (Join-Path $targetRoot '.claude\skills')
 Sync-Skills -DestinationRoot (Join-Path $targetRoot '.github\skills')
+Remove-GeneratedPathsFromGitIndex
 
-Write-Output "Installed shared guidance in '$targetRoot'. Review and commit .gitignore, AGENTS.md, and CLAUDE.md."
+Write-Output "Installed shared guidance in '$targetRoot'. Review and commit .gitignore, the .agents submodule pointer, and staged removals of generated files."

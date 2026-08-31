@@ -88,12 +88,13 @@ Then run the helper from the consuming repository root:
 ```
 
 The helper copies the canonical skills to `.claude/skills/` and `.github/skills/`,
-creates root `AGENTS.md` and `CLAUDE.md` entry points when absent, and leaves
-existing entry-point files unchanged. Each synchronization deletes and recreates
-both client skill directories as exact copies of `.agents/skills/`; do not keep
-project-owned skills in those directories. The helper adds both generated paths to
-the consuming repository's `.gitignore`. The `.agents` submodule, `.gitmodules`,
-`AGENTS.md`, and `CLAUDE.md` remain versioned. Use `-WhatIf` to preview operations.
+replaces root `AGENTS.md` and `CLAUDE.md`, and deletes and recreates both client
+skill directories as exact copies of `.agents/skills/`. Do not keep project-owned
+content in these generated locations. The helper adds all four generated paths to
+the consuming repository's `.gitignore` and removes previously tracked copies from
+the Git index while leaving them on disk. Only the `.agents` submodule,
+`.gitmodules`, and `.gitignore` remain versioned. Commit the staged removals after
+review. Use `-WhatIf` to preview operations.
 
 Update and synchronize later with:
 
