@@ -1,30 +1,30 @@
----
-paths:
-  - '**/*.cs'
----
-
 # .NET Error Handling
 
-## Canonical domain exceptions
+## Classification
 
-When the shared infrastructure ships named domain exceptions, use them — do not invent local equivalents:
+- Distinguish expected domain, validation, authorization, conflict, dependency, cancellation, and unexpected failures.
+- Reuse established exception or result types before creating local equivalents.
+- Use exceptions for exceptional or boundary failures, not routine branching when the repository uses explicit results.
+- Preserve caller cancellation as cancellation instead of reporting it as an application failure.
 
-- `DataInconsistencyException` (or project equivalent) — business-rule violations, invalid state transitions → HTTP 409
-- `ValidationException` (FluentValidation) → HTTP 422
-- `UnauthorizedAccessException` — authenticated caller not allowed to act → HTTP 403
-- `InvalidOperationException` — ambient identity/configuration failures (missing current user) → HTTP 500
+## Boundaries
 
-Expected business failures use one of these (or a new shared type), never raw `Exception`. New business-failure shapes go in the shared library, not in a slice.
+- Map failures to transport responses in the owning API or host boundary.
+- Keep domain and application code independent of HTTP status codes when practical.
+- Return one stable machine-readable error shape for each transport.
+- Preserve field-level validation paths and stable error codes where clients need them.
 
-## Wiring
+## Disclosure
 
-The shared library's global + validation exception handlers are auto-registered by the standard service-defaults helper. Do not register custom exception middleware unless intentionally replacing one. Stack traces are emitted only in `Development`.
+- Do not return raw exception messages, stack traces, type names, SQL, paths, or infrastructure details to clients.
+- Do not log secrets, tokens, personal data, or complete sensitive payloads.
+- Include correlation information that supports diagnosis without exposing internals.
+- Show development details only through an explicitly controlled development policy.
 
-## LLM / AI response parsing
+## Handling
 
-When the shared infrastructure provides an AI-response helper (e.g. `AiResponseHelper.CleanJsonResponse`, `AiResponseHelper.DeserializeResponse<T>`), use it for any LLM JSON. It strips ` ```json ` fences and deserializes safely; failures translate to HTTP 409. No ad-hoc fence-stripping or `JsonSerializer.Deserialize` on LLM output.
-
-## Client-facing errors
-
-- Never return raw exception messages, stack traces, or infra details to clients
-- Validation errors preserve field-level info via `ValidationProblemDetails`
+- Centralize unexpected-error handling at the host boundary.
+- Catch a failure only when the current layer can recover, translate, compensate, or add useful context.
+- Preserve original exception context when translating technical failures.
+- Do not retry validation, authorization, conflict, or other non-transient failures.
+- Keep response parsing and sanitization for untrusted external systems in dedicated boundary helpers.

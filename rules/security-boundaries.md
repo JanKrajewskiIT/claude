@@ -1,49 +1,36 @@
----
-paths:
-  - '**/*'
----
-
 # Security Boundaries
 
-## Trust model
+## Trust
 
-- Frontend is NOT the source of truth for authorization
-- Backend endpoints enforce authentication, authorization, resource access independently of UI state
-- Hidden buttons and route guards are not real protection
+- Treat every external input as untrusted until validated at its owning boundary.
+- Enforce authentication, authorization, and resource ownership on the server.
+- Do not treat hidden UI, route guards, or client validation as authorization.
+- Return only data the caller is authorized to receive.
 
 ## Secrets
 
-- Never hardcode secrets, tokens, callback secrets, private keys
-- Do not log access tokens, refresh tokens, passwords, sensitive personal data
-- Keep environment-based secrets in proper configuration boundaries
+- Keep secrets, tokens, private keys, and production credentials out of source control.
+- Do not request, print, store, or include secrets in agent context.
+- Do not read secret-bearing files unless the user explicitly authorizes the exact need.
+- Redact credentials, personal data, and sensitive payloads from logs and errors.
+- Use the repository's approved secret provider and rotation mechanism.
 
-## Agent read boundaries
+## Data
 
-Every repository SHOULD ship `.claude/settings.json` with a `permissions.deny` list blocking secret-bearing paths. Minimum:
+- Collect, persist, expose, and log only data required by the feature.
+- Treat authorization failures as non-disclosing responses.
+- Protect tenant and resource boundaries in every query and mutation.
+- Keep internal identifiers and infrastructure details private unless they are contract fields.
 
-```json
-{
-  "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "permissions": {
-    "deny": ["Read(./.env)", "Read(./.env.*)", "Read(./secrets/**)"]
-  }
-}
-```
+## Integrations
 
-- Extend per repo for additional secret paths (`appsettings.Local.json`, `*.pfx`, `*.pem`, credential dumps)
-- Agents MUST NOT propose removing entries to "make a task work"; surface to the user
+- Scope credentials to the intended service and operation.
+- Validate user-controlled outbound destinations against SSRF and unsafe-scheme risks.
+- Use parameterized APIs for database, shell, URL, and structured-data boundaries.
+- Verify signatures, issuers, audiences, expiry, and replay protection where applicable.
 
-## Data exposure
+## Changes
 
-- Return only fields the client actually needs
-- Avoid exposing internal identifiers, flags, infra details unless part of the product contract
-- Treat PII with extra care in logs, payloads, error responses
-
-## Shared infrastructure wiring
-
-When the project ships a shared infrastructure library (see `dotnet-shared-infrastructure`):
-
-- At-rest encryption for stored tokens/secrets uses the library's value converter (e.g. `EncryptedStringConverter`) via `.HasConversion(...)`; never store provider/refresh tokens in plaintext
-- Outbound HTTP from external user input goes through the library's URL-safety validator (blocks SSRF: internal hosts, private nets, non-HTTPS)
-- Service-to-service HTTP forwards the inbound bearer via the library's bearer-forwarding `HttpMessageHandler`; never construct an `HttpClient` to a sibling API without registering it
-- Authorization enforced through named policy constants and roles transformed by the library's claims transformation; never branch on raw claim strings inline
+- Preserve existing security controls unless the user explicitly requests a reviewed replacement.
+- Require confirmation before weakening access, validation, encryption, or audit behavior.
+- Report unresolved security assumptions instead of inventing permissive defaults.

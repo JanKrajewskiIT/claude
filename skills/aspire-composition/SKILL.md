@@ -1,42 +1,66 @@
 ---
 name: aspire-composition
-description: .NET Aspire AppHost workflow — adding a new service, database, secret, gateway route, or cross-service HTTP call. Use when modifying *.AppHost or service Program.cs.
+description: Add, connect, or review resources in a .NET Aspire distributed application. Use when modifying an AppHost, adding services, databases, caches, containers, parameters, health checks, service references, startup dependencies, or deployment-facing resource configuration.
 ---
 
-Normative constraints: `aspire-composition`, `dotnet-vertical-slice`, `dotnet-shared-infrastructure`, `security-boundaries`.
+# Aspire Composition
 
-## Adding a new service
+## Goal
 
-1. Create `<Service>.Api/` with `Program.cs` calling the standard bootstrap (e.g. `await RunModuleAsync(args, configureServices, configureApp, beforeRun)`)
-2. In `configureServices`: register feature handlers via the assembly-scan helper and call `builder.AddPostgresDbContext<ApplicationDbContext>("<resource-name>")`
-3. In `beforeRun`: `await services.MigrateDatabase<ApplicationDbContext>(ct)`
-4. In `*.AppHost/AppHost.cs`:
-   - `var <db> = postgres.AddDatabase("<resource-name>");`
-   - `var <serviceVar> = builder.AddProject<Projects.<Service>_Api>("<service-name>")` then chain `.WithEnvironment(...)`, `.WithHttpHealthCheck("/health")`, `.WithReference(<db>)`, `.WaitFor(<db>)`
-5. Add the gateway (e.g. YARP) route group for the service prefix
-6. Add the OpenAPI explorer reference (`WithApiReference(<serviceVar>)`)
-7. Update the solution file
+- Compose observable local and deployment-ready resources without hardcoded topology.
+- Preserve the Aspire and hosting conventions used by the repository version.
 
-## Adding a cross-service HTTP call
+## Workflow
 
-1. Register the bearer-forwarding handler (e.g. `AuthTokenForwardingHandler`) as transient in the calling service
-2. Configure a named `IHttpClientFactory` client with `BaseAddress = new Uri("https+http://<target-service-name>")`
-3. Add the handler: `.AddHttpMessageHandler<AuthTokenForwardingHandler>()`
-4. Inject `IHttpClientFactory` (or a typed client) into the calling handler
+1. Inspect the distributed application.
+   - Identify the AppHost, service-defaults project, resource names, package versions, and deployment target.
+   - Find a neighboring resource with the closest lifecycle and dependency shape.
+2. Define the resource contract.
+   - Record resource name, owner, endpoints, dependencies, health signal, configuration, and persistence needs.
+   - Decide whether configuration is public, environment-specific, or secret.
+3. Add the resource.
+   - Use the resource builder supported by the installed Aspire version.
+   - Keep logical resource names stable and independent of machine addresses.
+4. Connect dependencies.
+   - Use resource references or service discovery instead of hardcoded hosts and ports.
+   - Add startup ordering only when readiness is required before the dependent starts.
+   - Bind generated connection information through the application's configuration system.
+   - Use [`references/examples.md`](references/examples.md) for representative resource relationships.
+5. Configure health and observability.
+   - Reuse service defaults for health checks, telemetry, resilience, and discovery.
+   - Expose a health signal that represents actual readiness when dependencies matter.
+6. Handle parameters and secrets.
+   - Represent secrets with the platform's secret parameter mechanism or external secret store.
+   - Do not commit secret values or place them in logs, source, or generated artifacts.
+7. Update external routing when required.
+   - Keep gateway routes, API discovery, CORS, and authentication boundaries aligned with the new endpoint.
+8. Validate.
+   - Propose starting the AppHost with the repository-native command.
+   - Ask before running commands unless the current request already grants permission.
+   - Confirm resource health, dependency resolution, endpoint reachability, logs, and clean shutdown.
+   - Propose deployment generation or publish checks when deployment configuration changed.
 
-## Adding a secret
+## Decision Rules
 
-1. `var <name> = builder.AddParameter("<name>", secret: true);` near the top of `AppHost.cs`
-2. Pass via `.WithEnvironment("<DotnetConfig__Path>", <name>)`
-3. Bind to a strongly-typed options class via the standard options helper
+| Need | Preferred mechanism |
+|---|---|
+| Discover another service | Resource reference and service discovery |
+| Delay startup until dependency readiness | Explicit wait dependency |
+| Pass a credential | Secret parameter or external secret store |
+| Share telemetry and resilience defaults | Service-defaults project |
+| Persist local infrastructure data | Resource volume or repository convention |
 
-## Adding a Postgres enum
+## Constraints
 
-Register at all three sites listed in `rules/ef-core-persistence` "Postgres Specifics" — they MUST stay in sync. Then `dotnet ef migrations add <Name>` from `<Service>.Api`.
+- Verify version-sensitive APIs against current Aspire documentation or installed package APIs.
+- Do not encode generated ports, container names, or local machine paths as application contracts.
+- Do not add waits where runtime resilience should handle temporary unavailability.
+- Do not expose infrastructure resources publicly without an explicit requirement.
 
-## Before finishing
+## Completion Criteria
 
-- New service appears under `dotnet run` against the AppHost; `/health` is green
-- Gateway routes the prefix correctly (`/<area>` → `<service>-api`)
-- OpenAPI explorer lists the new API
-- Database resource name in `AppHost.cs` matches the string in `AddPostgresDbContext<>("...")`
+- Every resource has a stable name and explicit dependency relationships.
+- Applications resolve dependencies without hardcoded network locations.
+- Secrets remain outside source control and observable output.
+- Health and telemetry expose useful startup or runtime failures.
+- Local orchestration and affected deployment checks pass.

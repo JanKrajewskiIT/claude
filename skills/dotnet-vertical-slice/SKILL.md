@@ -1,49 +1,65 @@
 ---
 name: dotnet-vertical-slice
-description: .NET vertical-slice workflow for endpoints, handlers, validators, and EF-backed feature work. Use when adding or refactoring backend slices in any service that follows this pattern.
+description: Create, extend, or review vertical slices in .NET applications using endpoints, use-case handlers, validation, and persistence. Use when the primary outcome is an end-to-end .NET use case organized by business capability, including its implementation boundaries and registration.
 ---
 
-Normative constraints: `dotnet-vertical-slice`, `dotnet-shared-infrastructure`, `api-contract-discipline`, `dotnet-error-handling`, `ef-core-persistence`, `security-boundaries`.
+# .NET Vertical Slice
 
-## Standard workflow
+## Goal
 
-1. Find the existing feature slice that owns the behavior; prefer extending it
-2. Add/update local `Command`/`Query`, `Validator`, `Handler`, `Endpoint`, request/response types in that slice
-3. Keep the endpoint thin; use-case logic lives in the handler
-4. Use EF Core projections directly in handlers when slice-local
-5. Pass `CancellationToken` end to end
-6. Register the endpoint in per-service `FeaturesExtensions.MapFeatures`; handlers/validators auto-register
+- Deliver one cohesive use case with explicit contracts and minimal coupling.
+- Follow the repository's existing .NET architecture and registration model.
 
-## Query slice checklist
+## Workflow
 
-- Endpoint maps route, authorization policy, OpenAPI name + tags, result shape
-- Handler uses `AsNoTracking()` for read-only flows
-- Projection returns response contracts, not entities
-- Ordering and filtering rules live in the owning slice
+1. Locate the owning capability.
+   - Inspect neighboring slices, shared abstractions, and registration code.
+   - Extend an existing slice when it already owns the behavior.
+2. Define the boundary.
+   - Specify input, output, authorization, validation, and failure behavior.
+   - Keep transport contracts separate from persistence entities.
+3. Choose the slice parts.
+   - Add only the endpoint, request, response, handler, validator, and mapping required.
+   - Use the repository's command, query, or direct-handler convention.
+   - Use [`references/examples.md`](references/examples.md) to clarify responsibility boundaries when needed.
+4. Implement the use case.
+   - Keep transport concerns in the endpoint.
+   - Keep use-case decisions in the handler.
+   - Keep domain invariants in the domain model when they apply beyond one use case.
+   - Propagate `CancellationToken` through asynchronous operations.
+5. Implement persistence.
+   - Use no-tracking queries for read-only EF Core operations.
+   - Project directly to response contracts when practical.
+   - Avoid adding a repository abstraction unless the codebase already requires it.
+6. Wire the slice.
+   - Register endpoints, handlers, validators, mappings, and policies using local patterns.
+   - Avoid duplicate registration when assembly scanning is present.
+7. Validate.
+   - Propose the narrowest repository-native build or test for the affected project.
+   - Ask before running commands unless the current request already grants permission.
+   - Exercise success, validation failure, authorization failure, and expected not-found or conflict behavior.
 
-## Command slice checklist
+## Decision Rules
 
-- Endpoint applies validation (`.WithValidation<T>()` filter or manual `ValidateAndThrowAsync` when route + body must be merged) and returns the right status code
-- Validator covers required fields, length rules (shared length constants), simple invariants
-- Handler performs the write through the feature `DbContext`
-- Audit / user-scoping fields are NEVER set manually when the project uses an audit interceptor + base entity
-- Shared behavior extracted to shared infrastructure ONLY when ≥2 slices need the same rule
+| Question | Decision |
+|---|---|
+| Does behavior belong to one use case? | Keep it inside the slice. |
+| Is an invariant shared by multiple use cases? | Move it into the domain model. |
+| Is technical integration reused by multiple slices? | Use the established infrastructure boundary. |
+| Does a contract cross the HTTP boundary? | Do not expose persistence entities. |
+| Does the repository use MediatR or custom dispatch? | Preserve the existing dispatch model. |
 
-## Slice file template
+## Constraints
 
-```
-Features/<Area>/<Action>/
-  <Action><Subject>Command.cs        // public sealed record : ICommand[<TResponse>]
-  <Action><Subject>Validator.cs      // public sealed class : AbstractValidator<TCommand>
-  <Action><Subject>Handler.cs        // public sealed class : ICommandHandler<TCommand[, TResponse]>
-  <Action><Subject>Endpoint.cs       // public static class with Map<Action><Subject>
-  <Subject>Response.cs               // public sealed record (queries / commands returning data)
-  <Action><Subject>Request.cs        // optional, only when route data must be merged into Command
-```
+- Do not reorganize unrelated slices.
+- Do not introduce a new architectural framework for one feature.
+- Do not hide authorization or transaction boundaries in incidental helpers.
+- Do not claim atomic behavior without verifying the transaction boundary.
 
-## Before finishing
+## Completion Criteria
 
-- Endpoint name + tags match the area and action
-- Handler does not leak EF entities to the wire
-- Validator and EF configuration use the same shared length constants
-- `CancellationToken` propagated through every async call
+- The owning capability and public contract are clear.
+- Endpoint, handler, domain, and persistence responsibilities do not overlap accidentally.
+- Validation and failures map to intentional API behavior.
+- Cancellation reaches every cancellable asynchronous boundary.
+- Registration is complete and focused validation passes.

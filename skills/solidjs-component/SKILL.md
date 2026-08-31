@@ -1,50 +1,75 @@
 ---
 name: solidjs-component
-description: Core VelvetUi component patterns for props, file structure, primitives, and shared utilities. Use when creating or modifying library components.
+description: Create, refactor, or review accessible SolidJS components with correct fine-grained reactivity, typed props, composition, events, styling, and cleanup. Use when the primary outcome is implementing a Solid component, component-library primitive, or reusable TSX behavior after any required design direction is established.
 ---
 
-Normative constraints: `project-core`, `solidjs-tsx`, `reactivity-performance`, `css-modules`, `i18n`, `demo-app`, `git-standards`.
+# SolidJS Component
 
-For specialized work also use:
+## Goal
 
-- `/dom-hygiene-playbook` — wrapper reduction
-- `/overlay-patterns` — dialogs, popovers, drawers, focus-trapped surfaces
-- `/extract-to-velvetui` — when work starts from app code and may become a library export
+- Build a small, accessible component with predictable reactive behavior.
+- Preserve the component library and styling conventions of the repository.
 
-## Standard workflow
+## Workflow
 
-1. Start from an existing primitive or nearby component before creating a new pattern
-2. Create `ComponentName/ComponentName.tsx` and `ComponentName.module.css`
-3. Shape the public API around semantics first, then wire styling and variants
-4. Export from `src/index.ts`
-5. Add a demo example when the component is public
+1. Find the nearest component pattern.
+   - If the user requests a fresh design, apply `frontend-design-exploration` before inspecting existing UI implementations.
+   - Inspect public props, exports, styling, tests, stories, and accessibility helpers.
+   - Extend an existing primitive when it already owns the behavior.
+2. Define the semantic contract.
+   - Specify controlled and uncontrolled state, events, slots, defaults, and forwarded element props.
+   - Prefer semantic props over presentation-specific switches.
+3. Preserve reactivity.
+   - Read reactive props inside tracked expressions.
+   - Use `splitProps` when separating local and forwarded props.
+   - Use `mergeProps` or the repository convention for reactive defaults.
+   - Do not destructure or eagerly copy props when updates must remain reactive.
+   - Use [`references/examples.md`](references/examples.md) for reactive props and cleanup patterns.
+4. Implement the structure.
+   - Use semantic HTML before adding ARIA roles.
+   - Keep DOM depth proportional to layout and interaction needs.
+   - Forward supported attributes and compose event handlers intentionally.
+   - Preserve callback behavior when forwarding DOM refs.
+   - Use context for compound parts that require one parent-owned state boundary.
+   - Keep compound context values minimal and fail clearly when a required provider is missing.
+5. Implement state and effects.
+   - Derive values instead of synchronizing duplicate state.
+   - Use effects for external side effects, not routine derivation.
+   - Register cleanup for listeners, timers, observers, and imperative integrations.
+6. Implement interaction and accessibility.
+   - Support the keyboard model expected for the component role.
+   - Preserve focus, accessible naming, disabled semantics, and error relationships.
+7. Style the component.
+   - Reuse design tokens and local styling conventions.
+   - Keep variants finite, typed, and meaningful to consumers.
+8. Export and validate.
+   - Update only intended public entry points.
+   - Propose focused type checking, tests, linting, and build checks available in the repository.
+   - Ask before running commands unless the current request already grants permission.
+   - Verify keyboard, focus, reactive prop updates, and forwarded attributes.
 
-Tests, build, lint, typecheck, verify are NOT part of this workflow — see `rules/project-core.md` "Agent Execution Policy".
+## Decision Rules
 
-## Standard component shape
+| Situation | Decision |
+|---|---|
+| Value can be calculated from reactive input | Derive it; do not mirror it in a signal. |
+| Props must be divided and forwarded | Use `splitProps`. |
+| Defaults must preserve reactive access | Use `mergeProps` or the established equivalent. |
+| Behavior is shared without visual structure | Prefer a primitive or hook. |
+| Compound parts share parent-owned behavior | Use one focused context instead of prop drilling. |
+| Component requires product-specific nouns | Keep it in the product until a neutral API exists. |
 
-`import type Props from "~/models/Props"` → semantic interface → `(props: Props<X>) =>` → component export.
+## Constraints
 
-- `Props<T>` already covers `class`, `id`, `aria-*`, `data-*`
-- `ThemeProvider`, `ToastProvider` may use `ParentProps` (no DOM-like public contracts)
+- Do not apply React lifecycle or rerender assumptions to SolidJS.
+- Do not mutate props.
+- Do not add ARIA that conflicts with native semantics.
+- Do not expand the public API to compensate for one caller without checking reuse.
 
-## Design checklist
+## Completion Criteria
 
-- Prefer extending existing VelvetUi primitives over wrapper-only components
-- One primitive per role in a family
-- Render labels/descriptions through shared primitives like `LabelText`
-- Reusable visuals stay inside the primitive module; hosts compose, not reskin
-- When bringing app code in, extract reusable patterns rather than product-specific workflows
-- If the API still needs domain nouns from the source app, it's not ready for VelvetUi yet
-
-## Shared hooks & utilities
-
-Hooks from `~/hooks/`: `useClickOutside`, `useEscapeKey`, `useFocusTrap`, `useOverlayAnimation`.
-
-Utilities from `~/utils/`: `classNames(...)`, `joinAriaIds(...)`, `resolveAriaInvalid(...)`, `resolveAriaErrorMessage(...)`.
-
-## Before finishing
-
-- Re-read matching rules before finalizing API details or copy ownership
-- Sanity-check keyboard behavior, accessible naming, ARIA wiring
-- Remove wrappers or local styles existing only to patch around a primitive API gap
+- Reactive inputs continue updating after component initialization.
+- Public props express behavior and semantics with stable types.
+- Keyboard, focus, labeling, and disabled behavior match the component role.
+- Resources are cleaned up and forwarded props behave intentionally.
+- Public exports and focused validation pass.
