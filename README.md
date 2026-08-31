@@ -69,6 +69,7 @@ Copy a skill directory into a location supported by the target client:
 | Agent Skills compatible client | `.agents/skills/<skill-name>/` |
 | GitHub Copilot / VS Code | `.github/skills/<skill-name>/` |
 | Claude Code | `.claude/skills/<skill-name>/` |
+| Cursor | `.agents/skills/<skill-name>/` or `.cursor/skills/<skill-name>/` |
 
 Keep the skill contents identical between clients. Document integration differences
 outside the package or use `compatibility` only when they are actual requirements.
@@ -88,22 +89,35 @@ Then run the helper from the consuming repository root:
 ```
 
 The helper copies the canonical skills to `.claude/skills/` and `.github/skills/`.
-It also generates scoped client adapters in `.claude/rules/shared-agents/` and
-`.github/instructions/shared-agents/`. These adapters improve native discovery,
-while the managed block in root `AGENTS.md` remains the portable fallback for
-clients that do not support rule directories.
+It also generates scoped client adapters in `.claude/rules/shared-agents/`,
+`.cursor/rules/shared-agents/`, and `.github/instructions/shared-agents/`. These
+adapters enable native automatic rule discovery, while the managed block in root
+`AGENTS.md` remains the Codex instruction path and a compatibility fallback.
 
-The helper preserves project-owned `AGENTS.md` content outside the marked shared
-guidance block. It creates `CLAUDE.md` with `@AGENTS.md` when missing and migrates
-the legacy generated import, but does not replace a customized `CLAUDE.md`. Keep
-project-specific instructions in these root files and commit them.
+`shared-agents/` is an ownership namespace, not a client standard. The installer
+may safely delete and recreate that directory without touching project-owned
+rules or instructions beside it.
+
+| Client | Instructions and rules | Skills after local installation |
+|---|---|---|
+| Codex | Root `AGENTS.md` routes to canonical rules | Native `.agents/skills/` |
+| GitHub Copilot / VS Code | Root `AGENTS.md` plus generated `.github/instructions/shared-agents/` | Native `.agents/skills/` and generated `.github/skills/` |
+| Claude Code | `CLAUDE.md` imports root `AGENTS.md`, plus generated `.claude/rules/shared-agents/` | Generated `.claude/skills/` |
+| Cursor | Generated `.cursor/rules/shared-agents/` plus root `AGENTS.md` | Native `.agents/skills/` |
+
+This matrix describes client discovery, not model behavior. A model does not
+load these files by itself; the client must support and enable the corresponding
+mechanism. Generated, ignored directories exist only after the installer runs and
+are not present in a fresh cloud clone unless its bootstrap runs the installer.
+
+The helper preserves local `AGENTS.md` content outside the marked shared guidance
+block. It creates `CLAUDE.md` with `@AGENTS.md` when missing and migrates the
+legacy generated import, but does not replace a customized `CLAUDE.md`. Both root files are generated local adapters and remain ignored rather than versioned.
 
 Generated skill and rule adapter directories are deleted and recreated from
 `.agents/`, added to the consuming repository's `.gitignore`, and removed from the
 Git index while remaining on disk. Do not keep project-owned content in generated
-directories. Commit changes to `AGENTS.md`, `CLAUDE.md`, `.gitignore`, the `.agents`
-submodule pointer, and any staged removals after review. Use `-WhatIf` to preview
-operations.
+directories. Commit `.gitignore`, the `.agents` submodule pointer, and any staged removals after review. Use `-WhatIf` to preview operations.
 
 Update and synchronize later with:
 

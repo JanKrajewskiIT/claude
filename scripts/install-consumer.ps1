@@ -4,6 +4,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+$utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 $guidanceRoot = Split-Path $PSScriptRoot -Parent
 $defaultTargetRoot = Split-Path $guidanceRoot -Parent
 $targetRoot = if ($TargetRepository) {
@@ -11,6 +12,15 @@ $targetRoot = if ($TargetRepository) {
 }
 else {
     $defaultTargetRoot
+}
+
+function Write-Utf8File {
+    param(
+        [string]$File,
+        [string]$Content
+    )
+
+    [IO.File]::WriteAllText($File, $Content, $utf8NoBom)
 }
 
 function Sync-Skills {
@@ -65,7 +75,7 @@ function Sync-ClaudeRules {
         $paths = @((Get-RuleApplyTo -RuleName $name) -split ',' | ForEach-Object { "  - `"$($_)`"" }) -join "`r`n"
         $content = Get-Content $rule.FullName -Raw
         $adapter = "---`r`npaths:`r`n$paths`r`n---`r`n`r`n$content"
-        Set-Content -Path (Join-Path $DestinationRoot $rule.Name) -Value $adapter -Encoding UTF8
+        Write-Utf8File -File (Join-Path $DestinationRoot $rule.Name) -Content $adapter
     }
 }
 
@@ -88,10 +98,54 @@ function Sync-CopilotRules {
         }
 
         $name = [IO.Path]::GetFileNameWithoutExtension($rule.Name)
-        $applyTo = Get-RuleApplyTo -RuleName $name
         $content = Get-Content $rule.FullName -Raw
-        $adapter = "---`r`nname: $name`r`ndescription: Shared $name guidance`r`napplyTo: `"$applyTo`"`r`n---`r`n`r`n$content"
-        Set-Content -Path (Join-Path $DestinationRoot "$name.instructions.md") -Value $adapter -Encoding UTF8
+        if ($name -eq 'solidjs-conventions') {
+            $adapter = "---`r`nname: $name`r`ndescription: SolidJS conventions. Apply when working in a SolidJS application.`r`n---`r`n`r`n$content"
+        }
+        else {
+            $applyTo = Get-RuleApplyTo -RuleName $name
+            $adapter = "---`r`nname: $name`r`ndescription: Shared $name guidance`r`napplyTo: `"$applyTo`"`r`n---`r`n`r`n$content"
+        }
+
+        Write-Utf8File -File (Join-Path $DestinationRoot "$name.instructions.md") -Content $adapter
+    }
+}
+
+function Sync-CursorRules {
+    param([string]$DestinationRoot)
+
+    if (-not $PSCmdlet.ShouldProcess($DestinationRoot, 'Replace with Cursor rule adapters from .agents')) {
+        return
+    }
+
+    if (Test-Path $DestinationRoot) {
+        Remove-Item $DestinationRoot -Recurse -Force
+    }
+
+    New-Item -ItemType Directory -Path $DestinationRoot -Force | Out-Null
+
+    foreach ($rule in @(Get-ChildItem (Join-Path $guidanceRoot 'rules') -Filter '*.md' -File)) {
+        if ($rule.Name -eq 'README.md') {
+            continue
+        }
+
+        $name = [IO.Path]::GetFileNameWithoutExtension($rule.Name)
+        $content = Get-Content $rule.FullName -Raw
+        if ($name -eq 'solidjs-conventions') {
+            $frontmatter = "description: SolidJS conventions. Apply when working in a SolidJS application.`r`nalwaysApply: false"
+        }
+        else {
+            $globs = Get-RuleApplyTo -RuleName $name
+            $frontmatter = if ($globs -eq '**') {
+                'alwaysApply: true'
+            }
+            else {
+                "globs: `"$globs`"`r`nalwaysApply: false"
+            }
+        }
+
+        $adapter = "---`r`n$frontmatter`r`n---`r`n`r`n$content"
+        Write-Utf8File -File (Join-Path $DestinationRoot "$name.mdc") -Content $adapter
     }
 }
 
@@ -109,7 +163,10 @@ $beginMarker
 - Discover task-specific workflows in `.agents/skills/` and load a skill when its description matches the requested outcome.
 - Read `.agents/rules/agent-execution.md` and `.agents/rules/git-and-change-safety.md` before modifying the repository.
 - Read `.agents/rules/security-boundaries.md` when work crosses trust, secret, data, or integration boundaries.
-- Read matching stack rules before changing .NET, SolidJS, CSS Modules, or user-interface files.
+- Read `.agents/rules/dotnet-conventions.md` and `.agents/rules/dotnet-error-handling.md` before changing .NET files.
+- Read `.agents/rules/solidjs-conventions.md` before changing SolidJS files.
+- Read `.agents/rules/css-modules-conventions.md` before changing CSS Modules.
+- Read `.agents/rules/frontend-accessibility.md` before changing user interfaces.
 - Treat loaded rules as higher priority than task-specific skill advice.
 - Follow project instructions outside this managed block; the more specific instruction wins on conflict.
 $endMarker
@@ -137,7 +194,7 @@ $endMarker
     }
 
     if ($PSCmdlet.ShouldProcess($File, 'Update managed shared guidance block')) {
-        Set-Content -Path $File -Value $updatedContent -Encoding UTF8
+        Write-Utf8File -File $File -Content $updatedContent
     }
 }
 
@@ -153,7 +210,7 @@ function Update-ClaudeInstructions {
     }
 
     if ($PSCmdlet.ShouldProcess($File, 'Point Claude at repository AGENTS.md')) {
-        Set-Content -Path $File -Value '@AGENTS.md' -Encoding UTF8
+        Write-Utf8File -File $File -Content '@AGENTS.md'
     }
 }
 
@@ -165,22 +222,23 @@ function Add-GeneratedPathsToGitIgnore {
     else {
         @()
     }
-    $obsoleteEntries = @('/AGENTS.md', '/CLAUDE.md')
-    $retainedLines = @($existingLines | Where-Object { $_ -notin $obsoleteEntries })
     $generatedEntries = @(
+        '/AGENTS.md'
+        '/CLAUDE.md'
         '/.claude/skills/'
         '/.claude/rules/shared-agents/'
+        '/.cursor/rules/shared-agents/'
         '/.github/skills/'
         '/.github/instructions/shared-agents/'
     )
-    $missingEntries = @($generatedEntries | Where-Object { $_ -notin $retainedLines })
+    $missingEntries = @($generatedEntries | Where-Object { $_ -notin $existingLines })
 
-    if ($missingEntries.Count -eq 0 -and $retainedLines.Count -eq $existingLines.Count) {
+    if ($missingEntries.Count -eq 0) {
         return
     }
 
     if ($PSCmdlet.ShouldProcess($gitIgnorePath, 'Ignore generated agent skill copies')) {
-        $linesToAdd = @($retainedLines)
+        $linesToAdd = @($existingLines)
         if ($linesToAdd.Count -gt 0 -and $linesToAdd[-1] -ne '') {
             $linesToAdd += ''
         }
@@ -189,7 +247,8 @@ function Add-GeneratedPathsToGitIgnore {
             $linesToAdd += '# Generated agent skill copies'
         }
         $linesToAdd += $missingEntries
-        Set-Content -Path $gitIgnorePath -Value $linesToAdd -Encoding UTF8
+        $gitIgnoreContent = ($linesToAdd -join [Environment]::NewLine) + [Environment]::NewLine
+        Write-Utf8File -File $gitIgnorePath -Content $gitIgnoreContent
     }
 }
 
@@ -198,7 +257,7 @@ function Remove-GeneratedPathsFromGitIndex {
         return
     }
 
-    & git -C $targetRoot rm -r --cached --ignore-unmatch -f -- .claude/skills .claude/rules/shared-agents .github/skills .github/instructions/shared-agents
+    & git -C $targetRoot rm -r --cached --ignore-unmatch -f -- AGENTS.md CLAUDE.md .claude/skills .claude/rules/shared-agents .cursor/rules/shared-agents .github/skills .github/instructions/shared-agents
     if ($LASTEXITCODE -ne 0) {
         throw 'Failed to remove generated agent files from the Git index.'
     }
@@ -218,7 +277,8 @@ Add-GeneratedPathsToGitIgnore
 Sync-Skills -DestinationRoot (Join-Path $targetRoot '.claude\skills')
 Sync-Skills -DestinationRoot (Join-Path $targetRoot '.github\skills')
 Sync-ClaudeRules -DestinationRoot (Join-Path $targetRoot '.claude\rules\shared-agents')
+Sync-CursorRules -DestinationRoot (Join-Path $targetRoot '.cursor\rules\shared-agents')
 Sync-CopilotRules -DestinationRoot (Join-Path $targetRoot '.github\instructions\shared-agents')
 Remove-GeneratedPathsFromGitIndex
 
-Write-Output "Installed shared guidance in '$targetRoot'. Review AGENTS.md, CLAUDE.md, .gitignore, the .agents submodule pointer, and staged removals of generated files."
+Write-Output "Installed shared guidance in '$targetRoot'. Review .gitignore, the .agents submodule pointer, and staged removals of generated files."

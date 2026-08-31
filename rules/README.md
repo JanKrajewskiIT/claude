@@ -26,13 +26,14 @@ instruction mechanism supported by the target client.
 | Generic coding agents | Route the agent to matching files from `AGENTS.md`, or include critical rule bodies in its always-on instruction file |
 | GitHub Copilot / VS Code | Copy the rule into `.github/instructions/<rule-name>.instructions.md` and add an appropriate `applyTo` frontmatter pattern |
 | Claude Code | Copy the rule into `.claude/rules/<rule-name>.md` and add an appropriate `paths` frontmatter list |
+| Cursor | Copy the rule into `.cursor/rules/<rule-name>.mdc` and configure `description`, `globs`, and `alwaysApply` |
 | Clients with repository rules | Copy the file into the client's rules directory and add required metadata |
 
 The consumer installer generates native adapters under client-specific
 `shared-agents/` directories. It also adds a managed routing block to root
 `AGENTS.md`; this is the compatibility path for models and clients that do not
 discover rule directories. Native adapters are an optimization, not the only way
-to reach these rules.
+to reach these rules. The `shared-agents` name marks installer-owned output so it can be replaced without deleting project-owned rules in the parent directory.
 
 ## Maintenance
 
