@@ -29,11 +29,10 @@ instruction mechanism supported by the target client.
 | Cursor | Copy the rule into `.cursor/rules/<rule-name>.mdc` and configure `description`, `globs`, and `alwaysApply` |
 | Clients with repository rules | Copy the file into the client's rules directory and add required metadata |
 
-The consumer installer generates native adapters under client-specific
-`shared-agents/` directories. It also adds a managed routing block to root
-`AGENTS.md`; this is the compatibility path for models and clients that do not
-discover rule directories. Native adapters are an optimization, not the only way
-to reach these rules. The `shared-agents` name marks installer-owned output so it can be replaced without deleting project-owned rules in the parent directory.
+The consumer installer deletes and recreates each client's complete rules or
+instructions directory from this canonical source. Root `AGENTS.md` provides the
+Codex instruction path and compatibility fallback for clients that do not discover
+rule directories. Do not keep project-owned content in generated client locations.
 
 ## Maintenance
 
@@ -43,4 +42,4 @@ to reach these rules. The `shared-agents` name marks installer-owned output so i
 - Preserve behavior when adapting wording to a client format.
 - Replace installed copies from this repository instead of editing their bodies locally.
 - Do not duplicate workflow guidance that belongs in a skill.
-- Keep project-owned instructions outside generated `shared-agents/` directories.
+- Keep project-owned instructions outside generated client directories.
