@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "editor": {
+    "vimMode": false
+  },
+  "permissions": {
+    "allow": [
+      "Read(**)",
+      "Shell(rg:*)",
+      "Shell(git:status*)",
+      "Shell(git:diff*)",
+      "Shell(git:log*)",
+      "Shell(git:show*)",
+      "Shell(git:blame*)"
+    ],
+    "deny": [
+      "Read(.env*)",
+      "Read(**/.env*)",
+      "Read(secrets/**)",
+      "Read(**/secrets/**)",
+      "Write(.env*)",
+      "Write(**/.env*)",
+      "Write(secrets/**)",
+      "Write(**/secrets/**)"
+    ]
+  }
+}

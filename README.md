@@ -88,22 +88,31 @@ Then run the helper from the consuming repository root:
 .\.agents\scripts\install-consumer.ps1
 ```
 
-The helper deletes and recreates `.claude/skills/`, `.claude/rules/`,
-`.cursor/rules/`, `.github/skills/`, and `.github/instructions/` from the canonical
-content in `.agents/`. It also replaces root `AGENTS.md` and `CLAUDE.md`. Do not
-keep project-owned content in any of these generated locations.
+The helper replaces `.claude/settings.json`, `.codex/config.toml`,
+`.cursor/cli.json`, `.cursor/permissions.json`, and `.vscode/settings.json`. It
+also deletes and recreates `.claude/skills/`, `.claude/rules/`, `.cursor/rules/`,
+`.github/skills/`, and `.github/instructions/` from the canonical content in
+`.agents/`, then replaces root `AGENTS.md` and `CLAUDE.md`. Do not keep
+project-owned content in any of these generated locations.
 
 | Client | Instructions and rules | Skills after local installation |
 |---|---|---|
-| Codex | Root `AGENTS.md` routes to canonical rules | Native `.agents/skills/` |
-| GitHub Copilot / VS Code | Root `AGENTS.md` plus generated `.github/instructions/` | Native `.agents/skills/` and generated `.github/skills/` |
-| Claude Code | `CLAUDE.md` imports root `AGENTS.md`, plus generated `.claude/rules/` | Generated `.claude/skills/` |
-| Cursor | Generated `.cursor/rules/` plus root `AGENTS.md` | Native `.agents/skills/` |
+| Codex | Root `AGENTS.md` routes to canonical rules; generated `.codex/config.toml` enables a workspace sandbox with approval on request | Native `.agents/skills/` |
+| GitHub Copilot / VS Code | Root `AGENTS.md`, generated `.github/instructions/`, and conservative terminal rules in `.vscode/settings.json` | Native `.agents/skills/` and generated `.github/skills/` |
+| Claude Code | Generated `.claude/settings.json`, `.claude/rules/`, and `CLAUDE.md` importing root `AGENTS.md` | Generated `.claude/skills/` |
+| Cursor | Generated `.cursor/rules/`, CLI permissions in `.cursor/cli.json`, Auto-review guidance in `.cursor/permissions.json`, and root `AGENTS.md` | Native `.agents/skills/` |
 
 This matrix describes client discovery, not model behavior. A model does not
 load these files by itself; the client must support and enable the corresponding
 mechanism. Generated, ignored directories exist only after the installer runs and
 are not present in a fresh cloud clone unless its bootstrap runs the installer.
+
+The permission profiles reduce prompts for read-only workspace and Git inspection.
+They do not enable unrestricted execution. Cursor desktop users should select
+**Auto-review** once under **Settings > Agents > Approvals & Execution**; project
+`permissions.json` then guides its classifier. The shared `agent-execution` rule
+still requires explicit approval in the request before tests, builds, package
+operations, migrations, application startup, deployment, and similar commands.
 
 All generated files and directories are added to the consuming repository's
 `.gitignore` and removed from the Git index while remaining on disk. Commit

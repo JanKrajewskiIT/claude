@@ -1,0 +1,18 @@
+{
+  "chat.permissions.default": "default",
+  "chat.tools.terminal.enableAutoApprove": true,
+  "chat.tools.terminal.autoApprove": {
+    "/^git (status|diff|log|show|blame)(\\s|$)/i": true,
+    "/^(rg|Get-ChildItem|Get-Content|Select-String|Test-Path|Resolve-Path|Get-Location)(\\s|$)/i": true,
+    "/^(Remove-Item|rm|rmdir|del)(\\s|$)/i": false,
+    "/^git (clean|reset|restore|checkout|switch|rebase|merge|push)(\\s|$)/i": false,
+    "/^(npm|pnpm|yarn|npx|dotnet|msbuild|docker|kubectl|terraform)(\\s|$)/i": false
+  },
+  "chat.tools.edits.autoApprove": {
+    "**/.env": false,
+    "**/.env.*": false,
+    "**/secrets/**": false,
+    "**/*.key": false,
+    "**/*.pem": false
+  }
+}

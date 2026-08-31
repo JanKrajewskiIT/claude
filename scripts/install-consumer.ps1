@@ -40,6 +40,35 @@ function Sync-Skills {
     }
 }
 
+function Sync-ClaudeSettings {
+    param([string]$DestinationFile)
+
+    if (-not $PSCmdlet.ShouldProcess($DestinationFile, 'Replace with Claude settings from .agents')) {
+        return
+    }
+
+    $destinationDirectory = Split-Path $DestinationFile -Parent
+    New-Item -ItemType Directory -Path $destinationDirectory -Force | Out-Null
+    $content = Get-Content (Join-Path $guidanceRoot '.claude\settings.json') -Raw
+    Write-Utf8File -File $DestinationFile -Content $content
+}
+
+function Sync-ClientFile {
+    param(
+        [string]$SourceFile,
+        [string]$DestinationFile
+    )
+
+    if (-not $PSCmdlet.ShouldProcess($DestinationFile, "Replace with $SourceFile from .agents")) {
+        return
+    }
+
+    $destinationDirectory = Split-Path $DestinationFile -Parent
+    New-Item -ItemType Directory -Path $destinationDirectory -Force | Out-Null
+    $content = Get-Content (Join-Path $guidanceRoot $SourceFile) -Raw
+    Write-Utf8File -File $DestinationFile -Content $content
+}
+
 function Get-RuleApplyTo {
     param([string]$RuleName)
 
@@ -198,11 +227,16 @@ function Add-GeneratedPathsToGitIgnore {
     $generatedEntries = @(
         '/AGENTS.md'
         '/CLAUDE.md'
+        '/.claude/settings.json'
         '/.claude/skills/'
         '/.claude/rules/'
+        '/.codex/config.toml'
+        '/.cursor/cli.json'
+        '/.cursor/permissions.json'
         '/.cursor/rules/'
         '/.github/skills/'
         '/.github/instructions/'
+        '/.vscode/settings.json'
     )
     $missingEntries = @($generatedEntries | Where-Object { $_ -notin $retainedLines })
 
@@ -230,7 +264,7 @@ function Remove-GeneratedPathsFromGitIndex {
         return
     }
 
-    & git -C $targetRoot rm -r --cached --ignore-unmatch -f -- AGENTS.md CLAUDE.md .claude/skills .claude/rules .cursor/rules .github/skills .github/instructions
+    & git -C $targetRoot rm -r --cached --ignore-unmatch -f -- AGENTS.md CLAUDE.md .claude/settings.json .claude/skills .claude/rules .codex/config.toml .cursor/cli.json .cursor/permissions.json .cursor/rules .github/skills .github/instructions .vscode/settings.json
     if ($LASTEXITCODE -ne 0) {
         throw 'Failed to remove generated agent files from the Git index.'
     }
@@ -247,6 +281,11 @@ if ([IO.Path]::GetFullPath((Join-Path $targetRoot '.agents')) -ne [IO.Path]::Get
 Update-AgentInstructions -File (Join-Path $targetRoot 'AGENTS.md')
 Update-ClaudeInstructions -File (Join-Path $targetRoot 'CLAUDE.md')
 Add-GeneratedPathsToGitIgnore
+Sync-ClaudeSettings -DestinationFile (Join-Path $targetRoot '.claude\settings.json')
+Sync-ClientFile -SourceFile '.codex\config.toml' -DestinationFile (Join-Path $targetRoot '.codex\config.toml')
+Sync-ClientFile -SourceFile '.cursor\cli.json' -DestinationFile (Join-Path $targetRoot '.cursor\cli.json')
+Sync-ClientFile -SourceFile '.cursor\permissions.json' -DestinationFile (Join-Path $targetRoot '.cursor\permissions.json')
+Sync-ClientFile -SourceFile '.vscode\settings.json' -DestinationFile (Join-Path $targetRoot '.vscode\settings.json')
 Sync-Skills -DestinationRoot (Join-Path $targetRoot '.claude\skills')
 Sync-Skills -DestinationRoot (Join-Path $targetRoot '.github\skills')
 Sync-ClaudeRules -DestinationRoot (Join-Path $targetRoot '.claude\rules')

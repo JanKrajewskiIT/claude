@@ -7,6 +7,12 @@ $skillsRoot = Join-Path $repositoryRoot 'skills'
 $rulesRoot = Join-Path $repositoryRoot 'rules'
 $repositoryReadme = Join-Path $repositoryRoot 'README.md'
 $claudeSettings = Join-Path $repositoryRoot '.claude\settings.json'
+$jsonClientSettings = @(
+    (Join-Path $repositoryRoot '.cursor\cli.json')
+    (Join-Path $repositoryRoot '.cursor\permissions.json')
+    (Join-Path $repositoryRoot '.vscode\settings.json')
+)
+$codexSettings = Join-Path $repositoryRoot '.codex\config.toml'
 $failures = [System.Collections.Generic.List[string]]::new()
 
 function Add-Failure {
@@ -118,6 +124,27 @@ else {
     catch {
         Add-Failure ".claude/settings.json is not valid JSON: $($_.Exception.Message)"
     }
+}
+
+foreach ($settingsFile in $jsonClientSettings) {
+    if (-not (Test-Path $settingsFile -PathType Leaf)) {
+        Add-Failure "Missing client settings: $settingsFile"
+        continue
+    }
+
+    try {
+        Get-Content $settingsFile -Raw | ConvertFrom-Json | Out-Null
+    }
+    catch {
+        Add-Failure "$settingsFile is not valid JSON: $($_.Exception.Message)"
+    }
+}
+
+if (-not (Test-Path $codexSettings -PathType Leaf)) {
+    Add-Failure "Missing Codex project settings: $codexSettings"
+}
+elseif ((Get-Content $codexSettings -Raw) -match '(?m)^\s*(approval_policy\s*=\s*"never"|sandbox_mode\s*=\s*"danger-full-access")') {
+    Add-Failure '.codex/config.toml must not disable approvals or use danger-full-access'
 }
 
 $skillDirectories = if (Test-Path $skillsRoot -PathType Container) {

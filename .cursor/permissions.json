@@ -1,0 +1,15 @@
+{
+  "autoRun": {
+    "allow_instructions": [
+      "Allow read-only inspection, searching, and listing of files inside the workspace, except sensitive files.",
+      "Allow read-only Git inspection such as status, diff, log, show, and blame."
+    ],
+    "block_instructions": [
+      "Require approval before tests, builds, compilation, type checks, validation, linting, formatting, or automated diagnostics.",
+      "Require approval before package installation, restore, audit, update, publishing, dependency resolution, code generation, migrations, or data seeding.",
+      "Require approval before starting applications, development servers, containers, deployments, infrastructure operations, benchmarks, coverage, or security scans.",
+      "Require approval before destructive file or Git operations, including deletion, clean, reset, restore, checkout that discards changes, force operations, or history rewrites.",
+      "Block reading or writing .env files, secret directories, private keys, credentials, tokens, and authentication material."
+    ]
+  }
+}
