@@ -87,14 +87,23 @@ Then run the helper from the consuming repository root:
 .\.agents\scripts\install-consumer.ps1
 ```
 
-The helper copies the canonical skills to `.claude/skills/` and `.github/skills/`,
-replaces root `AGENTS.md` and `CLAUDE.md`, and deletes and recreates both client
-skill directories as exact copies of `.agents/skills/`. Do not keep project-owned
-content in these generated locations. The helper adds all four generated paths to
-the consuming repository's `.gitignore` and removes previously tracked copies from
-the Git index while leaving them on disk. Only the `.agents` submodule,
-`.gitmodules`, and `.gitignore` remain versioned. Commit the staged removals after
-review. Use `-WhatIf` to preview operations.
+The helper copies the canonical skills to `.claude/skills/` and `.github/skills/`.
+It also generates scoped client adapters in `.claude/rules/shared-agents/` and
+`.github/instructions/shared-agents/`. These adapters improve native discovery,
+while the managed block in root `AGENTS.md` remains the portable fallback for
+clients that do not support rule directories.
+
+The helper preserves project-owned `AGENTS.md` content outside the marked shared
+guidance block. It creates `CLAUDE.md` with `@AGENTS.md` when missing and migrates
+the legacy generated import, but does not replace a customized `CLAUDE.md`. Keep
+project-specific instructions in these root files and commit them.
+
+Generated skill and rule adapter directories are deleted and recreated from
+`.agents/`, added to the consuming repository's `.gitignore`, and removed from the
+Git index while remaining on disk. Do not keep project-owned content in generated
+directories. Commit changes to `AGENTS.md`, `CLAUDE.md`, `.gitignore`, the `.agents`
+submodule pointer, and any staged removals after review. Use `-WhatIf` to preview
+operations.
 
 Update and synchronize later with:
 
@@ -103,24 +112,10 @@ git submodule update --remote .agents
 .\.agents\scripts\install-consumer.ps1
 ```
 
-This produces the client discovery paths `.agents/skills/`, `.claude/skills/`,
-and `.github/skills/` while keeping `.agents/` as the only submodule.
-
-Add a small `AGENTS.md` at the consuming project root so Codex and clients that
-support repository agent instructions can reach the submodule guidance:
-
-```markdown
-# Agent Instructions
-
-- Read `.agents/AGENTS.md` before modifying this repository.
-- Treat `.agents/` as shared guidance and this file as project-specific guidance.
-```
-
-The generated root `CLAUDE.md` imports `.agents/AGENTS.md`. Extend it only when the
-consuming project needs additional Claude-specific instructions.
-
-Rules use client-specific installation formats. See the
-[`rules` installation guide](rules/README.md) before copying them into a project.
+This produces portable and native discovery paths while keeping `.agents/` as the
+only submodule. The generated root `CLAUDE.md` imports the combined `AGENTS.md`, so
+Claude receives both shared and project-specific guidance. See the
+[`rules` installation guide](rules/README.md) for adapter details and manual setup.
 
 ## Validation
 

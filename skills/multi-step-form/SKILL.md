@@ -52,6 +52,7 @@ description: Design, implement, or review accessible multi-step forms and wizard
 
 | Situation | Decision |
 |---|---|
+| Sections remain visible in one form without guarded navigation or separate lifecycles | Use `frontend-form-state`. |
 | Steps have no meaningful grouping or dependency | Prefer one form. |
 | Later steps depend on current answers | Validate before moving forward. |
 | Earlier edit removes a conditional step | Remove or deliberately retain now-inapplicable data. |

@@ -49,7 +49,7 @@ description: Design, implement, or review state and validation for a single-page
 | Rule depends on multiple fields | Validate against the complete draft. |
 | Server rejects one field | Map the error to that field and keep the entered value. |
 | Server rejects the whole operation | Show a persistent form-level error. |
-| Form spans multiple coordinated steps | Use `multi-step-form`. |
+| Form has distinct navigation states with guarded transitions, step lifecycles, or resumable progress | Use `multi-step-form`. |
 | Form requires continuous remote persistence | Use `document-autosave`. |
 
 ## Constraints

@@ -4,7 +4,9 @@ param()
 $ErrorActionPreference = 'Stop'
 $repositoryRoot = Split-Path $PSScriptRoot -Parent
 $skillsRoot = Join-Path $repositoryRoot 'skills'
+$rulesRoot = Join-Path $repositoryRoot 'rules'
 $repositoryReadme = Join-Path $repositoryRoot 'README.md'
+$claudeSettings = Join-Path $repositoryRoot '.claude\settings.json'
 $failures = [System.Collections.Generic.List[string]]::new()
 
 function Add-Failure {
@@ -99,6 +101,25 @@ if (-not (Test-Path $repositoryReadme -PathType Leaf)) {
     Add-Failure "Missing repository README: $repositoryReadme"
 }
 
+if (Test-Path (Join-Path $repositoryRoot 'settings.json') -PathType Leaf) {
+    Add-Failure 'Claude settings must be stored at .claude/settings.json, not repository-root settings.json'
+}
+
+if (-not (Test-Path $claudeSettings -PathType Leaf)) {
+    Add-Failure "Missing Claude project settings: $claudeSettings"
+}
+else {
+    try {
+        $settings = Get-Content $claudeSettings -Raw | ConvertFrom-Json
+        if (@($settings.permissions.allow) -contains 'Bash(*)') {
+            Add-Failure '.claude/settings.json must not grant unrestricted Bash(*) permission'
+        }
+    }
+    catch {
+        Add-Failure ".claude/settings.json is not valid JSON: $($_.Exception.Message)"
+    }
+}
+
 $skillDirectories = if (Test-Path $skillsRoot -PathType Container) {
     @(Get-ChildItem $skillsRoot -Directory | Sort-Object Name)
 }
@@ -187,6 +208,20 @@ if (Test-Path $repositoryReadme) {
 $rulesReadme = Join-Path $repositoryRoot 'rules\README.md'
 if (Test-Path $rulesReadme) {
     Test-LocalLinks -File $rulesReadme -BaseDirectory (Split-Path $rulesReadme -Parent)
+
+    $rulesReadmeContent = Get-Content $rulesReadme -Raw
+    foreach ($ruleFile in @(Get-ChildItem $rulesRoot -Filter '*.md' -File | Where-Object { $_.Name -ne 'README.md' })) {
+        if ($rulesReadmeContent -notmatch [regex]::Escape("$($ruleFile.BaseName).md")) {
+            Add-Failure "$($ruleFile.Name): missing from rules/README.md catalog"
+        }
+
+        if ((Get-Content $ruleFile.FullName -Raw) -notmatch '(?m)^#\s+\S') {
+            Add-Failure "$($ruleFile.Name): missing top-level heading"
+        }
+    }
+}
+else {
+    Add-Failure "Missing rules README: $rulesReadme"
 }
 
 if ($failures.Count -gt 0) {

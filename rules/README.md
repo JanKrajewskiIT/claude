@@ -23,10 +23,16 @@ instruction mechanism supported by the target client.
 
 | Client | Installation |
 |---|---|
-| Generic coding agents | Add the rule body to `AGENTS.md` or the client's always-on instruction file |
+| Generic coding agents | Route the agent to matching files from `AGENTS.md`, or include critical rule bodies in its always-on instruction file |
 | GitHub Copilot / VS Code | Copy the rule into `.github/instructions/<rule-name>.instructions.md` and add an appropriate `applyTo` frontmatter pattern |
-| Claude Code | Add the rule body to `CLAUDE.md` or the repository instruction file supported by the client |
+| Claude Code | Copy the rule into `.claude/rules/<rule-name>.md` and add an appropriate `paths` frontmatter list |
 | Clients with repository rules | Copy the file into the client's rules directory and add required metadata |
+
+The consumer installer generates native adapters under client-specific
+`shared-agents/` directories. It also adds a managed routing block to root
+`AGENTS.md`; this is the compatibility path for models and clients that do not
+discover rule directories. Native adapters are an optimization, not the only way
+to reach these rules.
 
 ## Maintenance
 
@@ -36,3 +42,4 @@ instruction mechanism supported by the target client.
 - Preserve behavior when adapting wording to a client format.
 - Replace installed copies from this repository instead of editing their bodies locally.
 - Do not duplicate workflow guidance that belongs in a skill.
+- Keep project-owned instructions outside generated `shared-agents/` directories.

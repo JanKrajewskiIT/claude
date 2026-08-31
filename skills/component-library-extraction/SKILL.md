@@ -24,6 +24,7 @@ description: Evaluate, extract, or review reusable UI components and interaction
    - Avoid configuration objects that expose internal implementation details.
 4. Test the proposed API on paper.
    - Express the source use case and a second realistic use case with the same contract.
+   - Stop before extraction if no distinct realistic second use case exists.
    - Keep the component local if the second use requires unrelated flags or escape hatches.
 5. Move the smallest reusable unit.
    - Extract behavior and structure together when separating them would weaken accessibility.
@@ -58,8 +59,8 @@ description: Evaluate, extract, or review reusable UI components and interaction
 
 ## Completion Criteria
 
-- The public API uses neutral semantics.
-- Product behavior remains in the application boundary.
-- Two realistic use cases fit without unrelated escape hatches.
-- The source feature is simpler after recomposition.
+- The decision to extract or remain local is explicit and supported by two realistic use cases.
+- If extraction proceeds, the public API uses neutral semantics and product behavior remains in the application boundary.
+- If extraction proceeds, the source feature is simpler after recomposition.
+- If extraction stops, no speculative public API or generated package surface remains.
 - Proposed checks cover interaction, accessibility, exports, and compatibility.
