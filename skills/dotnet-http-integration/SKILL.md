@@ -33,16 +33,19 @@ description: Design, implement, or review outbound HTTP integrations in .NET app
    - Retry only operations and failures that are safe to repeat.
    - Honor server retry guidance and use bounded backoff with jitter.
    - Use circuit breaking or concurrency limits only when the dependency behavior warrants them.
+   - Calculate one total operation budget across caller retries, client retries, token acquisition, backoff, connection, and response timeouts.
 7. Protect trust boundaries.
    - Validate user-controlled destinations before sending requests.
    - Reject unsafe schemes, loopback, link-local, private, and metadata endpoints unless explicitly required.
    - Scope propagated credentials to the intended service.
+   - Apply [`references/oauth-token-cache.md`](references/oauth-token-cache.md) when the client must acquire and reuse bearer tokens.
 8. Add observability.
    - Record dependency name, operation, duration, outcome, and retry count.
    - Redact credentials, sensitive headers, query values, and payloads.
 9. Propose validation.
    - Check success, timeout, cancellation, retry safety, throttling, malformed responses, unsafe destinations, and redaction.
    - List exact commands and ask before running them unless already approved.
+   - Use a protocol-level test server when codecs, handlers, redirects, timeouts, or error decoding form part of the contract.
 
 ## Decision Rules
 

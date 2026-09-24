@@ -6,6 +6,7 @@ $repositoryRoot = Split-Path $PSScriptRoot -Parent
 $skillsRoot = Join-Path $repositoryRoot 'skills'
 $rulesRoot = Join-Path $repositoryRoot 'rules'
 $repositoryReadme = Join-Path $repositoryRoot 'README.md'
+$agentInstructions = Join-Path $repositoryRoot 'AGENTS.md'
 $claudeSettings = Join-Path $repositoryRoot '.claude\settings.json'
 $jsonClientSettings = @(
     (Join-Path $repositoryRoot '.cursor\cli.json')
@@ -105,6 +106,10 @@ if (-not (Test-Path $skillsRoot -PathType Container)) {
 
 if (-not (Test-Path $repositoryReadme -PathType Leaf)) {
     Add-Failure "Missing repository README: $repositoryReadme"
+}
+
+if (-not (Test-Path $agentInstructions -PathType Leaf)) {
+    Add-Failure "Missing agent instructions: $agentInstructions"
 }
 
 if (Test-Path (Join-Path $repositoryRoot 'settings.json') -PathType Leaf) {
@@ -216,6 +221,10 @@ foreach ($skillDirectory in $skillDirectories) {
         Add-Failure "$($skillDirectory.Name): SKILL.md exceeds 500 lines"
     }
 
+    if ($content -notmatch '(?m)^## Completion Criteria\s*$') {
+        Add-Failure "$($skillDirectory.Name): missing '## Completion Criteria' section"
+    }
+
     Test-SkillResources -SkillDirectory $skillDirectory -SkillFile $skillFile
 
     if (Test-Path $repositoryReadme) {
@@ -230,6 +239,18 @@ foreach ($skillDirectory in $skillDirectories) {
 
 if (Test-Path $repositoryReadme) {
     Test-LocalLinks -File $repositoryReadme -BaseDirectory $repositoryRoot
+
+    $repositoryReadmeContent = Get-Content $repositoryReadme -Raw
+    foreach ($catalogMatch in [regex]::Matches($repositoryReadmeContent, 'skills/([a-z0-9]+(?:-[a-z0-9]+)*)/')) {
+        $catalogSkill = $catalogMatch.Groups[1].Value
+        if (-not (Test-Path (Join-Path $skillsRoot "$catalogSkill\SKILL.md") -PathType Leaf)) {
+            Add-Failure "README catalog references missing skill '$catalogSkill'"
+        }
+    }
+}
+
+if (Test-Path $agentInstructions) {
+    Test-LocalLinks -File $agentInstructions -BaseDirectory $repositoryRoot
 }
 
 $rulesReadme = Join-Path $repositoryRoot 'rules\README.md'
@@ -237,13 +258,37 @@ if (Test-Path $rulesReadme) {
     Test-LocalLinks -File $rulesReadme -BaseDirectory (Split-Path $rulesReadme -Parent)
 
     $rulesReadmeContent = Get-Content $rulesReadme -Raw
+    $repositoryReadmeContent = if (Test-Path $repositoryReadme) { Get-Content $repositoryReadme -Raw } else { '' }
+    $agentInstructionsContent = if (Test-Path $agentInstructions) { Get-Content $agentInstructions -Raw } else { '' }
     foreach ($ruleFile in @(Get-ChildItem $rulesRoot -Filter '*.md' -File | Where-Object { $_.Name -ne 'README.md' })) {
         if ($rulesReadmeContent -notmatch [regex]::Escape("$($ruleFile.BaseName).md")) {
             Add-Failure "$($ruleFile.Name): missing from rules/README.md catalog"
         }
 
+        if ($repositoryReadmeContent -notmatch [regex]::Escape("rules/$($ruleFile.Name)")) {
+            Add-Failure "$($ruleFile.Name): missing from repository README catalog"
+        }
+
+        if ($agentInstructionsContent -notmatch [regex]::Escape("rules/$($ruleFile.Name)")) {
+            Add-Failure "$($ruleFile.Name): missing from AGENTS.md routing"
+        }
+
         if ((Get-Content $ruleFile.FullName -Raw) -notmatch '(?m)^#\s+\S') {
             Add-Failure "$($ruleFile.Name): missing top-level heading"
+        }
+    }
+
+    foreach ($catalogMatch in [regex]::Matches($repositoryReadmeContent, 'rules/([a-z0-9]+(?:-[a-z0-9]+)*)\.md')) {
+        $catalogRule = $catalogMatch.Groups[1].Value
+        if (-not (Test-Path (Join-Path $rulesRoot "$catalogRule.md") -PathType Leaf)) {
+            Add-Failure "README catalog references missing rule '$catalogRule.md'"
+        }
+    }
+
+    foreach ($catalogMatch in [regex]::Matches($rulesReadmeContent, '\]\(([a-z0-9]+(?:-[a-z0-9]+)*)\.md\)')) {
+        $catalogRule = $catalogMatch.Groups[1].Value
+        if (-not (Test-Path (Join-Path $rulesRoot "$catalogRule.md") -PathType Leaf)) {
+            Add-Failure "rules/README.md catalog references missing rule '$catalogRule.md'"
         }
     }
 }

@@ -18,11 +18,13 @@ description: Create, extend, or review vertical slices in .NET applications usin
 2. Define the boundary.
    - Specify input, output, authorization, validation, and failure behavior.
    - Keep transport contracts separate from persistence entities.
+   - Record external effects, compatibility needs, rollout controls, telemetry outcomes, and explicit non-goals when the slice crosses those boundaries.
 3. Choose the slice parts.
    - Add only the endpoint, request, response, handler, validator, and mapping required.
    - Use the repository's command, query, or direct-handler convention.
    - Use [`references/examples.md`](references/examples.md) to clarify responsibility boundaries when needed.
 4. Implement the use case.
+   - Apply `dotnet-command-query-handler` when the work centers on a discrete application handler or the repository uses explicit command and query contracts.
    - Keep transport concerns in the endpoint.
    - Keep use-case decisions in the handler.
    - Keep domain invariants in the domain model when they apply beyond one use case.
@@ -38,6 +40,11 @@ description: Create, extend, or review vertical slices in .NET applications usin
    - Propose the narrowest repository-native build or test for the affected project.
    - Ask before running commands unless the current request already grants permission.
    - Exercise success, validation failure, authorization failure, and expected not-found or conflict behavior.
+8. Coordinate cross-cutting changes when required.
+   - Apply `api-contract-design`, `ef-core-migrations`, `dotnet-http-integration`, or `dotnet-configuration` only when the slice crosses that boundary.
+   - Apply `message-producer-reliability` or `message-consumer-reliability` when the slice publishes or consumes messages.
+   - Resolve transaction and message-publication consistency before wiring external effects.
+   - Add telemetry once at the owning business boundary and define rollout observation and recovery for material changes.
 
 ## Decision Rules
 
@@ -63,3 +70,4 @@ description: Create, extend, or review vertical slices in .NET applications usin
 - Validation and failures map to intentional API behavior.
 - Cancellation reaches every cancellable asynchronous boundary.
 - Registration is complete and focused validation passes.
+- Configuration, telemetry, compatibility, and rollout behavior are explicit when the use case crosses those boundaries.

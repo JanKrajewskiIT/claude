@@ -18,6 +18,7 @@
 ## Data
 
 - Collect, persist, expose, and log only data required by the feature.
+- Sanitize or encode untrusted values with the repository-approved logging boundary before interpolation; parameterized logging alone does not remove control characters used for log forging.
 - Treat authorization failures as non-disclosing responses.
 - Protect tenant and resource boundaries in every query and mutation.
 - Keep internal identifiers and infrastructure details private unless they are contract fields.

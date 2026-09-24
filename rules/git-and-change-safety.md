@@ -16,7 +16,10 @@
 
 ## Commits
 
-- Create commits, branches, tags, or releases only when explicitly requested.
+- Never create a branch, commit, tag, release, or push changes on the agent's own initiative.
+- After implementation and authorized validation, ask at most once whether to perform the relevant Git operation.
+- State the proposed branch name, commit message, remote, and target ref for every applicable operation.
+- Require explicit approval for each operation. Approval to create a branch does not authorize a commit, and approval to commit does not authorize a push.
 - Stage only files that belong to the requested change.
 - Describe observable behavior and compatibility impact in commit or release text.
 - Never include credentials, local environment files, or unrelated generated artifacts.

@@ -23,6 +23,7 @@ description: Design, extract, evolve, or review shared infrastructure used by mu
    - Expose focused options, interfaces, constants, handlers, or registration extensions.
    - Keep third-party implementation details out of public contracts when practical.
    - Define defaults, overrides, failure behavior, and lifecycle ownership.
+   - Treat registration, startup behavior, defaults, option names, and replacement points as public compatibility contracts.
 4. Choose default or opt-in behavior.
    - Include behavior in a common bootstrap only when every consumer requires it.
    - Expose optional capabilities through explicit registration or middleware methods.
@@ -35,6 +36,7 @@ description: Design, extract, evolve, or review shared infrastructure used by mu
    - Adopt the shared primitive in at least two realistic consumers.
    - Remove duplicated code only after behavior and configuration agree.
    - Stop if either consumer becomes harder to configure or reason about.
+   - Validate from clean consumers so local build output or implicit repository state cannot hide missing package behavior.
 7. Assess package compatibility.
    - Apply `dotnet-nuget-library` when the shared project is packaged or released.
    - Classify changes to registration, defaults, options, dependencies, and runtime behavior as public compatibility decisions.

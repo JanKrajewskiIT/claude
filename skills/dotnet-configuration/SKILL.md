@@ -39,6 +39,8 @@ description: Design, implement, or review configuration in .NET applications. Us
    - Keep base configuration usable and overrides minimal.
    - Treat environment variables and deployment configuration as external contracts.
    - Avoid environment-name branches when configuration can express the decision.
+   - Verify whether arrays and dictionaries replace, merge, or rebind values across configuration providers.
+   - Recalculate complete timeout, retry, lease, probe, and shutdown budgets when one participating value changes.
 8. Propose validation.
    - Check valid startup, missing and malformed values, secret redaction, override precedence, and reload behavior when supported.
    - List exact commands and ask before running them unless already approved.
@@ -52,6 +54,7 @@ description: Design, implement, or review configuration in .NET applications. Us
 | Setting is secret | Resolve it from an approved secret provider. |
 | Library needs a setting | Expose a typed registration contract and let the host supply it. |
 | Value represents user or tenant data | Store it outside application configuration. |
+| Collection overrides a shared default | Verify effective replacement or merge behavior and preserve required entries. |
 
 ## Constraints
 
@@ -68,3 +71,4 @@ description: Design, implement, or review configuration in .NET applications. Us
 - Secret handling does not depend on source-controlled values.
 - Reload and restart behavior are explicit.
 - Proposed checks cover binding, precedence, validation, and redaction.
+- Effective collection values and cross-layer timing budgets preserve required behavior.

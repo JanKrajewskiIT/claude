@@ -19,6 +19,7 @@ description: Create, review, repair, script, or plan deployment of Entity Framew
    - Separate schema operations, data transformations, constraints, indexes, and application compatibility steps.
    - Identify table size, lock duration, availability, and data-loss risks.
    - Identify every runtime, model, and design-time registration site for provider-specific types such as database enums.
+   - Record expected row count, lock budget, runtime budget, rollout signal, abort condition, and recovery owner.
 3. Plan compatibility.
    - Use expand-and-contract steps when old and new application versions may overlap.
    - Add nullable or compatible structures before backfilling and enforcing stricter constraints.
@@ -50,7 +51,7 @@ description: Create, review, repair, script, or plan deployment of Entity Framew
    - Supply production connections through the deployment secret store.
    - Avoid making every application replica execute migrations during startup.
 10. Propose validation.
-   - Check pending model changes, forward application, representative data preservation, clean-database creation, and rollback where supported.
+   - Check pending model changes, upgrade from the latest deployed schema, representative data preservation, clean-database creation, and rollback where supported.
    - Inspect generated SQL for destructive operations, locks, provider syntax, and transaction boundaries.
    - List exact commands and ask before running them unless already approved.
 
@@ -72,6 +73,8 @@ description: Create, review, repair, script, or plan deployment of Entity Framew
 - Do not delete or rewrite published migration history casually.
 - Do not combine `EnsureCreated` with migrations for the same relational schema.
 - Do not embed production connection strings in source, scripts, or bundles.
+- Do not treat successful creation of an empty database as evidence that an upgrade is safe.
+- Prefer a forward repair when rollback would discard data or break writes produced by the newer application.
 
 ## Completion Criteria
 
@@ -80,3 +83,4 @@ description: Create, review, repair, script, or plan deployment of Entity Framew
 - Forward, rollback, and mixed-version behavior are explicit.
 - Deployment uses a reviewed artifact and controlled identity.
 - Proposed checks cover both existing and clean database paths.
+- Lock duration, execution time, and recovery behavior fit the documented operational budget.

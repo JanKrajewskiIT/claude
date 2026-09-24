@@ -12,6 +12,7 @@ instruction mechanism supported by the target client.
 |---|---|
 | [`agent-execution`](agent-execution.md) | Require explicit approval for tests and project commands |
 | [`css-modules-conventions`](css-modules-conventions.md) | Keep modular styles token-based, local, and structurally safe |
+| [`comments-and-documentation`](comments-and-documentation.md) | Keep comments purposeful and project documentation canonical |
 | [`dotnet-conventions`](dotnet-conventions.md) | Keep .NET changes consistent, bounded, and contract-aware |
 | [`dotnet-error-handling`](dotnet-error-handling.md) | Classify, map, and disclose .NET failures consistently |
 | [`frontend-accessibility`](frontend-accessibility.md) | Apply semantic, keyboard, focus, and visual accessibility baselines |

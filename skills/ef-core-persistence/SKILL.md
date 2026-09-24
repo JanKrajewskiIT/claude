@@ -27,6 +27,7 @@ description: Design, implement, optimize, or review Entity Framework Core read a
    - Load only state required to validate and apply the change.
    - Apply one use case within one intentional unit of work.
    - Keep generated, audited, and intercepted values under their owning mechanism.
+   - Apply `ef-core-auditing` when creation or modification metadata requires trusted actor and time ownership.
 5. Protect scope.
    - Enforce tenant, user, soft-delete, and resource ownership consistently.
    - Treat query filters as defense in depth, not a substitute for authorization.
@@ -38,9 +39,11 @@ description: Design, implement, optimize, or review Entity Framework Core read a
 7. Review provider behavior.
    - Verify translation, null semantics, collations, indexes, data types, and transaction behavior for the configured provider.
    - Avoid client evaluation and provider-specific SQL unless the benefit and compatibility cost are explicit.
+   - Apply `ef-core-value-conversion` when non-primitive properties require an explicit storage representation or structural comparison.
 8. Coordinate schema impact.
    - Use `ef-core-migrations` when the model change requires a schema, data, enum, index, or constraint migration.
    - Keep runtime persistence code independent of historical migration implementation.
+   - Apply `database-soft-delete` when retained deleted rows require lifecycle-wide query, constraint, restore, or purge behavior.
 9. Propose validation.
    - Check generated queries, cardinality, scope isolation, concurrency conflicts, transaction behavior, cancellation, and representative data volume.
    - List exact commands and ask before running them unless already approved.

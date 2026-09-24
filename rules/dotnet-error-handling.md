@@ -6,6 +6,7 @@
 - Reuse established exception or result types before creating local equivalents.
 - Use exceptions for exceptional or boundary failures, not routine branching when the repository uses explicit results.
 - Preserve caller cancellation as cancellation instead of reporting it as an application failure.
+- Give consumer-distinguishable failures stable machine-readable codes; add a new exception type only when control flow or typed boundary data requires it.
 
 ## Boundaries
 
@@ -28,3 +29,5 @@
 - Preserve original exception context when translating technical failures.
 - Do not retry validation, authorization, conflict, or other non-transient failures.
 - Keep response parsing and sanitization for untrusted external systems in dedicated boundary helpers.
+- Align retry classification across HTTP clients, background work, messaging, and telemetry according to whether another attempt can change the outcome.
+- Treat unknown failures as non-disclosing while preserving diagnostic correlation and the original cause.

@@ -178,23 +178,20 @@ function Sync-CursorRules {
     }
 }
 
+function Get-CombinedRuleGuidance {
+    $sections = @('# Shared Agent Guidance')
+
+    foreach ($rule in @(Get-ChildItem (Join-Path $guidanceRoot 'rules') -Filter '*.md' -File | Where-Object { $_.Name -ne 'README.md' } | Sort-Object Name)) {
+        $sections += (Get-Content $rule.FullName -Raw).Trim()
+    }
+
+    ($sections -join "`r`n`r`n") + "`r`n"
+}
+
 function Update-AgentInstructions {
     param([string]$File)
 
-    $content = @"
-## Shared Agent Guidance
-
-- Treat `.agents/` as the canonical source of shared guidance.
-- Resolve shared paths below from `.agents/`.
-- Discover task-specific workflows in `.agents/skills/` and load a skill when its description matches the requested outcome.
-- Read `.agents/rules/agent-execution.md` and `.agents/rules/git-and-change-safety.md` before modifying the repository.
-- Read `.agents/rules/security-boundaries.md` when work crosses trust, secret, data, or integration boundaries.
-- Read `.agents/rules/dotnet-conventions.md` and `.agents/rules/dotnet-error-handling.md` before changing .NET files.
-- Read `.agents/rules/solidjs-conventions.md` before changing SolidJS files.
-- Read `.agents/rules/css-modules-conventions.md` before changing CSS Modules.
-- Read `.agents/rules/frontend-accessibility.md` before changing user interfaces.
-- Treat loaded rules as higher priority than task-specific skill advice.
-"@
+    $content = Get-CombinedRuleGuidance
 
     if ($PSCmdlet.ShouldProcess($File, 'Replace repository agent instructions')) {
         Write-Utf8File -File $File -Content $content
@@ -205,7 +202,9 @@ function Update-ClaudeInstructions {
     param([string]$File)
 
     if ($PSCmdlet.ShouldProcess($File, 'Replace Claude repository instructions')) {
-        Write-Utf8File -File $File -Content '@AGENTS.md'
+        $destinationDirectory = Split-Path $File -Parent
+        New-Item -ItemType Directory -Path $destinationDirectory -Force | Out-Null
+        Write-Utf8File -File $File -Content (Get-CombinedRuleGuidance)
     }
 }
 
@@ -218,6 +217,7 @@ function Add-GeneratedPathsToGitIgnore {
         @()
     }
     $obsoleteEntries = @(
+        '/CLAUDE.md'
         '/.claude/rules/shared-agents/'
         '/.cursor/rules/shared-agents/'
         '/.github/instructions/shared-agents/'
@@ -226,14 +226,16 @@ function Add-GeneratedPathsToGitIgnore {
     $retainedLines = @($existingLines | Where-Object { $_ -notin $obsoleteEntries })
     $generatedEntries = @(
         '/AGENTS.md'
-        '/CLAUDE.md'
+        '/.claude/CLAUDE.md'
         '/.claude/settings.json'
         '/.claude/skills/'
         '/.claude/rules/'
         '/.codex/config.toml'
+        '/.codex/skills/'
         '/.cursor/cli.json'
         '/.cursor/permissions.json'
         '/.cursor/rules/'
+        '/.cursor/skills/'
         '/.github/skills/'
         '/.github/instructions/'
         '/.vscode/settings.json'
@@ -264,7 +266,7 @@ function Remove-GeneratedPathsFromGitIndex {
         return
     }
 
-    & git -C $targetRoot rm -r --cached --ignore-unmatch -f -- AGENTS.md CLAUDE.md .claude/settings.json .claude/skills .claude/rules .codex/config.toml .cursor/cli.json .cursor/permissions.json .cursor/rules .github/skills .github/instructions .vscode/settings.json
+    & git -C $targetRoot rm -r --cached --ignore-unmatch -f -- AGENTS.md CLAUDE.md .claude/CLAUDE.md .claude/settings.json .claude/skills .claude/rules .codex/config.toml .codex/skills .cursor/cli.json .cursor/permissions.json .cursor/rules .cursor/skills .github/skills .github/instructions .vscode/settings.json
     if ($LASTEXITCODE -ne 0) {
         throw 'Failed to remove generated agent files from the Git index.'
     }
@@ -279,7 +281,10 @@ if ([IO.Path]::GetFullPath((Join-Path $targetRoot '.agents')) -ne [IO.Path]::Get
 }
 
 Update-AgentInstructions -File (Join-Path $targetRoot 'AGENTS.md')
-Update-ClaudeInstructions -File (Join-Path $targetRoot 'CLAUDE.md')
+if (Test-Path (Join-Path $targetRoot 'CLAUDE.md')) {
+    Remove-Item (Join-Path $targetRoot 'CLAUDE.md') -Force
+}
+Update-ClaudeInstructions -File (Join-Path $targetRoot '.claude\CLAUDE.md')
 Add-GeneratedPathsToGitIgnore
 Sync-ClaudeSettings -DestinationFile (Join-Path $targetRoot '.claude\settings.json')
 Sync-ClientFile -SourceFile '.codex\config.toml' -DestinationFile (Join-Path $targetRoot '.codex\config.toml')
@@ -287,6 +292,8 @@ Sync-ClientFile -SourceFile '.cursor\cli.json' -DestinationFile (Join-Path $targ
 Sync-ClientFile -SourceFile '.cursor\permissions.json' -DestinationFile (Join-Path $targetRoot '.cursor\permissions.json')
 Sync-ClientFile -SourceFile '.vscode\settings.json' -DestinationFile (Join-Path $targetRoot '.vscode\settings.json')
 Sync-Skills -DestinationRoot (Join-Path $targetRoot '.claude\skills')
+Sync-Skills -DestinationRoot (Join-Path $targetRoot '.codex\skills')
+Sync-Skills -DestinationRoot (Join-Path $targetRoot '.cursor\skills')
 Sync-Skills -DestinationRoot (Join-Path $targetRoot '.github\skills')
 Sync-ClaudeRules -DestinationRoot (Join-Path $targetRoot '.claude\rules')
 Sync-CursorRules -DestinationRoot (Join-Path $targetRoot '.cursor\rules')

@@ -4,8 +4,10 @@
 
 - [ ] Owns one coherent outcome.
 - [ ] Lists concrete use cases and non-goals.
+- [ ] Identifies neighboring skills and explicit handoff conditions where responsibilities meet.
 - [ ] Represents a reusable, on-demand workflow rather than a global rule or fixed template.
 - [ ] Avoids unrelated coding or style guidance.
+- [ ] Does not duplicate behavior already owned by a global rule or another skill.
 
 ## Discovery
 
@@ -49,8 +51,10 @@
 ## Validation
 
 - [ ] Completion criteria are observable and binary.
+- [ ] Configured behavior is not reported as verified without executable or live evidence.
 - [ ] A focused executable check is provided where possible.
 - [ ] The official format validator passes when available.
 - [ ] One positive trigger case succeeds.
 - [ ] One negative trigger case does not activate the skill.
 - [ ] A second realistic use case succeeds when portability or cross-domain reuse is claimed.
+- [ ] Every unavailable or unauthorized check is reported explicitly.

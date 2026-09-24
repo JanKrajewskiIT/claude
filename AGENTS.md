@@ -11,6 +11,7 @@
 ## Rules
 
 - Read `rules/agent-execution.md` and `rules/git-and-change-safety.md` before modifying a repository.
+- Read `rules/comments-and-documentation.md` when creating or changing code, configuration, scripts, deployment manifests, or documentation.
 - Read `rules/security-boundaries.md` when work crosses trust, secret, data, or integration boundaries.
 - Read the matching stack rules before changing files that use that stack:
   - `rules/dotnet-conventions.md` and `rules/dotnet-error-handling.md` for .NET.

@@ -16,6 +16,7 @@ description: Create, update, review, or restructure portable Agent Skills. Use w
 1. Define the task.
    - State one outcome the skill owns.
    - List explicit triggers and non-goals.
+   - Identify neighboring skills and the condition for handing work to each owner.
    - Identify required inputs, outputs, tools, and constraints.
    - Confirm the task is a reusable, on-demand workflow.
    - Use always-on instructions for global behavior and a template for a fixed output shape.
@@ -40,6 +41,7 @@ description: Create, update, review, or restructure portable Agent Skills. Use w
    - Include exact validation commands when they are portable.
    - Define stop conditions for missing inputs, unsafe actions, and unresolved ambiguity.
    - Define observable completion criteria.
+   - Treat 400-700 words and 6-9 primary workflow steps as editing targets, not hard limits.
 5. Review and validate.
    - Apply [`references/quality-checklist.md`](references/quality-checklist.md).
    - Remove duplication, vague language, provider assumptions, and inferable background.
@@ -66,6 +68,7 @@ description: Create, update, review, or restructure portable Agent Skills. Use w
 - Summarize created files, key decisions, and validation results.
 - Report unresolved assumptions or unavailable checks.
 - For reviews, report critical ambiguities first and recommend the smallest useful changes.
+- Distinguish configured behavior from behavior verified through executable or live evidence.
 
 ## Completion Criteria
 

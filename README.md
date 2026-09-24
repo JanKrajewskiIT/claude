@@ -28,18 +28,27 @@ Portable software-engineering skills and provider-neutral agent rules.
 | [`accessible-overlays`](skills/accessible-overlays/) | Build dialogs and layered surfaces with predictable focus and dismissal |
 | [`api-contract-design`](skills/api-contract-design/) | Design stable HTTP contracts, errors, pagination, and write semantics |
 | [`aspire-composition`](skills/aspire-composition/) | Compose resources in .NET Aspire distributed applications |
+| [`aspnet-core-endpoint`](skills/aspnet-core-endpoint/) | Implement secured ASP.NET Core endpoints matching their HTTP contracts |
 | [`component-library-extraction`](skills/component-library-extraction/) | Extract reusable UI patterns without leaking product behavior |
+| [`database-soft-delete`](skills/database-soft-delete/) | Define deletion, visibility, restoration, retention, and purge semantics |
 | [`document-autosave`](skills/document-autosave/) | Preserve editable documents across timing, network, and concurrency failures |
 | [`dom-hygiene-audit`](skills/dom-hygiene-audit/) | Simplify rendered markup while preserving semantics and behavior |
+| [`dotnet-command-query-handler`](skills/dotnet-command-query-handler/) | Implement cohesive .NET application commands and queries |
 | [`dotnet-configuration`](skills/dotnet-configuration/) | Bind and validate typed .NET application configuration |
 | [`dotnet-http-integration`](skills/dotnet-http-integration/) | Build bounded, resilient, and secure outbound .NET HTTP integrations |
 | [`dotnet-nuget-library`](skills/dotnet-nuget-library/) | Design, pack, and evolve reusable .NET NuGet libraries |
 | [`dotnet-shared-infrastructure`](skills/dotnet-shared-infrastructure/) | Share stable .NET mechanics without coupling consumer architectures |
 | [`dotnet-vertical-slice`](skills/dotnet-vertical-slice/) | Implement cohesive .NET features by business capability |
+| [`ef-core-auditing`](skills/ef-core-auditing/) | Record trusted EF Core creation and modification metadata |
 | [`ef-core-migrations`](skills/ef-core-migrations/) | Evolve EF Core schemas with explicit data and deployment safety |
 | [`ef-core-persistence`](skills/ef-core-persistence/) | Build bounded EF Core read and write paths |
+| [`ef-core-value-conversion`](skills/ef-core-value-conversion/) | Persist non-primitive EF Core values with explicit compatible representations |
 | [`frontend-design-exploration`](skills/frontend-design-exploration/) | Explore a fresh UI direction before adapting it to existing components |
 | [`frontend-form-state`](skills/frontend-form-state/) | Coordinate accessible field state, validation, submission, and recovery |
+| [`implementation-spec-authoring`](skills/implementation-spec-authoring/) | Write traceable implementation specifications and task plans |
+| [`message-consumer-reliability`](skills/message-consumer-reliability/) | Define reliable consumer delivery, retry, replay, and idempotency semantics |
+| [`message-producer-reliability`](skills/message-producer-reliability/) | Define producer consistency, delivery, ordering, and recovery semantics |
+| [`mkdocs-documentation`](skills/mkdocs-documentation/) | Maintain standalone containerized MkDocs Material documentation |
 | [`multi-step-form`](skills/multi-step-form/) | Coordinate accessible step navigation, validation, drafts, and submission |
 | [`skill-creator`](skills/skill-creator/) | Create and improve portable Agent Skills |
 | [`solidjs-component`](skills/solidjs-component/) | Build accessible components with correct SolidJS reactivity |
@@ -52,6 +61,7 @@ Portable software-engineering skills and provider-neutral agent rules.
 | Rule | Purpose |
 |---|---|
 | [`agent-execution`](rules/agent-execution.md) | Require explicit approval before tests and project commands |
+| [`comments-and-documentation`](rules/comments-and-documentation.md) | Keep comments purposeful and project documentation canonical |
 | [`css-modules-conventions`](rules/css-modules-conventions.md) | Keep modular styles token-based, local, and structurally safe |
 | [`dotnet-conventions`](rules/dotnet-conventions.md) | Keep .NET changes consistent, bounded, and contract-aware |
 | [`dotnet-error-handling`](rules/dotnet-error-handling.md) | Classify, map, and disclose .NET failures consistently |
@@ -90,17 +100,18 @@ Then run the helper from the consuming repository root:
 
 The helper replaces `.claude/settings.json`, `.codex/config.toml`,
 `.cursor/cli.json`, `.cursor/permissions.json`, and `.vscode/settings.json`. It
-also deletes and recreates `.claude/skills/`, `.claude/rules/`, `.cursor/rules/`,
-`.github/skills/`, and `.github/instructions/` from the canonical content in
-`.agents/`, then replaces root `AGENTS.md` and `CLAUDE.md`. Do not keep
-project-owned content in any of these generated locations.
+also deletes and recreates the complete skill package under `.claude/skills/`,
+`.codex/skills/`, `.cursor/skills/`, and `.github/skills/`, plus the native rule
+adapters under `.claude/rules/`, `.cursor/rules/`, and `.github/instructions/`.
+Finally, it writes self-contained instructions to root `AGENTS.md` and
+`.claude/CLAUDE.md`. Do not keep project-owned content in any generated location.
 
 | Client | Instructions and rules | Skills after local installation |
 |---|---|---|
-| Codex | Root `AGENTS.md` routes to canonical rules; generated `.codex/config.toml` enables a workspace sandbox with approval on request | Native `.agents/skills/` |
-| GitHub Copilot / VS Code | Root `AGENTS.md`, generated `.github/instructions/`, and conservative terminal rules in `.vscode/settings.json` | Native `.agents/skills/` and generated `.github/skills/` |
-| Claude Code | Generated `.claude/settings.json`, `.claude/rules/`, and `CLAUDE.md` importing root `AGENTS.md` | Generated `.claude/skills/` |
-| Cursor | Generated `.cursor/rules/`, CLI permissions in `.cursor/cli.json`, Auto-review guidance in `.cursor/permissions.json`, and root `AGENTS.md` | Native `.agents/skills/` |
+| Codex | Self-contained root `AGENTS.md`; generated `.codex/config.toml` enables a workspace sandbox with approval on request | Generated `.codex/skills/` |
+| GitHub Copilot / VS Code | Self-contained root `AGENTS.md`, generated `.github/instructions/`, and conservative terminal rules in `.vscode/settings.json` | Generated `.github/skills/` |
+| Claude Code | Self-contained `.claude/CLAUDE.md`, generated `.claude/settings.json`, and `.claude/rules/` | Generated `.claude/skills/` |
+| Cursor | Self-contained root `AGENTS.md`, generated `.cursor/rules/`, CLI permissions in `.cursor/cli.json`, and Auto-review guidance in `.cursor/permissions.json` | Generated `.cursor/skills/` |
 
 This matrix describes client discovery, not model behavior. A model does not
 load these files by itself; the client must support and enable the corresponding
@@ -126,10 +137,10 @@ git submodule update --remote .agents
 .\.agents\scripts\install-consumer.ps1
 ```
 
-This produces portable and native discovery paths while keeping `.agents/` as the
-only submodule. The generated root `CLAUDE.md` imports the combined `AGENTS.md`, so
-Claude receives both shared and project-specific guidance. See the
-[`rules` installation guide](rules/README.md) for adapter details and manual setup.
+This produces independent native client packages while keeping `.agents/` as the
+only submodule and source of truth. Generated instructions contain the full rule
+text and do not import files from `.agents/`. See the [`rules` installation
+guide](rules/README.md) for adapter details and manual setup.
 
 ## Validation
 
@@ -138,6 +149,10 @@ Run the dependency-free repository validator with PowerShell 5.1 or later:
 ```powershell
 .\scripts\validate.ps1
 ```
+
+It verifies skill frontmatter, completion criteria, resource reachability, local
+links, README catalogs, rule routing through `AGENTS.md`, and conservative client
+settings.
 
 The official Agent Skills validator can also validate an individual package:
 

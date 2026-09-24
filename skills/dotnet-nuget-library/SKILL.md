@@ -39,6 +39,7 @@ description: Create, evolve, pack, review, or prepare release of a reusable .NET
    - Use the repository's semantic-versioning and compatibility policy.
    - Prefer additive evolution when compatibility must be preserved.
    - Pair deprecation with a usable replacement and removal plan.
+   - Classify configuration, dependency, registration, startup, serialization, and behavioral compatibility in addition to source and binary API.
 8. Propose package inspection.
    - Propose `dotnet pack` with an isolated output directory.
    - Inspect the `.nupkg`, generated manifest, dependencies, target-framework folders, symbols, and metadata.
@@ -47,6 +48,7 @@ description: Create, evolve, pack, review, or prepare release of a reusable .NET
    - Install the exact local package into clean representative consumers.
    - Verify compile-time API, runtime loading, dependency flow, trimming or AOT when supported, and debugging metadata.
    - Use a unique prerelease version to avoid stale global-package cache results.
+   - Resolve the exact candidate from a clean package source configuration rather than relying on workspace project references or local build output.
 10. Prepare publishing.
    - Confirm immutable version, source, credentials boundary, signing or provenance requirements, and release notes.
    - Publish only the inspected artifact after explicit approval.
