@@ -14,6 +14,7 @@ description: Design, evolve, or review stable HTTP API contracts. Use when the p
 
 1. Identify consumers and operation semantics.
    - Define the user outcome, resource ownership, authorization boundary, and expected call frequency.
+   - Stop when consumer intent, ownership, or authorization policy is unresolved.
    - Choose HTTP method and status codes from operation semantics.
 2. Define request input.
    - Separate route identity, query options, headers, and body data.

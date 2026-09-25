@@ -77,7 +77,10 @@ function Get-RuleApplyTo {
         'dotnet-conventions' { '**/*.cs,**/*.csproj,**/*.fs,**/*.fsproj,**/*.sln,**/*.slnx' }
         'dotnet-error-handling' { '**/*.cs,**/*.csproj,**/*.fs,**/*.fsproj' }
         'frontend-accessibility' { '**/*.html,**/*.htm,**/*.tsx,**/*.jsx,**/*.vue,**/*.svelte,**/*.razor' }
+        'react-conventions' { '**/*.tsx,**/*.jsx' }
         'solidjs-conventions' { '**/*.tsx,**/*.jsx' }
+        'tsx-component-conventions' { '**/*.tsx,**/*.jsx' }
+        'typescript-conventions' { '**/*.ts,**/*.tsx,**/*.mts,**/*.cts' }
         default { '**' }
     }
 }
@@ -101,11 +104,37 @@ function Sync-ClaudeRules {
         }
 
         $name = [IO.Path]::GetFileNameWithoutExtension($rule.Name)
+        if ($name -in @('react-conventions', 'solidjs-conventions')) {
+            continue
+        }
+
         $paths = @((Get-RuleApplyTo -RuleName $name) -split ',' | ForEach-Object { "  - `"$($_)`"" }) -join "`r`n"
         $content = Get-Content $rule.FullName -Raw
         $adapter = "---`r`npaths:`r`n$paths`r`n---`r`n`r`n$content"
         Write-Utf8File -File (Join-Path $DestinationRoot $rule.Name) -Content $adapter
     }
+
+    $reactRules = Get-Content (Join-Path $guidanceRoot 'rules\react-conventions.md') -Raw
+    $solidRules = Get-Content (Join-Path $guidanceRoot 'rules\solidjs-conventions.md') -Raw
+    $frameworkAdapter = @"
+---
+paths:
+  - "**/*.tsx"
+  - "**/*.jsx"
+---
+
+# TSX Framework Routing
+
+- Determine whether the owning project and file use React or SolidJS from imports, dependencies, and repository configuration.
+- Apply exactly one matching framework section.
+- Do not apply React lifecycle, rerender, hook, or memoization assumptions to SolidJS.
+- Do not apply SolidJS signal, owner, resource, or control-flow assumptions to React.
+
+$reactRules
+
+$solidRules
+"@
+    Write-Utf8File -File (Join-Path $DestinationRoot 'tsx-framework-conventions.md') -Content $frameworkAdapter
 }
 
 function Sync-CopilotRules {
@@ -128,8 +157,9 @@ function Sync-CopilotRules {
 
         $name = [IO.Path]::GetFileNameWithoutExtension($rule.Name)
         $content = Get-Content $rule.FullName -Raw
-        if ($name -eq 'solidjs-conventions') {
-            $adapter = "---`r`nname: $name`r`ndescription: SolidJS conventions. Apply when working in a SolidJS application.`r`n---`r`n`r`n$content"
+        if ($name -in @('react-conventions', 'solidjs-conventions')) {
+            $framework = if ($name -eq 'react-conventions') { 'React' } else { 'SolidJS' }
+            $adapter = "---`r`nname: $name`r`ndescription: $framework conventions. Apply when working in a $framework application.`r`n---`r`n`r`n$content"
         }
         else {
             $applyTo = Get-RuleApplyTo -RuleName $name
@@ -160,8 +190,9 @@ function Sync-CursorRules {
 
         $name = [IO.Path]::GetFileNameWithoutExtension($rule.Name)
         $content = Get-Content $rule.FullName -Raw
-        if ($name -eq 'solidjs-conventions') {
-            $frontmatter = "description: SolidJS conventions. Apply when working in a SolidJS application.`r`nalwaysApply: false"
+        if ($name -in @('react-conventions', 'solidjs-conventions')) {
+            $framework = if ($name -eq 'react-conventions') { 'React' } else { 'SolidJS' }
+            $frontmatter = "description: $framework conventions. Apply when working in a $framework application.`r`nalwaysApply: false"
         }
         else {
             $globs = Get-RuleApplyTo -RuleName $name

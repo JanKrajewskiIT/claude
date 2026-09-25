@@ -13,7 +13,8 @@ description: Create, refactor, or review accessible SolidJS components with corr
 ## Workflow
 
 1. Find the nearest component pattern.
-   - If the user requests a fresh design, apply `frontend-design-exploration` before inspecting existing UI implementations.
+   - If the user requests a new, alternative, independent, or from-scratch design, apply `frontend-design-exploration` before inspecting existing UI implementations or solution documentation.
+   - Otherwise, reuse existing fundamentals, primitives, patterns, and documentation before creating another implementation.
    - Inspect public props, exports, styling, tests, stories, and accessibility helpers.
    - Extend an existing primitive when it already owns the behavior.
 2. Define the semantic contract.

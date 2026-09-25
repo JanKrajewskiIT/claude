@@ -298,7 +298,7 @@ else {
 
 if ($failures.Count -gt 0) {
     foreach ($failure in $failures) {
-        Write-Error $failure
+        Write-Error $failure -ErrorAction Continue
     }
 
     exit 1

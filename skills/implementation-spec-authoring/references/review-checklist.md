@@ -30,3 +30,14 @@
 - [ ] Code appears only when exact syntax is part of the contract.
 - [ ] The overview indexes tasks without duplicating their bodies.
 
+## Clean-Room Rebuild
+
+- [ ] Observable behavior is separated from private implementation structure.
+- [ ] Required technologies, libraries, protocols, and compatibility surfaces are explicit.
+- [ ] Public types, schemas, routes, events, storage shapes, and configuration keys are included only when contractual.
+- [ ] Private files, helpers, algorithms, component trees, DOM structure, selectors, and internal state are excluded unless externally observable.
+- [ ] Suspected defects, workarounds, and accidental behavior require an explicit preservation decision.
+- [ ] Acceptance evidence can evaluate a replacement without comparing source structure.
+- [ ] The approved spec is sufficient for implementation without reopening old source.
+- [ ] Deletion or archival of the old implementation has separate explicit approval.
+

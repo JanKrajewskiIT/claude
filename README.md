@@ -67,8 +67,11 @@ Portable software-engineering skills and provider-neutral agent rules.
 | [`dotnet-error-handling`](rules/dotnet-error-handling.md) | Classify, map, and disclose .NET failures consistently |
 | [`frontend-accessibility`](rules/frontend-accessibility.md) | Apply semantic, keyboard, focus, and visual accessibility baselines |
 | [`git-and-change-safety`](rules/git-and-change-safety.md) | Protect user changes, history, and public compatibility |
+| [`react-conventions`](rules/react-conventions.md) | Apply React rendering, hooks, state, effect, and context baselines |
 | [`security-boundaries`](rules/security-boundaries.md) | Preserve trust, secret, data, and integration boundaries |
 | [`solidjs-conventions`](rules/solidjs-conventions.md) | Apply SolidJS reactivity, state, component, and async baselines |
+| [`tsx-component-conventions`](rules/tsx-component-conventions.md) | Keep TSX components small, modular, colocated, and structurally lean |
+| [`typescript-conventions`](rules/typescript-conventions.md) | Keep TypeScript contracts narrow, validated, explicit, and modular |
 
 ## Installation
 

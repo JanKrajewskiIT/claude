@@ -14,6 +14,7 @@ description: Design, implement, or review outbound HTTP integrations in .NET app
 
 1. Define the dependency boundary.
    - Identify ownership, base address, operations, authentication, limits, and data sensitivity.
+   - Stop when the remote contract, credential ownership, or destination trust policy is unresolved.
    - Separate the remote transport contract from application-facing models.
 2. Inspect repository infrastructure.
    - Reuse existing client registration, resilience, telemetry, and credential handlers.

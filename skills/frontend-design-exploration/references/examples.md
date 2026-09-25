@@ -2,7 +2,7 @@
 
 This example defines the expected depth, not a mandatory visual style.
 
-## Stage 1 Proposal
+## Stage 2 Independent Direction
 
 ### Direction
 
@@ -32,5 +32,5 @@ contextual details panel
 
 ### Approval Gate
 
-- Ask whether to preserve, revise, or reject this direction.
-- Do not inspect existing primitives until the user approves Stage 2.
+- Ask whether to keep, revise, reject, or adapt this direction.
+- Do not inspect existing primitives until the user explicitly approves Stage 3.
