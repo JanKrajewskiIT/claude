@@ -60,6 +60,7 @@
 - Keep context providers focused on one coherent ownership boundary.
 - Prefer props and composition for local relationships; use context for shared descendant ownership.
 - Keep context values minimal and fail clearly when a required provider is missing.
+- Expose derived collections as readonly values; do not allow consumers to mutate a memo's cached result outside reactive setters.
 - When a contract requires a degraded fallback outside the provider, emit a development diagnostic so the missing provider stays observable.
 - Read context only during synchronous setup under an owner; a function that callers may invoke from event handlers or asynchronous callbacks must receive the dependency explicitly instead of resolving it from context.
 - Keep each component in its own module even when the library authors components without JSX through `createComponent`.
@@ -88,6 +89,7 @@
 - Track loading, empty, failure, and stale states explicitly.
 - Propagate cancellation where the underlying API supports it.
 - Prevent stale asynchronous results from replacing newer state.
+- Route promise completions and dependency events through the same state-transition policy so one cannot bypass the other's invalidation guards.
 - Keep request mapping and payload normalization outside JSX event markup.
 
 ## Loading And Failure Boundaries

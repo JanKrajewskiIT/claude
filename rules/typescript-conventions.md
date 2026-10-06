@@ -37,6 +37,7 @@
 ## Narrowing
 
 - Validate untrusted runtime data before treating it as a typed application value.
+- Validate each known nested property promised by a decoded object's return type; a top-level record check proves only a record of unknown values.
 - Prefer type guards, assertion functions, schema validation already owned by the repository, or `satisfies` over broad type assertions.
 - Use a type assertion only when a runtime invariant exists but TypeScript cannot express it; keep the assertion local to that boundary.
 - Avoid non-null assertions when control flow, an early return, or a narrower type can prove presence.

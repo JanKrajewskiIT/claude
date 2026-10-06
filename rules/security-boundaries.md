@@ -13,6 +13,7 @@
 - Do not request, print, store, or include secrets in agent context.
 - Do not read secret-bearing files unless the user explicitly authorizes the exact need.
 - Redact credentials, personal data, and sensitive payloads from logs and errors.
+- Do not treat query-string redaction or a JWT-shaped pattern as complete secret sanitization; account for structured fields, bearer credentials, and opaque tokens before exposing dependency error text.
 - Use the repository's approved secret provider and rotation mechanism.
 
 ## Data

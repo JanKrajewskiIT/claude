@@ -29,6 +29,7 @@ Portable software-engineering skills and provider-neutral agent rules.
 | [`api-contract-design`](skills/api-contract-design/) | Design stable HTTP contracts, errors, pagination, and write semantics |
 | [`aspire-composition`](skills/aspire-composition/) | Compose resources in .NET Aspire distributed applications |
 | [`aspnet-core-endpoint`](skills/aspnet-core-endpoint/) | Implement secured ASP.NET Core endpoints matching their HTTP contracts |
+| [`async-operation-lifecycle`](skills/async-operation-lifecycle/) | Review asynchronous results, dependency events, persistence, and invalidation as one lifecycle |
 | [`component-library-extraction`](skills/component-library-extraction/) | Extract reusable UI patterns without leaking product behavior |
 | [`database-soft-delete`](skills/database-soft-delete/) | Define deletion, visibility, restoration, retention, and purge semantics |
 | [`document-autosave`](skills/document-autosave/) | Preserve editable documents across timing, network, and concurrency failures |

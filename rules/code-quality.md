@@ -60,10 +60,15 @@
 - Evict a cache entry only when no active observer holds it, and cancel work owned by an entry when it is removed.
 - Do not serve an invalidated cache entry through a read path that bypasses refetching.
 - Flush or locally persist pending debounced work when its owner is disposed; do not drop it silently.
+- Associate temporary persisted handoff data with its writing operation so failed or superseded work cannot remove another operation's value.
 
 ## Concurrency
 
 - Tag each asynchronous run with a sequence number or controller and apply its result only while it is still the latest run for that state.
+- Treat a timeout wrapper as a deadline for the caller, not cancellation of the underlying operation; account for late persistence writes, events, and navigation.
+- Apply invalidation checks to every completion path, including errors, event handlers, persistence commits, and navigation, not only successful promise results.
+- Release operation-scoped registrations when their owner ends; if underlying work must retain a registration after timeout, define a bounded termination or recovery path.
+- Confirm dependency-level single-flight behavior from the supported implementation or focused runtime evidence before relying on it for concurrent mutations.
 - When a reactive source can switch to a different keyed resource, distinguish the switch from a change within the same resource before reacting.
 - Arm a deadline timer only from the event that starts its period, such as a successful fetch; a deadline already in the past must not re-trigger work on unrelated state changes.
 - Do not detect equality by comparing serialized snapshots whose text depends on property order.
