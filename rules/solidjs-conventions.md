@@ -33,6 +33,7 @@
 - Resolve each defaulted prop in one place instead of repeating `props.value ?? DEFAULT` at every read.
 - Use the `children` helper when children are read repeatedly, inspected, or transformed.
 - Compose forwarded event handlers intentionally instead of silently replacing either handler.
+- Spread forwarded attributes before component-owned attributes, or remove handler props the component owns from the forwarded set; a trailing `{...rest}` must never override an internal handler, `ref`, or `class`.
 
 ## JSX Control Flow
 
@@ -42,6 +43,7 @@
 - Avoid large inline conditions and collection transformations that hide state ownership inside JSX.
 - Render consumer render-prop children through `Show`, `Switch`, or `Match` instead of calling them inside a memo whose re-execution recreates the subtree on every data change.
 - Return JSX from control-flow primitives instead of casting a memo or accessor to `JSX.Element`.
+- Use one conditional-rendering idiom: `Show` for reactive branches, not `cond && <jsx />` or `cond ? <a /> : <b />` in JSX.
 
 ## State
 
@@ -50,6 +52,10 @@
 - Create writable drafts only when editing requires divergence from the source value.
 - Use stores for structured granular updates and signals for focused values.
 - Keep persisted preferences separate from remote server state.
+- Resolve the initial value of an uncontrolled input synchronously from its default, never from an effect with `defer: true`; the first render and form submission must already see it.
+- Implement controlled/uncontrolled value ownership once as a shared primitive and reuse it, instead of re-implementing mirror effects (`createEffect(on(() => props.value, set, { defer: true }))`) per component.
+- Do not create module-level signals, stores, or timer registries for shared UI state such as toasts or notifications; create them under a provider so they have an owner, a lifetime, and per-request isolation.
+- Evaluate "now" and other time-dependent values lazily or from a ticking source instead of capturing them once at component creation.
 
 ## Components
 

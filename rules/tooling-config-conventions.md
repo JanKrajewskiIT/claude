@@ -30,6 +30,8 @@
 - Default security-relevant options to the safe value, such as TLS verification for development proxies, and require an explicit opt-out.
 - Accept the syntax a supported dialect requires, such as CSS Modules `composes`, `:global`, `:local`, and `:export`.
 - Cover every file extension in staged-file tasks that the matching linter or formatter configuration covers.
+- Remove lint selector lists, ignore entries, and allowlists that name components, files, or identifiers that no longer exist, and list each ignore entry once.
+- Enforce one file encoding without a byte-order mark and one line-ending policy through the formatter or editor configuration.
 - Remove globs, includes, and script references to files that no longer exist, and keep documented verification steps aligned with the scripts that run.
 - Set `types` explicitly in a browser-targeted library `tsconfig` so development `@types/*` globals, such as Node timers, do not shape the published types.
 - Publish the sources referenced by declaration maps and source maps, or disable the maps.

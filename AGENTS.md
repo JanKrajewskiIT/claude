@@ -21,6 +21,7 @@
   - `rules/tsx-component-conventions.md` for TSX and JSX component files.
   - `rules/react-conventions.md` for React.
   - `rules/solidjs-conventions.md` for SolidJS.
+  - `rules/component-library-conventions.md` for reusable UI component libraries.
   - `rules/css-modules-conventions.md` for CSS Modules.
   - `rules/frontend-accessibility.md` for user interfaces.
   - `rules/tooling-config-conventions.md` for linter, formatter, compiler, bundler, Git hook, web server, and CI configuration.

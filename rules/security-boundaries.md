@@ -23,6 +23,9 @@
 - Treat authorization failures as non-disclosing responses.
 - Protect tenant and resource boundaries in every query and mutation.
 - Keep internal identifiers and infrastructure details private unless they are contract fields.
+- Do not render raw exception messages in user interfaces or error fallbacks; show a localized generic message with a recovery action and send diagnostics through a sanitized logging boundary.
+- Treat HTML from rich-text editors, Markdown, and consumers as untrusted; sanitize it with an established sanitizer before assigning it to `innerHTML` or rendering it as raw HTML.
+- Do not build a feature on a deprecated platform API, such as `document.execCommand`, without a documented replacement path.
 
 ## Integrations
 

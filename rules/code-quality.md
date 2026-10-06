@@ -77,6 +77,10 @@
 ## Failure Handling
 
 - Keep `try` blocks limited to the operation that can fail for the expected reason.
+- Do not swallow a failure with an empty `catch` or `.catch(() => defaultValue)`; record it in observable state or a diagnostic channel, or document why ignoring it is safe.
+- Do not guard a browser API (`typeof document === 'undefined'`) inside a code path that cannot run on the server, such as a client-only effect.
+- Do not write a branch that undoes what the opposite branch of the same effect already cleans up, such as removing a listener in an `else` and again in cleanup.
+- Cap append-only histories, such as notification lists, with a defined maximum and eviction rule.
 - Recover from a local defect locally when the contract allows partial results, instead of failing the whole operation.
 - Keep diagnostics observable in the environment where they are intended to fire and verify that build tooling does not remove them.
 - Do not convert a failure into an empty or default result when the caller explicitly requested the behavior that failed.

@@ -53,6 +53,7 @@ Portable software-engineering skills and provider-neutral agent rules.
 | [`multi-step-form`](skills/multi-step-form/) | Coordinate accessible step navigation, validation, drafts, and submission |
 | [`skill-creator`](skills/skill-creator/) | Create and improve portable Agent Skills |
 | [`solidjs-component`](skills/solidjs-component/) | Build accessible components with correct SolidJS reactivity |
+| [`solidjs-library-audit`](skills/solidjs-library-audit/) | Audit a SolidJS component library for quality, consistency, accessibility, and security |
 | [`solidjs-state-and-query`](skills/solidjs-state-and-query/) | Separate local, persisted, and server-owned state in SolidJS applications |
 | [`tooling-config-preset`](skills/tooling-config-preset/) | Build shareable tooling presets whose effective consumer configuration matches their contract |
 | [`typed-i18n`](skills/typed-i18n/) | Build type-safe locale messages, formatting, fallback, and ownership |

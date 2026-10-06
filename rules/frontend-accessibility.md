@@ -29,6 +29,17 @@
 - Keep pointer targets usable without making adjacent actions ambiguous.
 - Respect reduced-motion and other user preferences.
 
+## Interactive Patterns
+
+- Expose a sortable column header as a native `button` inside the header cell and set `aria-sort` on the cell; a click handler on the cell alone is not keyboard operable.
+- Use the native modal `dialog` focus containment and inertness; do not add a document-level Tab handler that duplicates or fights it.
+- Make a busy control inert to activation (disabled or guarded) and keep its accessible name while its content is visually hidden.
+- Provide a forced-colors fallback, such as an `outline` or system-color border, whenever a focus indicator is built from `box-shadow` or `outline: none`.
+- Make a tooltip dismissible with Escape, keep it visible while the pointer is over it, and reference it from the trigger through a stable `aria-describedby`.
+- Let Escape and outside pointer press close only the topmost open layer; register layers in one shared stack instead of one document listener per component.
+- Use `role="listbox"` and `role="option"` only with the matching selection and navigation model, including Home, End, and typeahead; do not bind value changes to unrelated keys such as PageUp or PageDown.
+- Use `aria-live` regions only for changes users must perceive; mount the region before its content changes.
+
 ## Custom Widgets
 
 - Follow the current WAI-ARIA Authoring Practices for the chosen pattern.

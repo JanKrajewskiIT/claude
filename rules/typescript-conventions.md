@@ -25,6 +25,7 @@
 - Refer to an existing named alias wherever the same contract appears instead of restating its structure.
 - Type the same identifier concept identically across sibling APIs, such as `string` versus `PropertyKey` ids.
 - Derive the element type of a keyed helper from its key, such as `K extends keyof T` with `T[K]`, instead of accepting any string with an unrelated item type.
+- Do not intersect an index-signature or template-literal-key type, such as `` `aria-${string}` ``, with named members of a different type; the intersection narrows the member and forces assertions at call sites. Exclude the named keys from the pattern type instead.
 - Declare function-valued members, especially callbacks, with property syntax such as `onSave: (value: T) => void` so strict variance applies; use one member style per codebase.
 - Under `exactOptionalPropertyTypes`, declare forwarded optional options as `T | undefined` or forward the options object as a whole instead of rebuilding it with conditional spreads.
 

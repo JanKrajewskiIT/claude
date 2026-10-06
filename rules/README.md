@@ -12,6 +12,7 @@ instruction mechanism supported by the target client.
 |---|---|
 | [`agent-execution`](agent-execution.md) | Require explicit approval for tests and project commands |
 | [`code-quality`](code-quality.md) | Keep code single-sourced, cohesive, consistent, and free of dead paths |
+| [`component-library-conventions`](component-library-conventions.md) | Keep reusable UI libraries consistent in exports, contracts, localization, and inventories |
 | [`css-modules-conventions`](css-modules-conventions.md) | Keep modular styles token-based, local, and structurally safe |
 | [`comments-and-documentation`](comments-and-documentation.md) | Keep comments purposeful and project documentation canonical |
 | [`dotnet-conventions`](dotnet-conventions.md) | Keep .NET changes consistent, bounded, and contract-aware |

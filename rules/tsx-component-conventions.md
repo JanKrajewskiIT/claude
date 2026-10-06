@@ -37,6 +37,10 @@
 - Keep props semantic and narrowly typed; do not expose internal implementation details for caller convenience.
 - Avoid wrappers that add no semantics, layout, styling target, behavior, or ownership boundary.
 - Style the existing semantic element directly when it can own the required layout and presentation.
+- Split a component module that exceeds about 250 lines or owns more than one independent state machine; extract each into a sub-component or a hook.
+- Replace a child that receives more than about 15 props from one parent with a focused context, a state-owning sub-component, or composition slots; do not pass every label, draft value, and handler through one wrapper.
+- Group sibling draft fields, such as create and edit form values, into one store or object instead of one signal per field.
+- Do not pre-resolve every translated label in the parent and pass it down as a prop; resolve a label in the component that renders it.
 
 ## Completion Criteria
 
