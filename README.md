@@ -53,6 +53,7 @@ Portable software-engineering skills and provider-neutral agent rules.
 | [`skill-creator`](skills/skill-creator/) | Create and improve portable Agent Skills |
 | [`solidjs-component`](skills/solidjs-component/) | Build accessible components with correct SolidJS reactivity |
 | [`solidjs-state-and-query`](skills/solidjs-state-and-query/) | Separate local, persisted, and server-owned state in SolidJS applications |
+| [`tooling-config-preset`](skills/tooling-config-preset/) | Build shareable tooling presets whose effective consumer configuration matches their contract |
 | [`typed-i18n`](skills/typed-i18n/) | Build type-safe locale messages, formatting, fallback, and ownership |
 | [`typescript-library`](skills/typescript-library/) | Build and verify publishable TypeScript library packages |
 
@@ -71,6 +72,7 @@ Portable software-engineering skills and provider-neutral agent rules.
 | [`react-conventions`](rules/react-conventions.md) | Apply React rendering, hooks, state, effect, and context baselines |
 | [`security-boundaries`](rules/security-boundaries.md) | Preserve trust, secret, data, and integration boundaries |
 | [`solidjs-conventions`](rules/solidjs-conventions.md) | Apply SolidJS reactivity, state, component, and async baselines |
+| [`tooling-config-conventions`](rules/tooling-config-conventions.md) | Keep tooling configuration compatible, correctly layered, consumer-resolvable, and safe |
 | [`tsx-component-conventions`](rules/tsx-component-conventions.md) | Keep TSX components small, modular, colocated, and structurally lean |
 | [`typescript-conventions`](rules/typescript-conventions.md) | Keep TypeScript contracts narrow, validated, explicit, and modular |
 

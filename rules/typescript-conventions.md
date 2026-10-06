@@ -16,6 +16,9 @@
 - Derive literal unions, type guards, and runtime validation from one `as const` source instead of restating member literals.
 - Give each union variant only the fields valid for it, such as a style union per format, instead of a shared loose `string` that later requires assertions.
 - Extract a named alias for a value union reused across several types instead of repeating it.
+- Type a finite option value as its literal union instead of `string` when the runtime ignores or rejects other values.
+- Represent an optional feature by the presence of its options object, with its required fields required, instead of an `enabled` flag beside fields that become required only when enabled.
+- Derive variant option types from a shared base with `extends`, `Omit`, or `Pick` instead of duplicating their fields.
 
 ## Narrowing
 
@@ -33,6 +36,8 @@
 - Map external values at their owning boundary instead of spreading nullable, unvalidated, or third-party shapes through the application.
 - Keep third-party types out of public contracts when they create avoidable coupling.
 - Reuse a shared type only when consumers share the same semantics, not merely the same current fields.
+- Put required arguments before optional ones in public functions, or accept one options object; do not make callers pass `undefined` positionally.
+- Generate declarations from one typed source, either TypeScript or JavaScript checked with JSDoc and `checkJs`; when a declaration file is hand-authored, type-check a consumer of every export against it during validation.
 
 ## Modules
 
@@ -54,3 +59,4 @@
 - Shared types represent shared semantics rather than coincidental structure.
 - Module names and exports expose focused responsibilities.
 - Union handling is exhaustive and no double assertion bypasses the type system.
+- Public option types make invalid combinations unrepresentable and agree with the runtime they describe.

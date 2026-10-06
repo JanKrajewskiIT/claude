@@ -79,6 +79,7 @@ function Get-RuleApplyTo {
         'frontend-accessibility' { '**/*.html,**/*.htm,**/*.tsx,**/*.jsx,**/*.vue,**/*.svelte,**/*.razor' }
         'react-conventions' { '**/*.tsx,**/*.jsx' }
         'solidjs-conventions' { '**/*.tsx,**/*.jsx' }
+        'tooling-config-conventions' { '**/package.json,**/eslint.config.*,**/.eslintrc*,**/eslint/**,**/prettier.config.*,**/.prettierrc*,**/prettier/**,**/stylelint.config.*,**/.stylelintrc*,**/stylelint/**,**/tsconfig*.json,**/tsconfig/**,**/vite.config.*,**/vitest.config.*,**/vite/**,**/lint-staged.config.*,**/.lintstagedrc*,**/lint-staged/**,**/.husky/**,**/husky/**,**/*.conf,**/.github/workflows/**,**/.github/dependabot.yml' }
         'tsx-component-conventions' { '**/*.tsx,**/*.jsx' }
         'typescript-conventions' { '**/*.ts,**/*.tsx,**/*.mts,**/*.cts' }
         default { '**' }

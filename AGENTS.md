@@ -23,6 +23,7 @@
   - `rules/solidjs-conventions.md` for SolidJS.
   - `rules/css-modules-conventions.md` for CSS Modules.
   - `rules/frontend-accessibility.md` for user interfaces.
+  - `rules/tooling-config-conventions.md` for linter, formatter, compiler, bundler, Git hook, web server, and CI configuration.
 - Treat the loaded rules as higher priority than task-specific skill advice.
 - Do not load unrelated stack rules.
 

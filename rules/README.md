@@ -21,6 +21,7 @@ instruction mechanism supported by the target client.
 | [`react-conventions`](react-conventions.md) | Apply React rendering, hooks, state, effect, and context baselines |
 | [`security-boundaries`](security-boundaries.md) | Preserve trust, secret, data, and integration boundaries |
 | [`solidjs-conventions`](solidjs-conventions.md) | Apply SolidJS reactivity, state, component, and async baselines |
+| [`tooling-config-conventions`](tooling-config-conventions.md) | Keep tooling configuration compatible, correctly layered, consumer-resolvable, and safe |
 | [`tsx-component-conventions`](tsx-component-conventions.md) | Keep TSX components small, modular, colocated, and structurally lean |
 | [`typescript-conventions`](typescript-conventions.md) | Keep TypeScript contracts narrow, validated, explicit, and modular |
 
