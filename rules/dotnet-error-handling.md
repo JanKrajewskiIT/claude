@@ -1,5 +1,10 @@
 # .NET Error Handling
 
+## Scope
+
+- Apply this rule when creating, changing, or reviewing failure handling in .NET code.
+- Apply `dotnet-conventions` for general .NET structure and compatibility.
+
 ## Classification
 
 - Distinguish expected domain, validation, authorization, conflict, dependency, cancellation, and unexpected failures.
@@ -31,3 +36,10 @@
 - Keep response parsing and sanitization for untrusted external systems in dedicated boundary helpers.
 - Align retry classification across HTTP clients, background work, messaging, and telemetry according to whether another attempt can change the outcome.
 - Treat unknown failures as non-disclosing while preserving diagnostic correlation and the original cause.
+
+## Completion Criteria
+
+- Every expected failure has one classification and one stable transport mapping at the owning boundary.
+- Caller cancellation surfaces as cancellation, not as an application failure.
+- No client response or log entry discloses internals, secrets, or sensitive payloads.
+- Only failures that another attempt can change are retried.

@@ -10,6 +10,10 @@ description: Design, implement, or review accessible menus, listboxes, comboboxe
 - Select the correct accessibility pattern before implementing shared keyboard behavior.
 - Keep focus, active item, selection, value, and popup state distinct.
 
+## Do Not Use
+
+- Use `accessible-overlays` for dialog, drawer, and popover lifecycle, modality, dismissal, and return focus.
+
 ## Workflow
 
 1. Identify the user task.

@@ -29,8 +29,8 @@ description: <What the skill does>. Use when <specific requests, files, technolo
 3. Implement.
    - <Smallest ordered action>
 4. Validate.
-   - Run `<command or deterministic check>`.
-   - Confirm <observable result>.
+   - Propose `<command or deterministic check>` and run it only with the approval required by repository policy.
+   - Confirm <observable result>, or report the check as unrun.
 
 ## Constraints
 

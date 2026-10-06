@@ -10,6 +10,14 @@ description: Design, implement, optimize, or review Entity Framework Core read a
 - Make each persistence operation correct, bounded, and explicit about tracking, scope, concurrency, and transactions.
 - Keep database mechanics from leaking into domain and transport contracts.
 
+## Do Not Use
+
+- Use `ef-core-migrations` for generating, reviewing, or deploying schema migrations.
+- Use `ef-core-auditing` for trusted creation and modification metadata.
+- Use `ef-core-value-conversion` for storage representations of non-primitive properties.
+- Use `database-soft-delete` for deletion, restoration, retention, and purge lifecycle design.
+- Use `api-contract-design` for consumer-visible HTTP contracts.
+
 ## Workflow
 
 1. Locate persistence ownership.

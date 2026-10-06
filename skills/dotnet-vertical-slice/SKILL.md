@@ -10,6 +10,11 @@ description: Create, extend, or review vertical slices in .NET applications usin
 - Deliver one cohesive use case with explicit contracts and minimal coupling.
 - Follow the repository's existing .NET architecture and registration model.
 
+## Do Not Use
+
+- Use `aspnet-core-endpoint`, `dotnet-command-query-handler`, or `ef-core-persistence` when the change is limited to that one layer.
+- Use `api-contract-design` when the work only defines or evolves the HTTP contract.
+
 ## Workflow
 
 1. Locate the owning capability.
@@ -69,5 +74,5 @@ description: Create, extend, or review vertical slices in .NET applications usin
 - Endpoint, handler, domain, and persistence responsibilities do not overlap accidentally.
 - Validation and failures map to intentional API behavior.
 - Cancellation reaches every cancellable asynchronous boundary.
-- Registration is complete and focused validation passes.
+- Registration is complete, and focused validation passes or is reported as unrun with exact commands.
 - Configuration, telemetry, compatibility, and rollout behavior are explicit when the use case crosses those boundaries.

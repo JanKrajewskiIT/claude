@@ -31,13 +31,9 @@
 - Separate mechanical refactoring from behavior changes when practical.
 - Surface migration requirements before applying an irreversible change.
 
-## Dependencies
+## Completion Criteria
 
-- Reuse platform capabilities and dependencies already owned by the repository before adding another package.
-- Compare a proposed dependency's capability, maintenance, security, bundle or runtime cost, transitive dependencies, and compatibility impact with the actual requirement.
-- Prefer a small, focused local implementation when the required behavior is simple, stable, testable, and substantially narrower than the proposed library.
-- Do not recreate cryptography, authentication protocols, complex parsers, standards-heavy behavior, or other security-sensitive or specialized capabilities with ad hoc code.
-- Do not install an external library or add it to a package manifest, project file, dependency declaration, or lockfile without explicit approval in the current request.
-- Before requesting approval, explain the required capability, why platform and existing repository options are insufficient, the proposed library, and the material maintenance, security, licensing, runtime, or bundle impact.
-- Present the smallest viable local approach and the best-fitting dependency when both are reasonable choices.
-- Do not add a library for one trivial helper, formatting operation, collection transformation, or thin wrapper around a platform API.
+- No user change was discarded, overwritten, or staged outside the requested change.
+- No branch, commit, tag, release, or push occurred without explicit approval for that operation.
+- Shared history remains unchanged unless its rewrite was explicitly requested.
+- Breaking changes and migration requirements are reported from the consumer perspective.

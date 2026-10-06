@@ -6,6 +6,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 $guidanceRoot = Split-Path $PSScriptRoot -Parent
+$rulesRoot = Join-Path $guidanceRoot 'rules'
 $defaultTargetRoot = Split-Path $guidanceRoot -Parent
 $targetRoot = if ($TargetRepository) {
     [IO.Path]::GetFullPath($TargetRepository)
@@ -13,6 +14,27 @@ $targetRoot = if ($TargetRepository) {
 else {
     $defaultTargetRoot
 }
+$ruleScopes = Get-Content (Join-Path $rulesRoot 'rule-scopes.json') -Raw | ConvertFrom-Json
+$tsxFrameworkRules = @('react-conventions', 'solidjs-conventions')
+$generatedBlockStart = '<!-- BEGIN shared agent guidance: generated from .agents, do not edit -->'
+$generatedBlockEnd = '<!-- END shared agent guidance -->'
+$legacyGeneratedHeading = '# Shared Agent Guidance'
+$clientSettingsFiles = @(
+    '.claude/settings.json'
+    '.codex/config.toml'
+    '.cursor/cli.json'
+    '.cursor/permissions.json'
+    '.vscode/settings.json'
+)
+$generatedDirectories = @(
+    '.claude/skills'
+    '.claude/rules'
+    '.codex/skills'
+    '.cursor/rules'
+    '.cursor/skills'
+    '.github/skills'
+    '.github/instructions'
+)
 
 function Write-Utf8File {
     param(
@@ -21,6 +43,35 @@ function Write-Utf8File {
     )
 
     [IO.File]::WriteAllText($File, $Content, $utf8NoBom)
+}
+
+function Get-RuleFiles {
+    @(Get-ChildItem $rulesRoot -Filter '*.md' -File | Where-Object { $_.Name -ne 'README.md' } | Sort-Object Name)
+}
+
+function Get-RuleScope {
+    param([string]$RuleName)
+
+    $entry = $ruleScopes.PSObject.Properties[$RuleName]
+    if (-not $entry) {
+        throw "Rule '$RuleName' has no entry in rules/rule-scopes.json."
+    }
+
+    [PSCustomObject]@{
+        Globs = @($entry.Value.applyTo | Where-Object { $_ })
+        Description = $entry.Value.description
+    }
+}
+
+function Test-TrackedFile {
+    param([string]$RelativePath)
+
+    $trackedPaths = @(& git -C $targetRoot ls-files -- $RelativePath)
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to inspect Git tracking for '$RelativePath'."
+    }
+
+    $trackedPaths.Count -gt 0
 }
 
 function Sync-Skills {
@@ -40,19 +91,6 @@ function Sync-Skills {
     }
 }
 
-function Sync-ClaudeSettings {
-    param([string]$DestinationFile)
-
-    if (-not $PSCmdlet.ShouldProcess($DestinationFile, 'Replace with Claude settings from .agents')) {
-        return
-    }
-
-    $destinationDirectory = Split-Path $DestinationFile -Parent
-    New-Item -ItemType Directory -Path $destinationDirectory -Force | Out-Null
-    $content = Get-Content (Join-Path $guidanceRoot '.claude\settings.json') -Raw
-    Write-Utf8File -File $DestinationFile -Content $content
-}
-
 function Sync-ClientFile {
     param(
         [string]$SourceFile,
@@ -69,21 +107,21 @@ function Sync-ClientFile {
     Write-Utf8File -File $DestinationFile -Content $content
 }
 
-function Get-RuleApplyTo {
-    param([string]$RuleName)
+function Reset-Directory {
+    param([string]$DestinationRoot)
 
-    switch ($RuleName) {
-        'css-modules-conventions' { '**/*.module.css,**/*.module.scss,**/*.module.sass,**/*.module.less' }
-        'dotnet-conventions' { '**/*.cs,**/*.csproj,**/*.fs,**/*.fsproj,**/*.sln,**/*.slnx' }
-        'dotnet-error-handling' { '**/*.cs,**/*.csproj,**/*.fs,**/*.fsproj' }
-        'frontend-accessibility' { '**/*.html,**/*.htm,**/*.tsx,**/*.jsx,**/*.vue,**/*.svelte,**/*.razor' }
-        'react-conventions' { '**/*.tsx,**/*.jsx' }
-        'solidjs-conventions' { '**/*.tsx,**/*.jsx' }
-        'tooling-config-conventions' { '**/package.json,**/eslint.config.*,**/.eslintrc*,**/eslint/**,**/prettier.config.*,**/.prettierrc*,**/prettier/**,**/stylelint.config.*,**/.stylelintrc*,**/stylelint/**,**/tsconfig*.json,**/tsconfig/**,**/vite.config.*,**/vitest.config.*,**/vite/**,**/lint-staged.config.*,**/.lintstagedrc*,**/lint-staged/**,**/.husky/**,**/husky/**,**/*.conf,**/.github/workflows/**,**/.github/dependabot.yml' }
-        'tsx-component-conventions' { '**/*.tsx,**/*.jsx' }
-        'typescript-conventions' { '**/*.ts,**/*.tsx,**/*.mts,**/*.cts' }
-        default { '**' }
+    if (Test-Path $DestinationRoot) {
+        Remove-Item $DestinationRoot -Recurse -Force
     }
+
+    New-Item -ItemType Directory -Path $DestinationRoot -Force | Out-Null
+}
+
+function Get-ClaudePathsFrontmatter {
+    param([string[]]$Globs)
+
+    $paths = @($Globs | ForEach-Object { "  - `"$_`"" }) -join "`r`n"
+    "---`r`npaths:`r`n$paths`r`n---`r`n`r`n"
 }
 
 function Sync-ClaudeRules {
@@ -93,37 +131,30 @@ function Sync-ClaudeRules {
         return
     }
 
-    if (Test-Path $DestinationRoot) {
-        Remove-Item $DestinationRoot -Recurse -Force
-    }
+    Reset-Directory -DestinationRoot $DestinationRoot
 
-    New-Item -ItemType Directory -Path $DestinationRoot -Force | Out-Null
-
-    foreach ($rule in @(Get-ChildItem (Join-Path $guidanceRoot 'rules') -Filter '*.md' -File)) {
-        if ($rule.Name -eq 'README.md') {
+    foreach ($rule in Get-RuleFiles) {
+        $name = $rule.BaseName
+        if ($name -in $tsxFrameworkRules) {
             continue
         }
 
-        $name = [IO.Path]::GetFileNameWithoutExtension($rule.Name)
-        if ($name -in @('react-conventions', 'solidjs-conventions')) {
-            continue
-        }
-
-        $paths = @((Get-RuleApplyTo -RuleName $name) -split ',' | ForEach-Object { "  - `"$($_)`"" }) -join "`r`n"
+        $scope = Get-RuleScope -RuleName $name
         $content = Get-Content $rule.FullName -Raw
-        $adapter = "---`r`npaths:`r`n$paths`r`n---`r`n`r`n$content"
+        $adapter = if ($scope.Globs.Count -eq 0) {
+            $content
+        }
+        else {
+            (Get-ClaudePathsFrontmatter -Globs $scope.Globs) + $content
+        }
+
         Write-Utf8File -File (Join-Path $DestinationRoot $rule.Name) -Content $adapter
     }
 
-    $reactRules = Get-Content (Join-Path $guidanceRoot 'rules\react-conventions.md') -Raw
-    $solidRules = Get-Content (Join-Path $guidanceRoot 'rules\solidjs-conventions.md') -Raw
-    $frameworkAdapter = @"
----
-paths:
-  - "**/*.tsx"
-  - "**/*.jsx"
----
-
+    $reactRules = Get-Content (Join-Path $rulesRoot 'react-conventions.md') -Raw
+    $solidRules = Get-Content (Join-Path $rulesRoot 'solidjs-conventions.md') -Raw
+    $frameworkGlobs = (Get-RuleScope -RuleName 'react-conventions').Globs
+    $frameworkRules = @"
 # TSX Framework Routing
 
 - Determine whether the owning project and file use React or SolidJS from imports, dependencies, and repository configuration.
@@ -135,6 +166,7 @@ $reactRules
 
 $solidRules
 "@
+    $frameworkAdapter = (Get-ClaudePathsFrontmatter -Globs $frameworkGlobs) + $frameworkRules
     Write-Utf8File -File (Join-Path $DestinationRoot 'tsx-framework-conventions.md') -Content $frameworkAdapter
 }
 
@@ -145,28 +177,23 @@ function Sync-CopilotRules {
         return
     }
 
-    if (Test-Path $DestinationRoot) {
-        Remove-Item $DestinationRoot -Recurse -Force
-    }
+    Reset-Directory -DestinationRoot $DestinationRoot
 
-    New-Item -ItemType Directory -Path $DestinationRoot -Force | Out-Null
-
-    foreach ($rule in @(Get-ChildItem (Join-Path $guidanceRoot 'rules') -Filter '*.md' -File)) {
-        if ($rule.Name -eq 'README.md') {
-            continue
-        }
-
-        $name = [IO.Path]::GetFileNameWithoutExtension($rule.Name)
+    foreach ($rule in Get-RuleFiles) {
+        $name = $rule.BaseName
+        $scope = Get-RuleScope -RuleName $name
         $content = Get-Content $rule.FullName -Raw
-        if ($name -in @('react-conventions', 'solidjs-conventions')) {
-            $framework = if ($name -eq 'react-conventions') { 'React' } else { 'SolidJS' }
-            $adapter = "---`r`nname: $name`r`ndescription: $framework conventions. Apply when working in a $framework application.`r`n---`r`n`r`n$content"
+        $frontmatter = if ($scope.Description) {
+            "name: $name`r`ndescription: $($scope.Description)"
+        }
+        elseif ($scope.Globs.Count -eq 0) {
+            "name: $name`r`ndescription: Shared $name guidance`r`napplyTo: `"**`""
         }
         else {
-            $applyTo = Get-RuleApplyTo -RuleName $name
-            $adapter = "---`r`nname: $name`r`ndescription: Shared $name guidance`r`napplyTo: `"$applyTo`"`r`n---`r`n`r`n$content"
+            "name: $name`r`ndescription: Shared $name guidance`r`napplyTo: `"$($scope.Globs -join ',')`""
         }
 
+        $adapter = "---`r`n$frontmatter`r`n---`r`n`r`n$content"
         Write-Utf8File -File (Join-Path $DestinationRoot "$name.instructions.md") -Content $adapter
     }
 }
@@ -178,31 +205,20 @@ function Sync-CursorRules {
         return
     }
 
-    if (Test-Path $DestinationRoot) {
-        Remove-Item $DestinationRoot -Recurse -Force
-    }
+    Reset-Directory -DestinationRoot $DestinationRoot
 
-    New-Item -ItemType Directory -Path $DestinationRoot -Force | Out-Null
-
-    foreach ($rule in @(Get-ChildItem (Join-Path $guidanceRoot 'rules') -Filter '*.md' -File)) {
-        if ($rule.Name -eq 'README.md') {
-            continue
-        }
-
-        $name = [IO.Path]::GetFileNameWithoutExtension($rule.Name)
+    foreach ($rule in Get-RuleFiles) {
+        $name = $rule.BaseName
+        $scope = Get-RuleScope -RuleName $name
         $content = Get-Content $rule.FullName -Raw
-        if ($name -in @('react-conventions', 'solidjs-conventions')) {
-            $framework = if ($name -eq 'react-conventions') { 'React' } else { 'SolidJS' }
-            $frontmatter = "description: $framework conventions. Apply when working in a $framework application.`r`nalwaysApply: false"
+        $frontmatter = if ($scope.Description) {
+            "description: $($scope.Description)`r`nalwaysApply: false"
+        }
+        elseif ($scope.Globs.Count -eq 0) {
+            'alwaysApply: true'
         }
         else {
-            $globs = Get-RuleApplyTo -RuleName $name
-            $frontmatter = if ($globs -eq '**') {
-                'alwaysApply: true'
-            }
-            else {
-                "globs: `"$globs`"`r`nalwaysApply: false"
-            }
+            "globs: `"$($scope.Globs -join ',')`"`r`nalwaysApply: false"
         }
 
         $adapter = "---`r`n$frontmatter`r`n---`r`n`r`n$content"
@@ -210,37 +226,66 @@ function Sync-CursorRules {
     }
 }
 
-function Get-CombinedRuleGuidance {
-    $sections = @('# Shared Agent Guidance')
-
-    foreach ($rule in @(Get-ChildItem (Join-Path $guidanceRoot 'rules') -Filter '*.md' -File | Where-Object { $_.Name -ne 'README.md' } | Sort-Object Name)) {
-        $sections += (Get-Content $rule.FullName -Raw).Trim()
-    }
-
-    ($sections -join "`r`n`r`n") + "`r`n"
+function Get-SharedGuidance {
+    $source = (Get-Content (Join-Path $guidanceRoot 'AGENTS.md') -Raw).Trim()
+    [regex]::Replace($source, '`(rules|skills)/', '`.agents/$1/')
 }
 
-function Update-AgentInstructions {
-    param([string]$File)
+function Get-ClaudeGuidance {
+    $guidance = [regex]::Replace((Get-SharedGuidance), '(?ms)^## Rules\r?\n.*?(?=^## |\z)', '')
+    $installedRules = '- Shared rules load from `.claude/rules/`; path-scoped rules apply only to matching files.'
+    $guidance.TrimEnd() + "`r`n`r`n## Installed Rules`r`n`r`n" + $installedRules
+}
 
-    $content = Get-CombinedRuleGuidance
+function Set-GeneratedBlock {
+    param(
+        [string]$File,
+        [string]$Guidance
+    )
 
-    if ($PSCmdlet.ShouldProcess($File, 'Replace repository agent instructions')) {
+    $block = "$generatedBlockStart`r`n$Guidance`r`n$generatedBlockEnd"
+    $existing = if (Test-Path $File -PathType Leaf) { Get-Content $File -Raw } else { $null }
+
+    if ([string]::IsNullOrWhiteSpace($existing)) {
+        $content = "$block`r`n"
+    }
+    else {
+        $pattern = [regex]::Escape($generatedBlockStart) + '(?s).*?' + [regex]::Escape($generatedBlockEnd)
+        $match = [regex]::Match($existing, $pattern)
+        if ($match.Success) {
+            $content = $existing.Substring(0, $match.Index) + $block + $existing.Substring($match.Index + $match.Length)
+        }
+        elseif ($existing.TrimStart().StartsWith($legacyGeneratedHeading)) {
+            $content = "$block`r`n"
+        }
+        else {
+            $content = $existing.TrimEnd() + "`r`n`r`n$block`r`n"
+        }
+    }
+
+    if ($PSCmdlet.ShouldProcess($File, 'Update the generated shared guidance block')) {
+        New-Item -ItemType Directory -Path (Split-Path $File -Parent) -Force | Out-Null
         Write-Utf8File -File $File -Content $content
     }
 }
 
-function Update-ClaudeInstructions {
-    param([string]$File)
+function Remove-LegacyClaudeInstructions {
+    $file = Join-Path $targetRoot 'CLAUDE.md'
+    if (-not (Test-Path $file -PathType Leaf)) {
+        return
+    }
 
-    if ($PSCmdlet.ShouldProcess($File, 'Replace Claude repository instructions')) {
-        $destinationDirectory = Split-Path $File -Parent
-        New-Item -ItemType Directory -Path $destinationDirectory -Force | Out-Null
-        Write-Utf8File -File $File -Content (Get-CombinedRuleGuidance)
+    $content = Get-Content $file -Raw
+    if ($null -eq $content -or -not $content.TrimStart().StartsWith($legacyGeneratedHeading)) {
+        return
+    }
+
+    if ($PSCmdlet.ShouldProcess($file, 'Remove legacy generated Claude instructions')) {
+        Remove-Item $file -Force
     }
 }
 
-function Add-GeneratedPathsToGitIgnore {
+function Update-GitIgnore {
     $gitIgnorePath = Join-Path $targetRoot '.gitignore'
     $existingLines = if (Test-Path $gitIgnorePath) {
         @(Get-Content $gitIgnorePath)
@@ -250,28 +295,15 @@ function Add-GeneratedPathsToGitIgnore {
     }
     $obsoleteEntries = @(
         '/CLAUDE.md'
+        '/AGENTS.md'
+        '/.claude/CLAUDE.md'
         '/.claude/rules/shared-agents/'
         '/.cursor/rules/shared-agents/'
         '/.github/instructions/shared-agents/'
         '# Generated agent skill copies'
-    )
+    ) + @($projectOwnedSettingsFiles | ForEach-Object { "/$_" })
     $retainedLines = @($existingLines | Where-Object { $_ -notin $obsoleteEntries })
-    $generatedEntries = @(
-        '/AGENTS.md'
-        '/.claude/CLAUDE.md'
-        '/.claude/settings.json'
-        '/.claude/skills/'
-        '/.claude/rules/'
-        '/.codex/config.toml'
-        '/.codex/skills/'
-        '/.cursor/cli.json'
-        '/.cursor/permissions.json'
-        '/.cursor/rules/'
-        '/.cursor/skills/'
-        '/.github/skills/'
-        '/.github/instructions/'
-        '/.vscode/settings.json'
-    )
+    $generatedEntries = @($generatedDirectories | ForEach-Object { "/$_/" }) + @($managedSettingsFiles | ForEach-Object { "/$_" })
     $missingEntries = @($generatedEntries | Where-Object { $_ -notin $retainedLines })
 
     if ($missingEntries.Count -eq 0 -and $retainedLines.Count -eq $existingLines.Count) {
@@ -280,14 +312,17 @@ function Add-GeneratedPathsToGitIgnore {
 
     if ($PSCmdlet.ShouldProcess($gitIgnorePath, 'Ignore generated agent customizations')) {
         $linesToAdd = @($retainedLines)
-        if ($linesToAdd.Count -gt 0 -and $linesToAdd[-1] -ne '') {
-            $linesToAdd += ''
+        if ($missingEntries.Count -gt 0) {
+            if ($linesToAdd.Count -gt 0 -and $linesToAdd[-1] -ne '') {
+                $linesToAdd += ''
+            }
+
+            if ('# Generated agent customizations' -notin $linesToAdd) {
+                $linesToAdd += '# Generated agent customizations'
+            }
+            $linesToAdd += $missingEntries
         }
 
-        if ('# Generated agent customizations' -notin $linesToAdd) {
-            $linesToAdd += '# Generated agent customizations'
-        }
-        $linesToAdd += $missingEntries
         $gitIgnoreContent = ($linesToAdd -join [Environment]::NewLine) + [Environment]::NewLine
         Write-Utf8File -File $gitIgnorePath -Content $gitIgnoreContent
     }
@@ -298,7 +333,8 @@ function Remove-GeneratedPathsFromGitIndex {
         return
     }
 
-    & git -C $targetRoot rm -r --cached --ignore-unmatch -f -- AGENTS.md CLAUDE.md .claude/CLAUDE.md .claude/settings.json .claude/skills .claude/rules .codex/config.toml .codex/skills .cursor/cli.json .cursor/permissions.json .cursor/rules .cursor/skills .github/skills .github/instructions .vscode/settings.json
+    $generatedPaths = @($generatedDirectories) + @($managedSettingsFiles)
+    & git -C $targetRoot rm -r --cached --ignore-unmatch -f -- $generatedPaths
     if ($LASTEXITCODE -ne 0) {
         throw 'Failed to remove generated agent files from the Git index.'
     }
@@ -312,17 +348,25 @@ if ([IO.Path]::GetFullPath((Join-Path $targetRoot '.agents')) -ne [IO.Path]::Get
     throw "Run this script from the target repository's '.agents/scripts' directory or specify its parent with -TargetRepository."
 }
 
-Update-AgentInstructions -File (Join-Path $targetRoot 'AGENTS.md')
-if (Test-Path (Join-Path $targetRoot 'CLAUDE.md')) {
-    Remove-Item (Join-Path $targetRoot 'CLAUDE.md') -Force
+$managedSettingsFiles = @()
+$projectOwnedSettingsFiles = @()
+foreach ($settingsFile in $clientSettingsFiles) {
+    if (Test-TrackedFile -RelativePath $settingsFile) {
+        $projectOwnedSettingsFiles += $settingsFile
+        Write-Warning "Skipping tracked project file '$settingsFile'. Merge the shared settings from .agents/$settingsFile manually if needed."
+    }
+    else {
+        $managedSettingsFiles += $settingsFile
+    }
 }
-Update-ClaudeInstructions -File (Join-Path $targetRoot '.claude\CLAUDE.md')
-Add-GeneratedPathsToGitIgnore
-Sync-ClaudeSettings -DestinationFile (Join-Path $targetRoot '.claude\settings.json')
-Sync-ClientFile -SourceFile '.codex\config.toml' -DestinationFile (Join-Path $targetRoot '.codex\config.toml')
-Sync-ClientFile -SourceFile '.cursor\cli.json' -DestinationFile (Join-Path $targetRoot '.cursor\cli.json')
-Sync-ClientFile -SourceFile '.cursor\permissions.json' -DestinationFile (Join-Path $targetRoot '.cursor\permissions.json')
-Sync-ClientFile -SourceFile '.vscode\settings.json' -DestinationFile (Join-Path $targetRoot '.vscode\settings.json')
+
+Set-GeneratedBlock -File (Join-Path $targetRoot 'AGENTS.md') -Guidance (Get-SharedGuidance)
+Set-GeneratedBlock -File (Join-Path $targetRoot '.claude\CLAUDE.md') -Guidance (Get-ClaudeGuidance)
+Remove-LegacyClaudeInstructions
+Update-GitIgnore
+foreach ($settingsFile in $managedSettingsFiles) {
+    Sync-ClientFile -SourceFile $settingsFile -DestinationFile (Join-Path $targetRoot $settingsFile)
+}
 Sync-Skills -DestinationRoot (Join-Path $targetRoot '.claude\skills')
 Sync-Skills -DestinationRoot (Join-Path $targetRoot '.codex\skills')
 Sync-Skills -DestinationRoot (Join-Path $targetRoot '.cursor\skills')
@@ -331,5 +375,3 @@ Sync-ClaudeRules -DestinationRoot (Join-Path $targetRoot '.claude\rules')
 Sync-CursorRules -DestinationRoot (Join-Path $targetRoot '.cursor\rules')
 Sync-CopilotRules -DestinationRoot (Join-Path $targetRoot '.github\instructions')
 Remove-GeneratedPathsFromGitIndex
-
-Write-Output "Installed shared guidance in '$targetRoot'. Review .gitignore, the .agents submodule pointer, and staged removals of generated files."

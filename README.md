@@ -24,6 +24,7 @@ Portable software-engineering skills and provider-neutral agent rules.
 
 | Skill | Purpose |
 |---|---|
+| [`agent-skill-authoring`](skills/agent-skill-authoring/) | Create and improve portable Agent Skills |
 | [`accessible-composite-widgets`](skills/accessible-composite-widgets/) | Build menus, listboxes, and comboboxes with correct distinct interaction models |
 | [`accessible-overlays`](skills/accessible-overlays/) | Build dialogs and layered surfaces with predictable focus and dismissal |
 | [`api-contract-design`](skills/api-contract-design/) | Design stable HTTP contracts, errors, pagination, and write semantics |
@@ -51,7 +52,6 @@ Portable software-engineering skills and provider-neutral agent rules.
 | [`message-producer-reliability`](skills/message-producer-reliability/) | Define producer consistency, delivery, ordering, and recovery semantics |
 | [`mkdocs-documentation`](skills/mkdocs-documentation/) | Maintain standalone containerized MkDocs Material documentation |
 | [`multi-step-form`](skills/multi-step-form/) | Coordinate accessible step navigation, validation, drafts, and submission |
-| [`skill-creator`](skills/skill-creator/) | Create and improve portable Agent Skills |
 | [`solidjs-component`](skills/solidjs-component/) | Build accessible components with correct SolidJS reactivity |
 | [`solidjs-library-audit`](skills/solidjs-library-audit/) | Audit a SolidJS component library for quality, consistency, accessibility, and security |
 | [`solidjs-state-and-query`](skills/solidjs-state-and-query/) | Separate local, persisted, and server-owned state in SolidJS applications |
@@ -66,7 +66,9 @@ Portable software-engineering skills and provider-neutral agent rules.
 | [`agent-execution`](rules/agent-execution.md) | Require explicit approval before tests and project commands |
 | [`code-quality`](rules/code-quality.md) | Keep code single-sourced, cohesive, consistent, and free of dead paths |
 | [`comments-and-documentation`](rules/comments-and-documentation.md) | Keep comments purposeful and project documentation canonical |
+| [`component-library-conventions`](rules/component-library-conventions.md) | Keep reusable UI libraries consistent in exports, contracts, localization, and inventories |
 | [`css-modules-conventions`](rules/css-modules-conventions.md) | Keep modular styles token-based, local, and structurally safe |
+| [`dependency-policy`](rules/dependency-policy.md) | Justify and approve every external dependency before adding it |
 | [`dotnet-conventions`](rules/dotnet-conventions.md) | Keep .NET changes consistent, bounded, and contract-aware |
 | [`dotnet-error-handling`](rules/dotnet-error-handling.md) | Classify, map, and disclose .NET failures consistently |
 | [`frontend-accessibility`](rules/frontend-accessibility.md) | Apply semantic, keyboard, focus, and visual accessibility baselines |
@@ -107,19 +109,29 @@ Then run the helper from the consuming repository root:
 ```
 
 The helper replaces `.claude/settings.json`, `.codex/config.toml`,
-`.cursor/cli.json`, `.cursor/permissions.json`, and `.vscode/settings.json`. It
-also deletes and recreates the complete skill package under `.claude/skills/`,
-`.codex/skills/`, `.cursor/skills/`, and `.github/skills/`, plus the native rule
-adapters under `.claude/rules/`, `.cursor/rules/`, and `.github/instructions/`.
-Finally, it writes self-contained instructions to root `AGENTS.md` and
-`.claude/CLAUDE.md`. Do not keep project-owned content in any generated location.
+`.cursor/cli.json`, `.cursor/permissions.json`, and `.vscode/settings.json` only
+when Git does not track them; a tracked file is project-owned, so the helper skips
+it with a warning. It deletes and recreates the complete skill package under
+`.claude/skills/`, `.codex/skills/`, `.cursor/skills/`, and `.github/skills/`,
+plus the native rule adapters under `.claude/rules/`, `.cursor/rules/`, and
+`.github/instructions/`. Do not keep project-owned content in those directories.
+
+Root `AGENTS.md` and `.claude/CLAUDE.md` stay project-owned. The helper maintains
+only a marked shared-guidance block in each file and preserves all content outside
+it. The `AGENTS.md` block routes to rule files under `.agents/rules/`; the
+`.claude/CLAUDE.md` block omits rule routing because Claude Code loads
+`.claude/rules/` natively.
+
+Rule scopes come from [`rules/rule-scopes.json`](rules/rule-scopes.json). An empty
+`applyTo` list marks an always-on rule; globs scope a stack rule to matching files;
+an optional `description` lets Cursor and Copilot apply the rule on request.
 
 | Client | Instructions and rules | Skills after local installation |
 |---|---|---|
-| Codex | Self-contained root `AGENTS.md`; generated `.codex/config.toml` enables a workspace sandbox with approval on request | Generated `.codex/skills/` |
-| GitHub Copilot / VS Code | Self-contained root `AGENTS.md`, generated `.github/instructions/`, and conservative terminal rules in `.vscode/settings.json` | Generated `.github/skills/` |
-| Claude Code | Self-contained `.claude/CLAUDE.md`, generated `.claude/settings.json`, and `.claude/rules/` | Generated `.claude/skills/` |
-| Cursor | Self-contained root `AGENTS.md`, generated `.cursor/rules/`, CLI permissions in `.cursor/cli.json`, and Auto-review guidance in `.cursor/permissions.json` | Generated `.cursor/skills/` |
+| Codex | Routing block in root `AGENTS.md`; generated `.codex/config.toml` enables a workspace sandbox with approval on request | Generated `.codex/skills/` |
+| GitHub Copilot / VS Code | Routing block in root `AGENTS.md`, generated `.github/instructions/`, and conservative terminal rules in `.vscode/settings.json` | Generated `.github/skills/` |
+| Claude Code | Guidance block in `.claude/CLAUDE.md`, generated `.claude/settings.json`, and `.claude/rules/` | Generated `.claude/skills/` |
+| Cursor | Routing block in root `AGENTS.md`, generated `.cursor/rules/`, CLI permissions in `.cursor/cli.json`, and Auto-review guidance in `.cursor/permissions.json` | Generated `.cursor/skills/` |
 
 This matrix describes client discovery, not model behavior. A model does not
 load these files by itself; the client must support and enable the corresponding
@@ -133,10 +145,11 @@ They do not enable unrestricted execution. Cursor desktop users should select
 still requires explicit approval in the request before tests, builds, package
 operations, migrations, application startup, deployment, and similar commands.
 
-All generated files and directories are added to the consuming repository's
-`.gitignore` and removed from the Git index while remaining on disk. Commit
-`.gitignore`, the `.agents` submodule pointer, and any staged removals after
-review. Use `-WhatIf` to preview operations.
+Generated directories and managed settings files are added to the consuming
+repository's `.gitignore` and removed from the Git index while remaining on disk.
+Commit `.gitignore`, `AGENTS.md`, `.claude/CLAUDE.md`, the `.agents` submodule
+pointer, and any staged removals after review. Use `-WhatIf` to preview
+operations.
 
 Update and synchronize later with:
 
@@ -145,9 +158,10 @@ git submodule update --remote .agents
 .\.agents\scripts\install-consumer.ps1
 ```
 
-This produces independent native client packages while keeping `.agents/` as the
-only submodule and source of truth. Generated instructions contain the full rule
-text and do not import files from `.agents/`. See the [`rules` installation
+This produces native client packages while keeping `.agents/` as the only
+submodule and source of truth. Native rule adapters contain the full rule text;
+the `AGENTS.md` routing block reads rules from the `.agents` submodule, so clone
+consuming repositories with submodules. See the [`rules` installation
 guide](rules/README.md) for adapter details and manual setup.
 
 ## Validation
@@ -159,11 +173,11 @@ Run the dependency-free repository validator with PowerShell 5.1 or later:
 ```
 
 It verifies skill frontmatter, completion criteria, resource reachability, local
-links, README catalogs, rule routing through `AGENTS.md`, and conservative client
-settings.
+links, README catalogs, rule routing through `AGENTS.md`, rule sections and scopes,
+and conservative client settings.
 
 The official Agent Skills validator can also validate an individual package:
 
 ```shell
-skills-ref validate ./skills/skill-creator
+skills-ref validate ./skills/agent-skill-authoring
 ```

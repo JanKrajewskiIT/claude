@@ -3,7 +3,7 @@
 ## Reactive Defaults and Forwarding
 
 ```tsx
-function Action(props: ActionProps) {
+const Action = (props: ActionProps) => {
   const merged = mergeProps({ type: "button" as const }, props);
   const [local, buttonProps] = splitProps(merged, ["label", "onPress"]);
 
@@ -12,7 +12,7 @@ function Action(props: ActionProps) {
       {local.label}
     </button>
   );
-}
+};
 ```
 
 `mergeProps` and `splitProps` preserve reactive property access. Avoid

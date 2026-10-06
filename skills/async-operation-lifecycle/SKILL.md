@@ -41,8 +41,12 @@ description: Design, implement, or review asynchronous operation lifecycles with
    - Trace invalidation between request start and both successful and failed completion.
    - Trace a timeout followed by a late dependency event or persistence write.
    - Trace an operation that never settles and determine whether registrations remain live.
+   - Trace a switch to a different keyed resource separately from a change within the same resource.
+   - Trace each deadline timer from the event that starts its period; a deadline already in the past must not re-trigger work on unrelated state changes.
 5. Choose the coordination policy.
    - If operations share a mutation, determine whether the contract requires serialization, single-flight, or latest-result ownership.
+   - Confirm dependency-level single-flight behavior from the supported implementation or focused runtime evidence before relying on it.
+   - Release operation-scoped registrations when their owner ends; if underlying work must keep a registration after timeout, define a bounded termination or recovery path.
    - If work supports cancellation, propagate it through the dependency boundary.
    - Otherwise define how late side effects are prevented or reconciled without deleting newer work.
    - Stop before changing an explicit error contract, persistence owner, or public API without approval.

@@ -31,6 +31,7 @@
 - Request new approval when the command, arguments, scope, or working directory changes materially.
 - Do not infer approval from a request to edit code, fix an issue, review files, or prepare a commit.
 - When a useful check is not authorized, continue with available static evidence and report the exact check as unrun.
+- Run read-only inspection without approval: listing, reading, and searching workspace files outside secret-bearing paths, and Git `status`, `diff`, `log`, `show`, and `blame`.
 
 Approval is required for:
 
@@ -54,3 +55,9 @@ Approval is required for:
 - Run a command without another question only when the current request explicitly names or clearly authorizes that command.
 - Stop and request approval when an approved command prompts for additional unapproved actions.
 - Never treat permission from an earlier conversation or request as current approval.
+
+## Completion Criteria
+
+- No command, test change, process start, or mutation ran without approval in the current request.
+- Every relevant unrun check is reported with its exact command.
+- Findings rest on executable evidence, and documentation discrepancies are reported.

@@ -9,6 +9,12 @@ description: Design, implement, or review soft deletion in a relational persiste
 
 - Define deletion semantics that prevent deleted rows from reappearing, changing accidentally, or violating retention, uniqueness, and relationship rules.
 
+## Do Not Use
+
+- Use `ef-core-persistence` for general query, tracking, and scoping work after deletion semantics are defined.
+- Use `ef-core-migrations` for migration generation, review, and deployment mechanics.
+- Use `ef-core-auditing` for creation and modification metadata.
+
 ## Workflow
 
 1. Confirm soft deletion is required by recovery, retention, audit, legal, reference, or synchronization needs.
@@ -47,4 +53,4 @@ description: Design, implement, or review soft deletion in a relational persiste
 - Normal reads and mutations consistently exclude deleted rows.
 - Constraints, indexes, foreign keys, and query plans support the lifecycle.
 - Repeated deletion and concurrent update behavior are deterministic.
-- Integration evidence proves deleted rows do not reappear through supported paths.
+- Integration evidence proves deleted rows do not reappear through supported paths, or the required checks are reported as unrun with exact commands.

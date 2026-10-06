@@ -1,5 +1,10 @@
 # .NET Conventions
 
+## Scope
+
+- Apply this rule to C#, F#, project, and solution files in .NET repositories.
+- Apply `dotnet-error-handling` for failure classification, mapping, and disclosure.
+
 ## Repository Fit
 
 - Follow the repository's target framework, nullable policy, analyzers, formatting, and architecture.
@@ -35,3 +40,10 @@
 - Add dependencies only when platform or repository capabilities do not meet the need.
 - Treat serialization, database schema, configuration, and package surfaces as compatibility contracts.
 - Avoid broad solution restructuring for one feature.
+
+## Completion Criteria
+
+- Changes follow the repository's framework, nullable, analyzer, formatting, and architecture conventions.
+- Asynchronous work and cancellation flow through the complete call chain.
+- Transport, persistence, host configuration, and domain logic remain at their owning boundaries.
+- Public API, serialization, schema, configuration, and package compatibility are preserved, or the break is reported.

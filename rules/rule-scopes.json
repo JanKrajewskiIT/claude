@@ -1,0 +1,77 @@
+{
+  "agent-execution": {
+    "applyTo": []
+  },
+  "code-quality": {
+    "applyTo": []
+  },
+  "comments-and-documentation": {
+    "applyTo": []
+  },
+  "component-library-conventions": {
+    "applyTo": ["**/*.tsx", "**/*.jsx"],
+    "description": "Reusable UI component library conventions. Apply when working in a shared component library."
+  },
+  "css-modules-conventions": {
+    "applyTo": ["**/*.module.css", "**/*.module.scss", "**/*.module.sass", "**/*.module.less"]
+  },
+  "dependency-policy": {
+    "applyTo": []
+  },
+  "dotnet-conventions": {
+    "applyTo": ["**/*.cs", "**/*.csproj", "**/*.fs", "**/*.fsproj", "**/*.sln", "**/*.slnx"]
+  },
+  "dotnet-error-handling": {
+    "applyTo": ["**/*.cs", "**/*.csproj", "**/*.fs", "**/*.fsproj"]
+  },
+  "frontend-accessibility": {
+    "applyTo": ["**/*.html", "**/*.htm", "**/*.tsx", "**/*.jsx", "**/*.vue", "**/*.svelte", "**/*.razor"]
+  },
+  "git-and-change-safety": {
+    "applyTo": []
+  },
+  "react-conventions": {
+    "applyTo": ["**/*.tsx", "**/*.jsx"],
+    "description": "React conventions. Apply when working in a React application."
+  },
+  "security-boundaries": {
+    "applyTo": []
+  },
+  "solidjs-conventions": {
+    "applyTo": ["**/*.tsx", "**/*.jsx"],
+    "description": "SolidJS conventions. Apply when working in a SolidJS application."
+  },
+  "tooling-config-conventions": {
+    "applyTo": [
+      "**/package.json",
+      "**/eslint.config.*",
+      "**/.eslintrc*",
+      "**/eslint/**",
+      "**/prettier.config.*",
+      "**/.prettierrc*",
+      "**/prettier/**",
+      "**/stylelint.config.*",
+      "**/.stylelintrc*",
+      "**/stylelint/**",
+      "**/tsconfig*.json",
+      "**/tsconfig/**",
+      "**/vite.config.*",
+      "**/vitest.config.*",
+      "**/vite/**",
+      "**/lint-staged.config.*",
+      "**/.lintstagedrc*",
+      "**/lint-staged/**",
+      "**/.husky/**",
+      "**/husky/**",
+      "**/*.conf",
+      "**/.github/workflows/**",
+      "**/.github/dependabot.yml"
+    ]
+  },
+  "tsx-component-conventions": {
+    "applyTo": ["**/*.tsx", "**/*.jsx"]
+  },
+  "typescript-conventions": {
+    "applyTo": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"]
+  }
+}

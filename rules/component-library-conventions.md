@@ -7,7 +7,7 @@
 ## Consistency
 
 - Use one export style for every component, hook, provider, and utility in the library, and make the public entry point re-export in that style.
-- Use one declaration style for components, hooks, and utilities; a `function` declaration needs a reason listed in `typescript-conventions`.
+- Declare components, hooks, and utilities according to the declaration rules in `typescript-conventions`.
 - Declare each exported prop type under its public name, `<Component>Props`; do not rename it in an export clause.
 - Use one result shape for sibling hooks, one status vocabulary, and one absence sentinel across the library.
 - Give shared prop helpers names that state their role; do not export a generic `Props` default for library-wide use.

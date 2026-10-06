@@ -273,8 +273,15 @@ if (Test-Path $rulesReadme) {
             Add-Failure "$($ruleFile.Name): missing from AGENTS.md routing"
         }
 
-        if ((Get-Content $ruleFile.FullName -Raw) -notmatch '(?m)^#\s+\S') {
+        $ruleContent = Get-Content $ruleFile.FullName -Raw
+        if ($ruleContent -notmatch '(?m)^#\s+\S') {
             Add-Failure "$($ruleFile.Name): missing top-level heading"
+        }
+
+        foreach ($requiredSection in @('Scope', 'Completion Criteria')) {
+            if ($ruleContent -notmatch "(?m)^## $([regex]::Escape($requiredSection))\s*$") {
+                Add-Failure "$($ruleFile.Name): missing '## $requiredSection' section"
+            }
         }
     }
 
@@ -294,6 +301,39 @@ if (Test-Path $rulesReadme) {
 }
 else {
     Add-Failure "Missing rules README: $rulesReadme"
+}
+
+$ruleScopesFile = Join-Path $rulesRoot 'rule-scopes.json'
+if (-not (Test-Path $ruleScopesFile -PathType Leaf)) {
+    Add-Failure "Missing rule scopes: $ruleScopesFile"
+}
+else {
+    $ruleScopes = $null
+    try {
+        $ruleScopes = Get-Content $ruleScopesFile -Raw | ConvertFrom-Json
+    }
+    catch {
+        Add-Failure "rules/rule-scopes.json is not valid JSON: $($_.Exception.Message)"
+    }
+
+    if ($ruleScopes) {
+        $ruleNames = @(Get-ChildItem $rulesRoot -Filter '*.md' -File | Where-Object { $_.Name -ne 'README.md' } | ForEach-Object { $_.BaseName })
+        foreach ($ruleName in $ruleNames) {
+            if (-not $ruleScopes.PSObject.Properties[$ruleName]) {
+                Add-Failure "$ruleName.md: missing from rules/rule-scopes.json"
+            }
+        }
+
+        foreach ($scopeEntry in $ruleScopes.PSObject.Properties) {
+            if ($scopeEntry.Name -notin $ruleNames) {
+                Add-Failure "rules/rule-scopes.json references missing rule '$($scopeEntry.Name).md'"
+            }
+
+            if (-not $scopeEntry.Value.PSObject.Properties['applyTo']) {
+                Add-Failure "rules/rule-scopes.json: '$($scopeEntry.Name)' must define applyTo; use [] for always-on rules"
+            }
+        }
+    }
 }
 
 if ($failures.Count -gt 0) {

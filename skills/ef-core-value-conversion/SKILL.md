@@ -9,6 +9,11 @@ description: Design, implement, or review Entity Framework Core value conversion
 
 - Persist non-primitive values through an explicit, compatible, and round-trip-verified storage contract without coupling database and wire representations.
 
+## Do Not Use
+
+- Use `ef-core-migrations` for the schema and data migration that a representation change requires.
+- Use `ef-core-persistence` for query shape, tracking, and transaction design unrelated to conversion.
+
 ## Workflow
 
 1. Inspect the provider, column type, model property, existing converters, comparers, conventions, custom queries, migrations, and integration tests.
@@ -50,6 +55,6 @@ description: Design, implement, or review Entity Framework Core value conversion
 - Storage representation, equality semantics, null behavior, and compatibility policy are explicit.
 - Converter and comparer registration belongs to the intended model property.
 - Query and raw-SQL paths use the intended provider representation.
-- A real-database round trip proves materialization, writing, tracking, and registration.
+- A real-database round trip proves materialization, writing, tracking, and registration, or the required checks are reported as unrun with exact commands.
 - Incompatible values fail diagnostically rather than becoming incorrect domain values.
 

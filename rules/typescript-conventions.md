@@ -31,7 +31,8 @@
 
 ## Declarations
 
-- Declare module-level functions and factories with `const` arrow functions; use a `function` declaration only for overloads, hoisting, recursion, generators, or `this` binding.
+- Declare module-level functions, factories, components, callbacks, and local helpers with `const` arrow functions.
+- Use a `function` declaration only for overloads, hoisting, recursion, generators, `this` binding, or a documented framework or public API requirement.
 - Do not use `this` inside getters or methods of objects returned from factories; reference closure values so destructuring and spreading stay safe.
 - Use a class only when `instanceof` identity or platform subclassing, such as extending `Error`, is required.
 
@@ -45,6 +46,7 @@
 - Handle discriminated unions exhaustively and make newly added variants visible to the compiler.
 - Use a `switch` on the discriminant with a `never` check in the default branch instead of an `if` chain whose final branch is implied.
 - Do not use double assertions such as `as unknown as T`; declare ambient globals or narrow optional platform APIs with guards.
+- Do not guard a browser API, such as `typeof document === 'undefined'`, inside a code path that only runs in the browser, such as a client-only effect.
 
 ## Boundaries
 

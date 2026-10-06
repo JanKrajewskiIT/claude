@@ -63,4 +63,4 @@ description: Add, connect, or review resources in a .NET Aspire distributed appl
 - Applications resolve dependencies without hardcoded network locations.
 - Secrets remain outside source control and observable output.
 - Health and telemetry expose useful startup or runtime failures.
-- Local orchestration and affected deployment checks pass.
+- Local orchestration and affected deployment checks pass or are reported as unrun with exact commands.

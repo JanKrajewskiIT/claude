@@ -46,3 +46,11 @@
 - Do not leave unused selectors after changing rendered markup.
 - Do not duplicate shared token values as unrelated literals.
 - Do not introduce global selectors for behavior owned by one component.
+
+## Completion Criteria
+
+- Shared design decisions use semantic tokens, and no shared value is repeated as an unrelated literal.
+- Selectors target component-owned classes and attributes; global selectors cover only explicit external boundaries.
+- Breakpoints come from one defined set.
+- `!important` appears only in user-preference overrides.
+- No selector remains unused after a markup change.

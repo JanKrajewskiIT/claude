@@ -1,9 +1,9 @@
 ---
-name: skill-creator
+name: agent-skill-authoring
 description: Create, update, review, or restructure portable Agent Skills. Use when a user asks to make a skill, write SKILL.md, package reusable agent instructions, improve skill discovery, or validate a skill against the Agent Skills specification.
 ---
 
-# Skill Creator
+# Agent Skill Authoring
 
 ## Goal
 
@@ -45,10 +45,13 @@ description: Create, update, review, or restructure portable Agent Skills. Use w
 5. Review and validate.
    - Apply [`references/quality-checklist.md`](references/quality-checklist.md).
    - Remove duplication, vague language, provider assumptions, and inferable background.
-   - Run `skills-ref validate <skill-directory>` when available.
+   - Propose `skills-ref validate <skill-directory>` when available and run it only with the approval required by repository policy.
    - Test one expected request and one request that must not trigger the skill.
    - Test a second realistic use case when the skill claims reuse across domains or frameworks.
-   - Fix failures before reporting completion.
+   - Fix failures found by executed checks before reporting completion, and report unrun checks with their exact commands.
+6. Register the skill in its source repository.
+   - If the repository keeps a skill catalog or a repository validator, add the skill to the catalog and propose the validator command.
+   - If the skill replaces or renames another skill, update every reference to the old name.
 
 ## Portability Rules
 

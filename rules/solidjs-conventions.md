@@ -122,3 +122,12 @@
 - Keep the latest pending input and flush the final value when an interaction ends.
 - Use passive listeners only when the handler never prevents the default action.
 - Cancel scheduled frames, timers, and listeners when ownership ends.
+
+## Completion Criteria
+
+- Reactive props and values remain observable after component setup.
+- Effects perform only external side effects, and memos stay pure.
+- Every listener, timer, observer, and subscription is released by its owning scope.
+- Shared UI state lives under a provider with an owner, not in module-level signals or stores.
+- Asynchronous reads expose loading, empty, failure, and stale states, and stale results cannot overwrite newer state.
+- Server and client initial renders agree when server rendering is supported.

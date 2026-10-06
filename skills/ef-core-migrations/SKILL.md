@@ -10,6 +10,12 @@ description: Create, review, repair, script, or plan deployment of Entity Framew
 - Evolve the database schema while preserving intended data and deployment safety.
 - Keep the EF model, migration history, snapshot, and deployment artifact consistent.
 
+## Do Not Use
+
+- Use `ef-core-persistence` for runtime queries, tracking, transactions, and concurrency.
+- Use `ef-core-value-conversion` to design a converter or comparer; return here when its stored representation changes.
+- Use `database-soft-delete` to define deletion semantics before migrating them.
+
 ## Workflow
 
 1. Inspect migration ownership.

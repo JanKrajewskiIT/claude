@@ -1,6 +1,6 @@
 ---
 name: aspnet-core-endpoint
-description: Implement or review ASP.NET Core controller or minimal API endpoints for an agreed HTTP contract. Use when wiring routes, transport DTOs, validation, authorization policies, OpenAPI metadata, status codes, error mapping, or endpoint-focused tests.
+description: Implement or review ASP.NET Core controller or minimal API endpoints for an agreed HTTP contract. Use when wiring routes, transport DTOs, validation, authorization policies, OpenAPI metadata, status codes, error mapping, or endpoint-focused validation.
 ---
 
 # ASP.NET Core Endpoint
@@ -8,6 +8,12 @@ description: Implement or review ASP.NET Core controller or minimal API endpoint
 ## Goal
 
 - Deliver a secured and documented endpoint whose runtime behavior matches its public API contract.
+
+## Do Not Use
+
+- Use `api-contract-design` when the HTTP contract is not yet agreed.
+- Use `dotnet-command-query-handler` for the application use case behind the endpoint.
+- Use `dotnet-vertical-slice` when delivering the complete feature across endpoint, handler, and persistence.
 
 ## Workflow
 

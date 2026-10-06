@@ -10,6 +10,10 @@ description: Design, implement, or review accessible dialogs, drawers, popovers,
 - Make overlay opening, interaction, dismissal, and focus restoration predictable.
 - Match semantics and modality to the actual interaction model.
 
+## Do Not Use
+
+- Use `accessible-composite-widgets` for item navigation, selection, and typeahead inside menus, listboxes, and comboboxes.
+
 ## Workflow
 
 1. Classify the surface.

@@ -14,8 +14,7 @@
 - Derive a dependent default from the option it depends on, such as an entry path from a source directory, instead of declaring an independent literal with the same meaning.
 - Extract one assertion helper when the same guard and error-message shape repeats across inputs.
 - Define a repeated block of literal configuration once and include or reference it where the format supports inclusion.
-- Define each public default, such as page size, delay, or timeout, once as a named constant shared by every module that applies it.
-- Convert unknown thrown values to errors through one helper instead of repeating `value instanceof Error ? value : new Error(...)` at each call site.
+- Normalize unknown thrown values through one helper instead of repeating the conversion at each call site.
 - Build each repeated state literal, such as initial, success, or reset state, through one named factory.
 - Extract one helper for a repeated concurrency pattern, such as single-flight promise deduplication or an abortable delay, instead of re-implementing it per module.
 
@@ -51,26 +50,23 @@
 - Remove fields, flags, and result properties that no caller reads.
 - Remove required or accepted inputs whose effect is always overridden or ignored by the produced result.
 - Remove defensive copies of values that no code mutates.
+- Do not repeat in a conditional branch the teardown that the owning cleanup already performs.
 
 ## Resources and State
 
 - Bound every module-level cache, registry, and deduplication set, or scope it to an owner with a defined lifetime.
 - Do not key diagnostics or caches by unbounded user-controlled or content-derived values without a bound.
 - Reuse expensive platform objects, such as formatters and compiled patterns, when inputs repeat on hot paths.
-- Evict a cache entry only when no active observer holds it, and cancel work owned by an entry when it is removed.
-- Do not serve an invalidated cache entry through a read path that bypasses refetching.
+- Cap append-only histories, such as notification lists, with a defined maximum and eviction rule.
 - Flush or locally persist pending debounced work when its owner is disposed; do not drop it silently.
 - Associate temporary persisted handoff data with its writing operation so failed or superseded work cannot remove another operation's value.
 
 ## Concurrency
 
 - Tag each asynchronous run with a sequence number or controller and apply its result only while it is still the latest run for that state.
+- Apply invalidation checks to every completion path, including errors, event handlers, persistence commits, and navigation, not only successful results.
 - Treat a timeout wrapper as a deadline for the caller, not cancellation of the underlying operation; account for late persistence writes, events, and navigation.
-- Apply invalidation checks to every completion path, including errors, event handlers, persistence commits, and navigation, not only successful promise results.
-- Release operation-scoped registrations when their owner ends; if underlying work must retain a registration after timeout, define a bounded termination or recovery path.
-- Confirm dependency-level single-flight behavior from the supported implementation or focused runtime evidence before relying on it for concurrent mutations.
-- When a reactive source can switch to a different keyed resource, distinguish the switch from a change within the same resource before reacting.
-- Arm a deadline timer only from the event that starts its period, such as a successful fetch; a deadline already in the past must not re-trigger work on unrelated state changes.
+- Apply `async-operation-lifecycle` when an operation combines timeouts, dependency events, persistence, or invalidation.
 - Do not detect equality by comparing serialized snapshots whose text depends on property order.
 - Represent cancellation with the platform's standard abort error, such as a `DOMException` named `AbortError`, so callers can distinguish it from failure.
 
@@ -78,9 +74,6 @@
 
 - Keep `try` blocks limited to the operation that can fail for the expected reason.
 - Do not swallow a failure with an empty `catch` or `.catch(() => defaultValue)`; record it in observable state or a diagnostic channel, or document why ignoring it is safe.
-- Do not guard a browser API (`typeof document === 'undefined'`) inside a code path that cannot run on the server, such as a client-only effect.
-- Do not write a branch that undoes what the opposite branch of the same effect already cleans up, such as removing a listener in an `else` and again in cleanup.
-- Cap append-only histories, such as notification lists, with a defined maximum and eviction rule.
 - Recover from a local defect locally when the contract allows partial results, instead of failing the whole operation.
 - Keep diagnostics observable in the environment where they are intended to fire and verify that build tooling does not remove them.
 - Do not convert a failure into an empty or default result when the caller explicitly requested the behavior that failed.
@@ -98,5 +91,5 @@
 - Sibling public APIs share one result shape, absence sentinel, status vocabulary, and unit naming.
 - No unreachable branch, redundant check, ineffective input, or unread state remains.
 - Explicitly requested behavior fails observably instead of degrading silently.
-- Long-lived caches and diagnostic sets are bounded or owned, and eviction never detaches active observers.
+- Long-lived caches, histories, and diagnostic sets are bounded or owned.
 - Stale asynchronous completions cannot overwrite newer state, and cancellation is distinguishable from failure.

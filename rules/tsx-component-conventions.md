@@ -24,8 +24,7 @@
 
 ## Declarations
 
-- Declare components, callbacks, event handlers, and local helpers with `const` arrow functions by default.
-- Use a function declaration when hoisting, overloads, recursion, framework requirements, or an established public API make it clearer.
+- Declare components, callbacks, event handlers, and local helpers according to the declaration rules in `typescript-conventions`.
 - Define stable module constants outside the component when they do not depend on props, state, context, or browser lifecycle.
 - Keep render expressions declarative; move substantial branching, mapping, parsing, and event behavior into named values or focused modules.
 
@@ -47,5 +46,5 @@
 - Each exported component has one clear responsibility and its own file.
 - Private colocated components satisfy the stated exception.
 - Shared modules have a neutral responsibility and credible consumers.
-- Declarations follow the `const` default unless a documented language or framework reason applies.
+- Declarations follow `typescript-conventions`.
 - Every rendered wrapper has an observable purpose.

@@ -73,4 +73,4 @@ description: Create, refactor, or review accessible SolidJS components with corr
 - Public props express behavior and semantics with stable types.
 - Keyboard, focus, labeling, and disabled behavior match the component role.
 - Resources are cleaned up and forwarded props behave intentionally.
-- Public exports and focused validation pass.
+- Public exports are intentional, and focused validation passes or is reported as unrun with exact commands.

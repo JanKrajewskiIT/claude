@@ -1,5 +1,10 @@
 # Frontend Accessibility
 
+## Scope
+
+- Apply this rule when creating, changing, or reviewing user interfaces.
+- Treat WCAG 2.2 level AA as the baseline unless the project defines a stricter target.
+
 ## Semantics
 
 - Use native elements and behavior before custom roles.
@@ -46,3 +51,11 @@
 - Keep active item, focus, selection, value, and open state distinct.
 - Support disabled, loading, empty, and dynamic-content states.
 - Do not combine keyboard contracts from different widget patterns casually.
+
+## Completion Criteria
+
+- Every interactive outcome is available from the keyboard with visible focus.
+- Controls have programmatic names, and errors and instructions are associated with their fields.
+- Status, errors, and selection are perceivable without color alone.
+- Layered interactions restore focus and close only the topmost layer.
+- Custom widgets follow one recognized pattern and keep focus, active item, selection, and value distinct.

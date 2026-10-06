@@ -10,6 +10,12 @@ description: Design, evolve, or review stable HTTP API contracts. Use when the p
 - Create an explicit contract that clients can consume without knowing persistence details.
 - Evolve observable behavior without accidental breaking changes.
 
+## Do Not Use
+
+- Use `aspnet-core-endpoint` to implement an agreed contract in ASP.NET Core.
+- Use `dotnet-command-query-handler` for application use-case logic behind the contract.
+- Use `ef-core-persistence` for storage queries and write paths.
+
 ## Workflow
 
 1. Identify consumers and operation semantics.

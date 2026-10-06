@@ -9,6 +9,12 @@ description: Implement or review Entity Framework Core creation and modification
 
 - Record trustworthy creation and modification metadata without confusing mutable persistence auditing with immutable business history.
 
+## Do Not Use
+
+- Design immutable business history or tamper-evident audit logs as an explicit domain or logging capability instead.
+- Use `ef-core-migrations` for audit-column schema changes and backfills.
+- Use `ef-core-persistence` for general read and write paths.
+
 ## Workflow
 
 1. Inspect `DbContext` ownership, entity conventions, interceptors, authentication context, background writers, time abstraction, migrations, and integration tests.
@@ -48,4 +54,4 @@ description: Implement or review Entity Framework Core creation and modification
 - Actor resolution uses trusted context and background writes have intentional attribution.
 - Creation metadata remains stable while modification metadata changes correctly.
 - Schema, model configuration, generated values, and time semantics agree.
-- Real persistence evidence proves auditing executes on every supported write path.
+- Real persistence evidence proves auditing executes on every supported write path, or the required checks are reported as unrun with exact commands.

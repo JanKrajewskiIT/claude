@@ -10,6 +10,11 @@ description: Design, extract, evolve, or review shared infrastructure used by mu
 - Share stable cross-cutting mechanics without coupling every consumer to one application's architecture.
 - Keep default bootstrap behavior minimal, observable, and compatible.
 
+## Do Not Use
+
+- Use `dotnet-nuget-library` for package metadata, contents, packing, versioning, and publishing.
+- Keep behavior needed by only one consumer in that consumer.
+
 ## Workflow
 
 1. Inspect consumers and existing packages.

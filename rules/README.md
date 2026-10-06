@@ -13,8 +13,9 @@ instruction mechanism supported by the target client.
 | [`agent-execution`](agent-execution.md) | Require explicit approval for tests and project commands |
 | [`code-quality`](code-quality.md) | Keep code single-sourced, cohesive, consistent, and free of dead paths |
 | [`component-library-conventions`](component-library-conventions.md) | Keep reusable UI libraries consistent in exports, contracts, localization, and inventories |
-| [`css-modules-conventions`](css-modules-conventions.md) | Keep modular styles token-based, local, and structurally safe |
 | [`comments-and-documentation`](comments-and-documentation.md) | Keep comments purposeful and project documentation canonical |
+| [`css-modules-conventions`](css-modules-conventions.md) | Keep modular styles token-based, local, and structurally safe |
+| [`dependency-policy`](dependency-policy.md) | Justify and approve every external dependency before adding it |
 | [`dotnet-conventions`](dotnet-conventions.md) | Keep .NET changes consistent, bounded, and contract-aware |
 | [`dotnet-error-handling`](dotnet-error-handling.md) | Classify, map, and disclose .NET failures consistently |
 | [`frontend-accessibility`](frontend-accessibility.md) | Apply semantic, keyboard, focus, and visual accessibility baselines |
@@ -37,14 +38,19 @@ instruction mechanism supported by the target client.
 | Clients with repository rules | Copy the file into the client's rules directory and add required metadata |
 
 The consumer installer deletes and recreates each client's complete rules or
-instructions directory from this canonical source. Root `AGENTS.md` provides the
-Codex instruction path and compatibility fallback for clients that do not discover
-rule directories. Do not keep project-owned content in generated client locations.
+instructions directory from this canonical source. It derives each adapter's
+metadata from [`rule-scopes.json`](rule-scopes.json): an empty `applyTo` list
+marks an always-on rule, globs scope a stack rule, and an optional `description`
+lets Cursor and Copilot apply the rule on request. A marked block in root
+`AGENTS.md` routes Codex and clients without rule directories to these files.
+Do not keep project-owned content in generated client directories.
 
 ## Maintenance
 
 - Keep the provider-neutral rule in this directory as the source of truth.
-- Add client metadata only in installed copies.
+- Start each rule with `## Scope` and end it with `## Completion Criteria`.
+- Register every rule in `rule-scopes.json`, both catalogs, and `AGENTS.md` routing.
+- Keep client metadata out of rule bodies; the installer generates it from `rule-scopes.json`.
 - Scope stack-specific rules to matching files instead of loading them for every request.
 - Preserve behavior when adapting wording to a client format.
 - Replace installed copies from this repository instead of editing their bodies locally.

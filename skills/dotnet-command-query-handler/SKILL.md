@@ -9,6 +9,12 @@ description: Implement or review application command and query handlers in .NET.
 
 - Deliver one cohesive application use case with explicit input, dependencies, transaction scope, result, and failure behavior.
 
+## Do Not Use
+
+- Use `api-contract-design` or `aspnet-core-endpoint` for HTTP contracts and endpoint wiring.
+- Use `ef-core-persistence` for query and write-path mechanics.
+- Use `dotnet-vertical-slice` when delivering the complete feature across endpoint, handler, and persistence.
+
 ## Workflow
 
 1. Inspect application architecture, namespace and visibility conventions, handler abstractions, dependency registration, transaction utilities, domain model, and nearby tests.

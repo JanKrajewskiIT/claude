@@ -84,7 +84,7 @@ description: Create, configure, build, review, or publish a TypeScript library p
 - Runtime format, exports, declarations, and dependency classes agree.
 - The package archive contains only intentional files.
 - A clean consumer resolves every supported entry point at runtime and type-check time.
-- Package contract checks pass or documented compatibility exceptions are explicit.
+- Package contract checks pass, documented compatibility exceptions are explicit, or the checks are reported as unrun with exact commands.
 - Versioning reflects the observable public API change.
 - Development-only diagnostics fire in consumer development builds and disappear from production builds.
 - The changelog documents every published version.

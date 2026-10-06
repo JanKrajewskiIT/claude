@@ -53,7 +53,8 @@
 - [ ] Completion criteria are observable and binary.
 - [ ] Configured behavior is not reported as verified without executable or live evidence.
 - [ ] A focused executable check is provided where possible.
-- [ ] The official format validator passes when available.
+- [ ] The official format validator passes when available and authorized, or is reported as unrun.
+- [ ] Completion criteria that depend on executed checks allow reporting those checks as unrun.
 - [ ] One positive trigger case succeeds.
 - [ ] One negative trigger case does not activate the skill.
 - [ ] A second realistic use case succeeds when portability or cross-domain reuse is claimed.

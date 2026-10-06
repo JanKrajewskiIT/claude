@@ -10,6 +10,10 @@ description: Create, evolve, pack, review, or prepare release of a reusable .NET
 - Produce an SDK-style package with an intentional public API and predictable consumer behavior.
 - Keep package structure independent of one repository architecture.
 
+## Do Not Use
+
+- Use `dotnet-shared-infrastructure` to decide which cross-cutting mechanics multiple services should share.
+
 ## Workflow
 
 1. Define consumers.
