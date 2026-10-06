@@ -22,10 +22,12 @@ description: Design, implement, or review reliable background saving for editabl
    - Normalize values before comparing or saving.
    - Avoid writes for equivalent data and changes caused only by server hydration.
    - Increment a local sequence for each meaningful edit.
+   - Suppress saves for hydration by comparing the local sequence, not by value identity of a serialized snapshot.
 4. Schedule saves.
    - Debounce rapid edits and define a maximum delay when continuous typing must still be persisted.
    - Flush or warn on navigation only when unsaved work remains.
-   - Cancel timers and subscriptions when ownership ends.
+   - Cancel timers and subscriptions when ownership ends, after flushing or locally persisting the pending edit.
+   - Write the local draft on each meaningful edit, independently of the debounced remote save, and report local and remote write failures separately.
 5. Serialize requests.
    - Allow at most the intended number of in-flight saves per document.
    - Never mark newer edits saved when an older request completes.
@@ -70,6 +72,8 @@ description: Design, implement, or review reliable background saving for editabl
 - Do not retry authorization, validation, or conflict failures as transient errors.
 - Do not hide persistent failures behind a temporary toast only.
 - Do not promise unload-time network delivery.
+- Do not discard a pending debounced edit on disposal.
+- Do not rely on aborting a previous request to order writes; a server may still apply an aborted request.
 
 ## Completion Criteria
 

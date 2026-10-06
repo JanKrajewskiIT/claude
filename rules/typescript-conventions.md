@@ -19,6 +19,20 @@
 - Type a finite option value as its literal union instead of `string` when the runtime ignores or rejects other values.
 - Represent an optional feature by the presence of its options object, with its required fields required, instead of an `enabled` flag beside fields that become required only when enabled.
 - Derive variant option types from a shared base with `extends`, `Omit`, or `Pick` instead of duplicating their fields.
+- Make public parameter types mirror the values the runtime accepts; do not type an input as `unknown` when the runtime rejects most values.
+- Do not declare a type parameter that appears only in a return type; it is an unchecked cast. Accept a parser, validator, or mapper, or return `unknown`.
+- Do not publish two names for one contract unless compatibility requires it; then declare one as an alias of the other.
+- Refer to an existing named alias wherever the same contract appears instead of restating its structure.
+- Type the same identifier concept identically across sibling APIs, such as `string` versus `PropertyKey` ids.
+- Derive the element type of a keyed helper from its key, such as `K extends keyof T` with `T[K]`, instead of accepting any string with an unrelated item type.
+- Declare function-valued members, especially callbacks, with property syntax such as `onSave: (value: T) => void` so strict variance applies; use one member style per codebase.
+- Under `exactOptionalPropertyTypes`, declare forwarded optional options as `T | undefined` or forward the options object as a whole instead of rebuilding it with conditional spreads.
+
+## Declarations
+
+- Declare module-level functions and factories with `const` arrow functions; use a `function` declaration only for overloads, hoisting, recursion, generators, or `this` binding.
+- Do not use `this` inside getters or methods of objects returned from factories; reference closure values so destructuring and spreading stay safe.
+- Use a class only when `instanceof` identity or platform subclassing, such as extending `Error`, is required.
 
 ## Narrowing
 
@@ -38,6 +52,9 @@
 - Reuse a shared type only when consumers share the same semantics, not merely the same current fields.
 - Put required arguments before optional ones in public functions, or accept one options object; do not make callers pass `undefined` positionally.
 - Generate declarations from one typed source, either TypeScript or JavaScript checked with JSDoc and `checkJs`; when a declaration file is hand-authored, type-check a consumer of every export against it during validation.
+- Export every type reachable from a public signature so consumers can name it.
+- Do not expose internal mutable handles, such as state setters, cache entries, or mutable defaults, through public interfaces; mark exposed configuration `readonly`.
+- Encode dynamic URL path segments with `encodeURIComponent` before interpolating them into a request path.
 
 ## Modules
 
@@ -50,6 +67,8 @@
 - Use the `.tsx` extension only for modules that contain JSX.
 - Use one naming convention for module-level constants regardless of whether they are exported.
 - Scope lint suppressions to the declaration that needs them instead of disabling a rule for a whole file.
+- Avoid circular imports between modules, including type-only cycles; move the shared type to the lower-level module.
+- Export declarations inline at their definition instead of mixing inline exports with trailing `export type { ... }` lists in one codebase.
 
 ## Completion Criteria
 
@@ -60,3 +79,5 @@
 - Module names and exports expose focused responsibilities.
 - Union handling is exhaustive and no double assertion bypasses the type system.
 - Public option types make invalid combinations unrepresentable and agree with the runtime they describe.
+- Every type reachable from a public signature is exported, no return-only type parameter hides a cast, and no internal mutable handle is public.
+- Functions follow the `const` arrow default, and every `function` declaration or class has a language-level reason.

@@ -15,6 +15,9 @@
 - Derive values directly or with memos instead of synchronizing writable copies with effects.
 - Use effects for external side effects, not pure computation.
 - Keep memos pure; emit warnings, logs, and storage writes from effects or event handlers.
+- Do not create cache entries, start timers, or register observers inside a memo.
+- Memoize allocating getters on public result objects, such as selectors or flattened lists, so consumers see stable identity between reads.
+- Pass `() => value` to a setter whenever the signal type may itself be a function, and do not read the signal inside a public setter without `untrack` or a functional update.
 - Handle each reactive prop through one reactive path; do not split its initial and later handling across `onMount` and `createEffect` with duplicated validation.
 - Use explicit effect dependencies when only named sources should trigger work.
 - Use `untrack` only when intentionally excluding a read from dependency tracking.
@@ -37,6 +40,8 @@
 - Use `Index` only when positions remain stable and item values change independently.
 - Use `Show`, `Switch`, and `Match` when they make reactive branches and fallback behavior explicit.
 - Avoid large inline conditions and collection transformations that hide state ownership inside JSX.
+- Render consumer render-prop children through `Show`, `Switch`, or `Match` instead of calling them inside a memo whose re-execution recreates the subtree on every data change.
+- Return JSX from control-flow primitives instead of casting a memo or accessor to `JSX.Element`.
 
 ## State
 
@@ -56,6 +61,8 @@
 - Prefer props and composition for local relationships; use context for shared descendant ownership.
 - Keep context values minimal and fail clearly when a required provider is missing.
 - When a contract requires a degraded fallback outside the provider, emit a development diagnostic so the missing provider stays observable.
+- Read context only during synchronous setup under an owner; a function that callers may invoke from event handlers or asynchronous callbacks must receive the dependency explicitly instead of resolving it from context.
+- Keep each component in its own module even when the library authors components without JSX through `createComponent`.
 - Avoid wrappers that add no semantics, layout, behavior, or reusable boundary.
 
 ## Ownership And Lifecycle
@@ -63,7 +70,9 @@
 - Create reactive primitives within the owner responsible for their lifetime.
 - Use `onCleanup` for every owned listener, timer, observer, subscription, and imperative resource.
 - Use `createRoot` only when intentionally creating a lifetime outside the current owner and expose an explicit disposal path.
+- Make a primitive that creates effects or cleanups either require an owner and fail clearly without one, or create its own root with an explicit `dispose`; define one lifetime owner instead of offering both scope cleanup and manual disposal.
 - Perform browser-only setup in `onMount` or behind an equivalent environment boundary.
+- Access Web Storage through one guarded accessor that tolerates a missing API and a `SecurityError`, and use it in every primitive that persists data.
 
 ## DOM References
 
@@ -97,6 +106,7 @@
 - Defer browser-dependent behavior until mount unless an isomorphic abstraction owns it.
 - Preserve hydration structure and avoid client-only branches that replace initial markup unexpectedly.
 - When server rendering is not supported, initialize signals from synchronous browser state behind an environment guard instead of rendering a default and correcting it after mount.
+- Do not keep request-scoped data in a module-level default instance, such as a lazily created query client, when the library may run on a server.
 
 ## High-Frequency Events
 

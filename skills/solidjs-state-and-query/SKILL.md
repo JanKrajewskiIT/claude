@@ -42,7 +42,10 @@ description: Design, implement, or review state and remote-data flows in SolidJS
    - Version or migrate stored shapes that can evolve.
    - Give redirect or session handoff data an explicit lifetime and cleanup path.
    - Never persist secrets or sensitive server responses by default.
-8. Propose validation.
+8. Implement query primitives only when required.
+   - Prefer a maintained query library; build a local cache only when a recorded requirement rules the library out.
+   - Use [`references/query-primitives.md`](references/query-primitives.md) for cache lifecycle, invalidation, cancellation, and wrapper rules.
+9. Propose validation.
    - Check request gating, query-key changes, mutation success and failure, rollback, invalidation, and reload behavior.
    - List exact commands and ask before running them unless already approved.
 
@@ -70,3 +73,4 @@ description: Design, implement, or review state and remote-data flows in SolidJS
 - Mutations define cache reconciliation and failure behavior.
 - Persisted values are namespaced, safe, and evolvable.
 - Proposed focused checks cover reactive and failure paths.
+- Locally implemented query primitives satisfy every lifecycle rule in the query-primitives reference.

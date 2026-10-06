@@ -29,6 +29,9 @@ description: Create, configure, build, review, or publish a TypeScript library p
    - Generate declarations from source when practical.
    - Map every public runtime entry point to its public types.
    - Keep declarations required by consumers in published dependencies.
+   - Export every type reachable from a public signature; check the declaration surface for types consumers cannot name.
+   - Ship the sources referenced by declaration maps and source maps, or disable the maps.
+   - Set the compiler `types` list explicitly so development-only globals do not leak into published declarations.
 5. Classify dependencies.
    - Use `dependencies` for runtime requirements owned by the package.
    - Use `peerDependencies` for host-provided frameworks or single-instance integrations.
@@ -49,6 +52,7 @@ description: Create, configure, build, review, or publish a TypeScript library p
    - Test supported import styles, subpaths, types, and runtime environments.
    - Run available package contract tools such as `publint` or Are The Types Wrong.
    - Report missing behavior tests for parsers, formatters, and public functions as a release risk.
+   - Report documentation or configuration that claims verification, such as contract tests, that the scripts no longer run.
 9. Prepare release.
    - Classify public API changes using the repository's versioning policy.
    - Verify package name, version, registry, provenance, access, and release tag.
@@ -73,6 +77,7 @@ description: Create, configure, build, review, or publish a TypeScript library p
 - Do not expose build directories accidentally through broad export patterns.
 - Do not publish from an uninspected working tree or an unverified archive.
 - Do not alias `import.meta`, `import.meta.env`, or `process.env` before reading build flags; bundlers replace only literal expressions.
+- Do not reimplement a specialized capability, such as a query cache, router, or schema validator, when a maintained library covers the requirement; record the reason when a local implementation is chosen.
 
 ## Completion Criteria
 

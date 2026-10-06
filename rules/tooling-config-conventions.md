@@ -30,6 +30,10 @@
 - Default security-relevant options to the safe value, such as TLS verification for development proxies, and require an explicit opt-out.
 - Accept the syntax a supported dialect requires, such as CSS Modules `composes`, `:global`, `:local`, and `:export`.
 - Cover every file extension in staged-file tasks that the matching linter or formatter configuration covers.
+- Remove globs, includes, and script references to files that no longer exist, and keep documented verification steps aligned with the scripts that run.
+- Set `types` explicitly in a browser-targeted library `tsconfig` so development `@types/*` globals, such as Node timers, do not shape the published types.
+- Publish the sources referenced by declaration maps and source maps, or disable the maps.
+- Document why a toolchain package is installed under an npm alias and confirm aliased packages do not compete for the same binary name.
 
 ## Hooks
 
@@ -48,6 +52,8 @@
 
 - Scope secrets to the step that needs them, not to the job environment.
 - Avoid repeating identical verification in a later job or lifecycle script when the verified artifact has not changed.
+- Do not run a separate type-check step before a build that performs the same compilation.
+- Name secrets after the service they authenticate against, such as an npm registry token rather than a container registry name.
 - Confirm the target registry supports provenance and signature verification before enabling or documenting them.
 - Use a matrix only when it has more than one entry.
 
@@ -60,3 +66,4 @@
 - Hooks run locked local binaries without committing unstaged changes.
 - Repeated server headers have one definition, and immutable caching covers only hashed assets.
 - Secrets are step-scoped, and documented release guarantees are supported by the target registry.
+- No configuration references a missing file, no verification step runs twice, and published maps resolve to shipped sources.
