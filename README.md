@@ -61,6 +61,7 @@ Portable software-engineering skills and provider-neutral agent rules.
 | Rule | Purpose |
 |---|---|
 | [`agent-execution`](rules/agent-execution.md) | Require explicit approval before tests and project commands |
+| [`code-quality`](rules/code-quality.md) | Keep code single-sourced, cohesive, consistent, and free of dead paths |
 | [`comments-and-documentation`](rules/comments-and-documentation.md) | Keep comments purposeful and project documentation canonical |
 | [`css-modules-conventions`](rules/css-modules-conventions.md) | Keep modular styles token-based, local, and structurally safe |
 | [`dotnet-conventions`](rules/dotnet-conventions.md) | Keep .NET changes consistent, bounded, and contract-aware |

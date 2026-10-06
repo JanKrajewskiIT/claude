@@ -13,6 +13,9 @@
 - Make invalid states unrepresentable when a small type model can express the invariant clearly.
 - Infer local implementation types when intent remains clear; type exported and cross-module contracts explicitly.
 - Prefer `readonly` data when consumers must not mutate shared inputs.
+- Derive literal unions, type guards, and runtime validation from one `as const` source instead of restating member literals.
+- Give each union variant only the fields valid for it, such as a style union per format, instead of a shared loose `string` that later requires assertions.
+- Extract a named alias for a value union reused across several types instead of repeating it.
 
 ## Narrowing
 
@@ -21,6 +24,8 @@
 - Use a type assertion only when a runtime invariant exists but TypeScript cannot express it; keep the assertion local to that boundary.
 - Avoid non-null assertions when control flow, an early return, or a narrower type can prove presence.
 - Handle discriminated unions exhaustively and make newly added variants visible to the compiler.
+- Use a `switch` on the discriminant with a `never` check in the default branch instead of an `if` chain whose final branch is implied.
+- Do not use double assertions such as `as unknown as T`; declare ambient globals or narrow optional platform APIs with guards.
 
 ## Boundaries
 
@@ -35,6 +40,11 @@
 - Use type-only imports and exports when values are not required at runtime.
 - Prefer named exports for reusable modules unless the framework or repository establishes a different public convention.
 - Avoid generic `utils` modules; place reusable code in a module named for its behavior or boundary.
+- Import each module once per statement kind and use one type-import style, either `import type` statements or inline `type` modifiers, across the codebase.
+- Import a shared type from its owning module rather than from a re-exporting module.
+- Use the `.tsx` extension only for modules that contain JSX.
+- Use one naming convention for module-level constants regardless of whether they are exported.
+- Scope lint suppressions to the declaration that needs them instead of disabling a rule for a whole file.
 
 ## Completion Criteria
 
@@ -43,3 +53,4 @@
 - State variants and nullable values are handled explicitly.
 - Shared types represent shared semantics rather than coincidental structure.
 - Module names and exports expose focused responsibilities.
+- Union handling is exhaustive and no double assertion bypasses the type system.

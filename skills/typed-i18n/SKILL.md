@@ -15,6 +15,8 @@ description: Design, implement, migrate, or review type-safe internationalizatio
 1. Define locale support.
    - Identify the source locale, supported locales, fallback policy, and ownership of translations.
    - Distinguish language from region, script, and user formatting preferences.
+   - In reusable libraries, let consumers configure the supported-locale set instead of hardcoding it in the library.
+   - Derive detection, validation, fallback, and locale types from one supported-locale source.
 2. Define the message schema.
    - Organize keys by stable feature or semantic ownership.
    - Derive dictionary types from the source schema or generate types from a shared contract.
@@ -29,10 +31,12 @@ description: Design, implement, migrate, or review type-safe internationalizatio
    - Define precedence among explicit user choice, persisted preference, account setting, browser preference, and fallback.
    - Normalize locale tags before matching supported locales.
    - Persist only an intentional user choice.
+   - Resolve a persisted client locale before the first client render to avoid a default-locale flash.
 5. Format locale-sensitive values.
    - Use platform internationalization APIs for dates, times, numbers, currencies, units, lists, and relative time.
    - Keep storage and transport values locale-neutral.
    - Specify a time zone when the displayed instant depends on one.
+   - Reuse `Intl` formatter and plural-rule instances keyed by locale and options on render paths.
 6. Apply document language and direction.
    - Set language metadata for the rendered document or isolated content.
    - Derive text direction from the resolved locale or content requirement.
@@ -44,8 +48,11 @@ description: Design, implement, migrate, or review type-safe internationalizatio
 8. Handle failure states.
    - Define behavior for missing locale, key, parameter, formatter, and loading failure.
    - Keep development diagnostics useful without exposing internal keys to users in production.
+   - Report missing keys, fallback hits, and invalid templates in development.
+   - Recover from a malformed rich-text tag locally, including inside plural and select branches, instead of discarding the whole message.
 9. Propose validation.
    - Check schema parity, parameter compatibility, fallback, plural categories, formatting, direction, long text, and missing-key behavior.
+   - Treat a hand-written message parser without grammar-level tests for escapes, nesting, malformed input, and passthrough as incomplete, and report the gap.
    - List exact commands and ask before running them unless already approved.
 
 ## Decision Rules
@@ -65,6 +72,8 @@ description: Design, implement, migrate, or review type-safe internationalizatio
 - Do not format dates or numbers with manual string templates.
 - Do not assume left-to-right layout or one plural rule.
 - Do not allow rich translations to inject arbitrary HTML.
+- Do not restate supported-locale literals outside their single source.
+- Do not implement plain and rich rendering as two copies of the same selection logic.
 
 ## Completion Criteria
 
@@ -73,3 +82,5 @@ description: Design, implement, migrate, or review type-safe internationalizatio
 - Messages support grammar without fragment concatenation.
 - Formatting and direction follow the resolved locale.
 - Translation ownership is clear across libraries and applications.
+- Every locale check derives from one supported-locale source.
+- Message parsing has grammar-level test coverage or the gap is reported.

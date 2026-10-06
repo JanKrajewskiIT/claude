@@ -14,6 +14,8 @@
 - Do not use `createMemo` automatically for trivial derived expressions.
 - Derive values directly or with memos instead of synchronizing writable copies with effects.
 - Use effects for external side effects, not pure computation.
+- Keep memos pure; emit warnings, logs, and storage writes from effects or event handlers.
+- Handle each reactive prop through one reactive path; do not split its initial and later handling across `onMount` and `createEffect` with duplicated validation.
 - Use explicit effect dependencies when only named sources should trigger work.
 - Use `untrack` only when intentionally excluding a read from dependency tracking.
 - Batch multi-signal updates that represent one atomic transition.
@@ -25,6 +27,7 @@
 - Do not destructure reactive props when later updates must remain observable.
 - Use `splitProps` to separate local props from attributes forwarded to an element.
 - Use `mergeProps` or the repository convention when defaults must preserve reactive access.
+- Resolve each defaulted prop in one place instead of repeating `props.value ?? DEFAULT` at every read.
 - Use the `children` helper when children are read repeatedly, inspected, or transformed.
 - Compose forwarded event handlers intentionally instead of silently replacing either handler.
 
@@ -52,6 +55,7 @@
 - Keep context providers focused on one coherent ownership boundary.
 - Prefer props and composition for local relationships; use context for shared descendant ownership.
 - Keep context values minimal and fail clearly when a required provider is missing.
+- When a contract requires a degraded fallback outside the provider, emit a development diagnostic so the missing provider stays observable.
 - Avoid wrappers that add no semantics, layout, behavior, or reusable boundary.
 
 ## Ownership And Lifecycle
@@ -92,6 +96,7 @@
 - Do not read `window`, `document`, storage, layout, or other browser-only state during server rendering.
 - Defer browser-dependent behavior until mount unless an isomorphic abstraction owns it.
 - Preserve hydration structure and avoid client-only branches that replace initial markup unexpectedly.
+- When server rendering is not supported, initialize signals from synchronous browser state behind an environment guard instead of rendering a default and correcting it after mount.
 
 ## High-Frequency Events
 
