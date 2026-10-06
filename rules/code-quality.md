@@ -65,6 +65,8 @@
 
 - Tag each asynchronous run with a sequence number or controller and apply its result only while it is still the latest run for that state.
 - When a reactive source can switch to a different keyed resource, distinguish the switch from a change within the same resource before reacting.
+- Arm a deadline timer only from the event that starts its period, such as a successful fetch; a deadline already in the past must not re-trigger work on unrelated state changes.
+- Do not detect equality by comparing serialized snapshots whose text depends on property order.
 - Represent cancellation with the platform's standard abort error, such as a `DOMException` named `AbortError`, so callers can distinguish it from failure.
 
 ## Failure Handling
