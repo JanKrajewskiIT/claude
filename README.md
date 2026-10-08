@@ -28,12 +28,16 @@ Portable software-engineering skills and provider-neutral agent rules.
 | [`accessible-composite-widgets`](skills/accessible-composite-widgets/) | Build menus, listboxes, and comboboxes with correct distinct interaction models |
 | [`accessible-overlays`](skills/accessible-overlays/) | Build dialogs and layered surfaces with predictable focus and dismissal |
 | [`api-contract-design`](skills/api-contract-design/) | Design stable HTTP contracts, errors, pagination, and write semantics |
+| [`anchored-popup-positioning`](skills/anchored-popup-positioning/) | Place dropdowns, popovers, tooltips, and menus with flip, shift, and clipping-safe positioning |
 | [`aspire-composition`](skills/aspire-composition/) | Compose resources in .NET Aspire distributed applications |
 | [`aspnet-core-endpoint`](skills/aspnet-core-endpoint/) | Implement secured ASP.NET Core endpoints matching their HTTP contracts |
 | [`async-operation-lifecycle`](skills/async-operation-lifecycle/) | Review asynchronous results, dependency events, persistence, and invalidation as one lifecycle |
 | [`component-library-extraction`](skills/component-library-extraction/) | Extract reusable UI patterns without leaking product behavior |
+| [`component-library-i18n-migration`](skills/component-library-i18n-migration/) | Move component library defaults into typed dictionaries and a shared vocabulary |
 | [`database-soft-delete`](skills/database-soft-delete/) | Define deletion, visibility, restoration, retention, and purge semantics |
 | [`document-autosave`](skills/document-autosave/) | Preserve editable documents across timing, network, and concurrency failures |
+| [`design-system-parity-audit`](skills/design-system-parity-audit/) | Audit a port against its design-system reference and fix the gaps |
+| [`design-system-solid-port`](skills/design-system-solid-port/) | Port a design-system reference to SolidJS without redesigning it |
 | [`dom-hygiene-audit`](skills/dom-hygiene-audit/) | Simplify rendered markup while preserving semantics and behavior |
 | [`dotnet-command-query-handler`](skills/dotnet-command-query-handler/) | Implement cohesive .NET application commands and queries |
 | [`dotnet-configuration`](skills/dotnet-configuration/) | Bind and validate typed .NET application configuration |
@@ -48,10 +52,12 @@ Portable software-engineering skills and provider-neutral agent rules.
 | [`frontend-design-exploration`](skills/frontend-design-exploration/) | Explore a fresh UI direction before adapting it to existing components |
 | [`frontend-form-state`](skills/frontend-form-state/) | Coordinate accessible field state, validation, submission, and recovery |
 | [`implementation-spec-authoring`](skills/implementation-spec-authoring/) | Write traceable implementation specifications and task plans |
+| [`implementation-regression-review`](skills/implementation-regression-review/) | Decide what to restore, keep, or drop when a rewrite replaced an implementation |
 | [`message-consumer-reliability`](skills/message-consumer-reliability/) | Define reliable consumer delivery, retry, replay, and idempotency semantics |
 | [`message-producer-reliability`](skills/message-producer-reliability/) | Define producer consistency, delivery, ordering, and recovery semantics |
 | [`mkdocs-documentation`](skills/mkdocs-documentation/) | Maintain standalone containerized MkDocs Material documentation |
 | [`multi-step-form`](skills/multi-step-form/) | Coordinate accessible step navigation, validation, drafts, and submission |
+| [`safe-markdown-renderer`](skills/safe-markdown-renderer/) | Build a dependency-free Markdown renderer whose output is safe for innerHTML |
 | [`solidjs-component`](skills/solidjs-component/) | Build accessible components with correct SolidJS reactivity |
 | [`solidjs-library-audit`](skills/solidjs-library-audit/) | Audit a SolidJS component library for quality, consistency, accessibility, and security |
 | [`solidjs-state-and-query`](skills/solidjs-state-and-query/) | Separate local, persisted, and server-owned state in SolidJS applications |
