@@ -150,4 +150,26 @@ git ls-files "*.test.*" "*.spec.*"
 
 Signal: components above about 250 lines. Count lines per component file with
 the shell's line-count facility, such as `wc -l` or `Measure-Object -Line`,
-largest first.
+largest first. Hand the split to `solidjs-component` (`references/splitting.md`).
+
+## Repeated Helpers
+
+Signal: the same small helper defined in several modules or written inline. Each
+match group needs one shared module.
+
+```shell
+rg -n "const (clamp|pad|isOneOf|noop|sleep)\b" src
+rg -n "Math\.max\([^()]*, ?Math\.min\(|Math\.min\([^()]*, ?Math\.max\(" src
+rg -n "prefers-reduced-motion" src --glob "*.{ts,tsx}"
+rg -n "^\s*let (next)?\w*(Seq|Sequence|Counter)\b" src
+```
+
+## Suppression Clusters
+
+Signal: many identical `eslint-disable` reasons. Group by rule and reason; three or
+more identical pairs call for a shared primitive that carries the suppression once.
+
+```shell
+rg -o "eslint-disable-next-line [^ ]+(, [^ ]+)* -- .*" src
+rg -n "eslint-disable-next-line solid/reactivity" src
+```

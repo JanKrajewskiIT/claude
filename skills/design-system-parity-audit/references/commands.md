@@ -54,6 +54,30 @@ Use `$ref.Keys.Count`: a component named `Count` shadows `$ref.Count`.
 - Accessibility: search both files for `aria-`, `role=`, `tabIndex`, `onKeyDown`, `focus(`.
 - Lifecycle: search for `setTimeout`, `requestAnimationFrame`, `addEventListener`, `ResizeObserver` and confirm a matching cleanup.
 
+## Showcase groups
+
+Read the reference specimen manifest (a JSON list with `path`, `group`, `name`) and list ids per group, then compare with the port's demo groups.
+
+```powershell
+$cards = Get-Content reference\templates\showcase\cards.json -Raw | ConvertFrom-Json
+$cards | Group-Object group | ForEach-Object { "## $($_.Name) ($($_.Count))"; ($_.Group | ForEach-Object { [IO.Path]::GetFileName($_.path) -replace '\.card\.html$|\.html$','' }) -join ', ' }
+```
+
+## Exports without a demo
+
+```powershell
+$demo = (Get-ChildItem showcase\src -Recurse -Filter *.tsx | ForEach-Object { Get-Content $_.FullName -Raw }) -join "`n"
+Get-ChildItem src\components -Recurse -Filter *.tsx | ForEach-Object {
+  [regex]::Matches((Get-Content $_.FullName -Raw), 'export (?:const|function) ([A-Z]\w+)') | ForEach-Object { $_.Groups[1].Value }
+} | Where-Object { $demo -notmatch "\b$_\b" }
+```
+
+Sub-components used only inside one parent are expected in the result; check the public ones against the entry `index.ts`.
+
+## Tokens used by demos
+
+Collect `var(--name)` and quoted `'--name'` literals from the demo sources and test that each name is declared as `--name:` in the token files. Names built by concatenation (a prefix such as `--status-`) are expected to be unmatched.
+
 ## Pitfalls
 
 - Shell output may mangle non-ASCII text; read such files with a file reader.

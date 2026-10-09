@@ -39,14 +39,21 @@ description: Statically audit a ported component library against its design-syst
    - Behavior: key handlers, focus moves, timers, listeners and their cleanup, icons.
    - Aliases and callbacks the reference accepts, such as `onChange` next to `onValueChange`.
    - Specimens: compare the props and content each specimen uses with what the port accepts.
-5. Classify every difference.
+5. Compare the showcase.
+   - Skip when the user excludes the showcase.
+   - Group the reference specimens by their declared group and compare group names, numbering, and order with the port's demo navigation.
+   - Map each specimen to a demo section; foundation specimens (tokens, colour, type, shape, depth, motion, state) need pages too.
+   - Check that every public export is shown by some demo, and list exports with no demo.
+   - Check that every CSS custom property a demo uses is defined in the token files.
+   - Record specimens that are tooling rather than UI as accepted omissions.
+6. Classify every difference.
    - Fix in place when an attribute, class, prop or branch is missing.
    - Rework when structure or behavior diverges widely.
    - Accept when a library rule requires it, such as one component per file, localized defaults or removed framework idioms. Record the reason.
    - Record as a reference issue when the reference is wrong, and port it as is.
-6. Fix gaps with the smallest change.
+7. Fix gaps with the smallest change.
    - Keep public props of the reference. Add a missing prop only when the reference has it.
-7. Report.
+8. Report.
    - Give counts: exports mapped, interfaces compared, files hashed.
    - List fixes, accepted deviations, and items not verifiable statically: runtime behavior, pixel parity, translation quality.
    - List proposed runtime checks with exact commands.
@@ -68,6 +75,7 @@ description: Statically audit a ported component library against its design-syst
 - Every reference export is mapped or explicitly omitted.
 - CSS hashes are identical, or each difference is explained.
 - Every classified gap is fixed or recorded with a reason.
+- Showcase groups and sections match the reference, or each difference is recorded.
 - Unverified areas and unrun checks are listed.
 
 See [`references/commands.md`](references/commands.md) for inventory and hash commands.

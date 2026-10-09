@@ -34,6 +34,7 @@ description: Audit a SolidJS and TypeScript component library for code quality, 
    - Read the global stylesheet and two component stylesheets.
 4. Judge each dimension.
    - Cover SOLID and cohesion, reactivity, state ownership, typing, accessibility, CSS, localization, security, tooling, and tests.
+   - Cover repeated local helpers and clusters of identical lint suppressions; both point to a missing shared module or primitive.
    - Mark a finding confirmed only when a file and line prove it; otherwise mark it a hypothesis.
 5. Separate rule violations from rule gaps.
    - If an existing rule already forbids the pattern, report a violation.
