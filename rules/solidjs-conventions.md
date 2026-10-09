@@ -84,6 +84,7 @@
 ## DOM References
 
 - Use a local reference when the element is read only by event handlers or imperative calls.
+- Assign a local reference through a callback ref, `ref={(element) => { node = element; }}`; a bare `let node; ref={node}` is never seen as assigned by static analysis.
 - Use a signal when element availability drives reactive measurement or positioning.
 - Preserve callback-ref semantics when forwarding a DOM reference.
 - Do not mix local and reactive ownership for the same element reference.

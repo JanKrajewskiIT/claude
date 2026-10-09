@@ -10,6 +10,7 @@
 - Bound peer ranges to the majors the configuration was verified against and use one range syntax across the manifest.
 - Confirm each bundled plugin supports every declared host major through its peer range and through its use of host APIs removed in that major.
 - Do not mask plugin incompatibility with package-manager `overrides` or `resolutions`; they apply only to the root project and never reach consumers.
+- When a bundled plugin supports an older compiler major than the one the project wants, keep the plugin-facing package on the supported major and install the newer compiler under another name; for example `typescript-eslint` requires `typescript <6.1`, so use `"typescript": "npm:@typescript/typescript6@^6"` and `"@typescript/native": "npm:typescript@^7"`, then `tsc` runs 7 and `tsc6` runs 6. Do not widen the peer range to hide the conflict.
 - Handle option names renamed between supported majors so a consumer value under either name cannot silently replace the preset value.
 - Set options whose defaults differ between supported majors explicitly, such as TypeScript `types`.
 

@@ -44,6 +44,9 @@
 - Let Escape and outside pointer press close only the topmost open layer; register layers in one shared stack instead of one document listener per component.
 - Use `role="listbox"` and `role="option"` only with the matching selection and navigation model, including Home, End, and typeahead; do not bind value changes to unrelated keys such as PageUp or PageDown.
 - Use `aria-live` regions only for changes users must perceive; mount the region before its content changes.
+- Give a scrollable region a tab stop (`tabindex="0"`) with a role and an accessible name so keyboard users can scroll it.
+- Add `tabindex="0"` to another non-interactive element only when a focus-driven reveal has no other keyboard path; scope the lint suppression to that element and state the reason.
+- Name a component prop for its meaning, not `role` or `autoFocus`; accessibility lint rules read those names as DOM attributes.
 
 ## Custom Widgets
 

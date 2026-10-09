@@ -37,6 +37,7 @@ Portable software-engineering skills and provider-neutral agent rules.
 | [`database-soft-delete`](skills/database-soft-delete/) | Define deletion, visibility, restoration, retention, and purge semantics |
 | [`document-autosave`](skills/document-autosave/) | Preserve editable documents across timing, network, and concurrency failures |
 | [`design-system-parity-audit`](skills/design-system-parity-audit/) | Audit a port against its design-system reference and fix the gaps |
+| [`design-system-showcase`](skills/design-system-showcase/) | Build a live showcase app of a component library from a showcase template |
 | [`design-system-solid-port`](skills/design-system-solid-port/) | Port a design-system reference to SolidJS without redesigning it |
 | [`dom-hygiene-audit`](skills/dom-hygiene-audit/) | Simplify rendered markup while preserving semantics and behavior |
 | [`dotnet-command-query-handler`](skills/dotnet-command-query-handler/) | Implement cohesive .NET application commands and queries |

@@ -37,6 +37,9 @@
 - Keep structural styles required for layout, positioning, stacking, and animation under component ownership.
 - Separate structural requirements from replaceable presentation when consumers may restyle a reusable primitive.
 - Compose classes through the repository's established utility or syntax.
+- Under `noUncheckedIndexedAccess` a module class lookup is `string | undefined`; join classes through one typed helper that skips absent parts instead of computed-key class maps or template strings.
+- Map a finite variant to its class through an explicit lookup object of imported class names; do not index the module by a runtime string, which hides the class from unused-class checks.
+- Share a class between components with `composes` from one shared module instead of importing that module into each component.
 - Expose narrow class hooks only for stable internal parts that consumers genuinely need to style.
 
 ## Safety
@@ -54,3 +57,4 @@
 - Breakpoints come from one defined set.
 - `!important` appears only in user-preference overrides.
 - No selector remains unused after a markup change.
+- Combined classes come from one typed helper, variant classes from explicit maps, and shared classes from `composes`.
