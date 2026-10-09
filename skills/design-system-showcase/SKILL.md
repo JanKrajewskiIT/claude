@@ -35,13 +35,16 @@ description: Build a live showcase app for a component library from a design-sys
 4. Build one component per template section with CSS Modules.
    - Derive counts and facts from the registry; drop claims that cannot be verified.
 5. Model the library as data.
-   - Use `LibraryGroup` (number, title, blurb, kind, specimens) and `Specimen` (id, name, subtitle, span, render).
-   - Select a group through component state, not the URL hash, and key group views by stable group objects so typing in search does not remount specimens.
+   - Use `LibraryGroup` (number, slug, kind, `load`) and `Specimen` (id, span, render); a group's `load` returns its specimens through a dynamic `import()`.
+   - Derive specimen ids, counts and search matches from the group's message keys so the index, filter and hero facts need no specimen module.
+   - Select a group through component state and mirror it in the URL hash with `history.replaceState`; update the selection on `hashchange`, and key group views by stable group objects so typing in search does not remount specimens.
+   - Show a polite status message while a group loads and let a failed load reach the app error boundary.
 6. Write specimens from verified API only.
    - Build foundation specimens from tokens and component specimens from live components.
    - Put stateful demos in their own component files and keep specimen lists data-only.
    - Use deterministic data relative to today and offline images.
    - Let popups overflow the card frame, contain fixed-position components, and avoid two components registering the same global hotkey.
+   - When the showcase is multilingual, keep group titles, blurbs and specimen names and subtitles in one typed dictionary per group (apply `typed-i18n`) and type each specimen list's ids from that dictionary.
 7. Delegate groups to subagents with [`references/specimen-brief.md`](references/specimen-brief.md).
    - Assign one to three groups per agent; larger batches are cut off.
    - After each batch list the created files, find missing exports and check that every relative import resolves.
@@ -54,6 +57,8 @@ description: Build a live showcase app for a component library from a design-sys
 - Do not invent props, components or icon names.
 - Do not copy template markup that depends on its own runtime.
 - Do not add dependencies without approval.
+- Do not initialize a locale from the browser when the requested default is fixed; read only the persisted choice and fall back to the default.
+- Do not assume a library locale switcher is bound to the i18n context; pass its value and change handler.
 
 ## Output
 
@@ -64,4 +69,4 @@ description: Build a live showcase app for a component library from a design-sys
 
 - Every template section exists and every template group has live specimens.
 - Verification commands pass or are reported unrun.
-- No specimen depends on the network, a hash route or a module-level shared state.
+- No specimen depends on the network or module-level shared state, and the hash only selects a group.

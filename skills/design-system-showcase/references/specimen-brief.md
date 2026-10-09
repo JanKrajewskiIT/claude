@@ -18,7 +18,8 @@ Give this brief to each agent together with its group assignment. Replace the br
 
 ## Structure
 
-- A specimen list file per group exports `readonly Specimen[]` and contains data only.
+- A specimen list file per group exports `readonly Specimen<SpecimenIdOf<typeof [group]En>>[]` and contains data only (id, span, render).
+- Write the group's title, blurb and each specimen's name and subtitle in `[i18n path]/[group].ts` as English and translated dictionaries keyed by specimen id.
 - State, effects and timers go in a demo component file, one exported component per file.
 - Keep every file near 250 lines or fewer.
 - Styles are CSS Modules beside the owning component.
@@ -31,7 +32,7 @@ Give this brief to each agent together with its group assignment. Replace the br
 - Compose classes through the project's typed class helper and callback refs.
 - Give every interactive element an accessible name, use native elements first and never convey information by colour alone.
 - Write no comments unless a constraint is non-obvious.
-- Write English copy in sentence case with no emoji and realistic short data.
+- Write English copy in sentence case with no emoji and realistic short data; escape `{`, `}`, `<` and `>` in dictionary messages with a leading apostrophe.
 
 ## Report
 
