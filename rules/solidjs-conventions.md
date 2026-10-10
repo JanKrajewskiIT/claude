@@ -95,7 +95,7 @@
 - Do not put an asynchronous function directly in `createEffect`.
 - Track loading, empty, failure, and stale states explicitly.
 - Propagate cancellation where the underlying API supports it.
-- Prevent stale asynchronous results from replacing newer state.
+- Invalidate pending UI operations when their surface closes, reopens, or is disposed; guard consumer callbacks and local state writes with the same operation identity.
 - Route promise completions and dependency events through the same state-transition policy so one cannot bypass the other's invalidation guards.
 - Keep request mapping and payload normalization outside JSX event markup.
 

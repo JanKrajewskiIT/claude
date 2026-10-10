@@ -29,6 +29,7 @@ description: Statically audit a ported component library against its design-syst
    - List exports of the reference type declarations and of the port.
    - Compare the count with the component count the reference documents, and report a mismatch.
    - Build an explicit mapping for renamed, merged and split exports.
+   - Record implementation folders and showcase sections separately when the reference defines both; compare each against its own taxonomy instead of regrouping code to match demo navigation.
    - Treat unmapped names as candidates for omission.
 3. Compare CSS.
    - Hash every reference CSS, token and font file and its counterpart.

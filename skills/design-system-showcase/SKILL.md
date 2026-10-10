@@ -42,6 +42,7 @@ description: Build a live showcase app for a component library from a design-sys
 6. Write specimens from verified API only.
    - Build foundation specimens from tokens and component specimens from live components.
    - Put stateful demos in their own component files and keep specimen lists data-only.
+   - When the showcase is the usage guide, demonstrate important variants, controlled and uncontrolled state, and supported composition in live specimens instead of duplicating them in a separate API guide.
    - Use deterministic data relative to today and offline images.
    - Let popups overflow the card frame, contain fixed-position components, and avoid two components registering the same global hotkey.
    - When the showcase is multilingual, keep group titles, blurbs and specimen names and subtitles in one typed dictionary per group (apply `typed-i18n`) and type each specimen list's ids from that dictionary.

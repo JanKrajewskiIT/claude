@@ -16,6 +16,8 @@
 
 - Type native-attribute pass-through with one documented base shape and keep it identical across sibling components, such as every button-like or input-like component.
 - Do not expose module-level mutable state, such as shared signals or timer maps, from the public entry point; expose a provider and a hook.
+- Expose shared configuration defaults as readonly data and protect their arrays and plain-object entries against runtime mutation.
+- Freeze only library-owned defaults; accept caller-owned configuration as read-only input without freezing or mutating it.
 - Expose one prop for one concept; do not accept both `children` and `label` for the same content unless a typed union enforces exactly one.
 - Keep each documented default, such as page size, delay, and duration, in one named constant shared by the component and its documentation.
 
