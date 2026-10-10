@@ -7,16 +7,19 @@ description: Evaluate, extract, or review reusable UI components and interaction
 
 ## Goal
 
-- Extract a reusable UI contract without moving product-specific behavior into the library.
+- Extract a reusable UI contract for the library's declared consumer scope while keeping product-specific policies in the application.
 - Leave the source feature simpler after adopting the extracted component.
 
 ## Workflow
 
 1. Identify the repeated pattern.
+   - Establish whether the library is general-purpose or explicitly scoped to applications sharing architecture and infrastructure.
+   - Read the owning project's extension inventory or migration notes when present, so approved shared integrations and additions are visible alongside the reference design system.
    - Describe the interaction, layout, or state coordination without product vocabulary.
    - Find at least one plausible use outside the source feature.
 2. Classify responsibilities.
-   - Keep queries, mutations, routing, authorization, analytics, and domain validation in the application.
+   - Keep product queries, mutations, routing, server authorization, analytics, and domain validation in the application.
+   - Preserve explicitly approved client infrastructure integrations in a dedicated library module instead of replacing them with generic callbacks.
    - Consider visual primitives, interaction mechanics, accessibility behavior, and generic workflow shells for extraction.
 3. Define the boundary.
    - Replace domain models with semantic values, slots, callbacks, and state accessors.
@@ -44,23 +47,31 @@ description: Evaluate, extract, or review reusable UI components and interaction
 | Situation | Decision |
 |---|---|
 | Contract uses product nouns | Generalize it or keep it in the application. |
-| Component owns API or route state | Keep that ownership in an application adapter. |
+| Component owns product-specific API or route state | Keep that ownership in an application adapter. |
 | Reuse requires many unrelated switches | Keep iterating locally. |
 | Accessibility depends on shared structure and behavior | Extract them as one coherent primitive. |
 | Source call site becomes harder to understand | Rework the boundary or stop the extraction. |
+
+## Collections and Saved Views
+
+- Extend an existing collection component before introducing a parallel implementation; retain its supported field types, nested conditions, editing and composition contracts.
+- Keep record identity independent of display position, and keep cell identity independent of copied column-definition objects. Optional virtualization must preserve keyboard access, selection, editing and focused nested controls.
+- Separate view-state ownership, schema reconciliation, persistence, codecs and rendering. A persisted view contains settings, not records or executable callbacks.
+- Version imported settings, validate nested values and bound their size and depth. Derive accepted operators from the same definitions used by the editor, then reconcile validated settings against the current schema.
+- Keep external rendering engines and domain adapters outside the UI package when the application or demo owns their integration.
 
 ## Constraints
 
 - Do not extract code only to reduce file size.
 - Do not publish domain DTOs through a component API.
-- Do not move host authorization or persistence decisions into the library.
+- Do not move server authorization, resource ownership, or product persistence policies into UI components.
 - Do not require consumers to override library internals with fragile selectors.
 - Do not claim reuse until the contract supports a distinct realistic use case.
 
 ## Completion Criteria
 
 - The decision to extract or remain local is explicit and supported by two realistic use cases.
-- If extraction proceeds, the public API uses neutral semantics and product behavior remains in the application boundary.
+- If extraction proceeds, the public API matches the declared consumer scope and product-specific policies remain in the application boundary.
 - If extraction proceeds, the source feature is simpler after recomposition.
 - If extraction stops, no speculative public API or generated package surface remains.
 - Proposed checks cover interaction, accessibility, exports, and compatibility.

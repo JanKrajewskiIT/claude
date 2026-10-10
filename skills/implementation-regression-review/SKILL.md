@@ -38,6 +38,7 @@ description: Compare a replacement implementation against the previous one and d
    - Search old files for feature words such as drag, zoom, confirm, filter, persist, then search the new side.
 5. Compare infrastructure.
    - Hooks, utilities, providers, authentication, theming, toast and error handling.
+   - Establish the declared consumer scope before replacing integrations: applications sharing infrastructure may intentionally depend on the same authentication package and provider.
    - Package manifest: scripts, peer dependencies, dependencies, externals and size limits.
    - Tooling configs referenced by scripts, README and docs.
 6. Verify claims before reporting.
@@ -56,6 +57,7 @@ description: Compare a replacement implementation against the previous one and d
    - Stop for approval before dependency additions and destructive Git actions.
 9. Implement approved restorations.
    - Prefer local implementations over new dependencies; follow the dependency policy for any addition.
+   - Restore approved integrations against their current source contract in one owning module; preserve package-root exports when relocating components.
    - Review restored code against the loaded rules before reporting: module size, public module state, localization, property reactivity.
    - Validate with editor diagnostics and propose exact commands for the rest.
 10. Write the exact change list.

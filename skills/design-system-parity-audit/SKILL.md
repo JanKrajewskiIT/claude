@@ -28,7 +28,8 @@ description: Statically audit a ported component library against its design-syst
 2. Inventory.
    - List exports of the reference type declarations and of the port.
    - Compare the count with the component count the reference documents, and report a mismatch.
-   - Build an explicit mapping for renamed, merged and split exports.
+   - Build an explicit mapping for renamed, merged, split and relocated exports.
+   - Map relocated components to their owning module; a different source folder is not a parity defect when the public export and reference styling remain mapped.
    - Record implementation folders and showcase sections separately when the reference defines both; compare each against its own taxonomy instead of regrouping code to match demo navigation.
    - Treat unmapped names as candidates for omission.
 3. Compare CSS.
@@ -50,14 +51,16 @@ description: Statically audit a ported component library against its design-syst
 6. Classify every difference.
    - Fix in place when an attribute, class, prop or branch is missing.
    - Rework when structure or behavior diverges widely.
-   - Accept when a library rule requires it, such as one component per file, localized defaults or removed framework idioms. Record the reason.
+   - Accept when a library rule or explicit project decision requires it, such as one component per file, localized defaults, removed framework idioms or shared infrastructure integration. Record the reason.
+   - Consult the owning project's extension inventory. Audit approved additions and integrations separately from reference parity, and keep demo-only presentation outside the library audit.
    - Record as a reference issue when the reference is wrong, and port it as is.
 7. Fix gaps with the smallest change.
-   - Keep public props of the reference. Add a missing prop only when the reference has it.
+   - Keep public props of the reference unless an explicit project decision records a deviation. Add a missing prop only when the reference or that decision requires it.
 8. Report.
    - Give counts: exports mapped, interfaces compared, files hashed.
    - List fixes, accepted deviations, and items not verifiable statically: runtime behavior, pixel parity, translation quality.
    - List proposed runtime checks with exact commands.
+   - Report extension inventory entries whose implementation, export, dependency, styles, localization or documented owner no longer matches the source.
 
 ## Constraints
 
