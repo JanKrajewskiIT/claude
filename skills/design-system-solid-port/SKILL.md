@@ -34,6 +34,7 @@ description: Port a design-system reference (framework components, global CSS, t
 2. Settle project constraints before coding. Ask when unknown.
    - Compare the reference's own porting guidance with the project rules and decisions; resolve each conflict in the table of the reference map and record the result.
    - Read the owning project's extension inventory or migration notes, if present. Keep approved integrations and library-owned additions in scope even when absent from the reference; keep demo-only specimens in the demo project.
+   - Before replacing target components, compare the previous public exports and behaviors with the new reference. Map each removed behavior to an equivalent, an intentional removal, or an in-scope gap; preserve in-scope shared behavior even when the reference does not include it, and keep product-specific behavior at the application boundary.
    - Tests: write none unless requested.
    - Messages: use the project's typed i18n instead of literal defaults.
    - CSS: copy verbatim into the library; never import or link reference code.
