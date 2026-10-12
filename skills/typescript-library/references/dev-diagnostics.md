@@ -25,8 +25,7 @@ Publish a `development` export condition when the toolchain can build two varian
 Otherwise keep a literal check that consumer bundlers replace:
 
 ```ts
-const isDevelopment =
-  typeof process !== "undefined" && process.env.NODE_ENV !== "production";
+const isDevelopment = typeof process !== 'undefined' && process.env.NODE_ENV !== 'production';
 ```
 
 ## Verification
