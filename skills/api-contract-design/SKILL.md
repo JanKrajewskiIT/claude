@@ -57,14 +57,14 @@ description: Design, evolve, or review stable HTTP API contracts. Use when the p
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| Field may be omitted but cannot be null | Model optionality separately from nullability. |
-| Dataset changes during traversal | Prefer stable cursor pagination. |
-| Client may retry a non-idempotent command | Define an idempotency contract. |
-| Multiple writers may update one resource | Require an optimistic concurrency token. |
-| Existing consumers can misinterpret a change | Treat it as breaking even if serialization still succeeds. |
-| Client sends an empty or default identifier for a resource that does not exist yet | Treat it as absent at the boundary and create or upsert. |
+| Situation                                                                          | Decision                                                   |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Field may be omitted but cannot be null                                            | Model optionality separately from nullability.             |
+| Dataset changes during traversal                                                   | Prefer stable cursor pagination.                           |
+| Client may retry a non-idempotent command                                          | Define an idempotency contract.                            |
+| Multiple writers may update one resource                                           | Require an optimistic concurrency token.                   |
+| Existing consumers can misinterpret a change                                       | Treat it as breaking even if serialization still succeeds. |
+| Client sends an empty or default identifier for a resource that does not exist yet | Treat it as absent at the boundary and create or upsert.   |
 
 ## Constraints
 

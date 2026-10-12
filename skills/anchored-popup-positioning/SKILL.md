@@ -23,12 +23,12 @@ description: Position dropdowns, popovers, tooltips and menus next to an anchor 
 
 1. Choose the strategy.
 
-   | Situation | Strategy |
-   |---|---|
-   | Panel holds interactive content or must stay in tab order | Fixed positioning in place, no portal. |
-   | Panel is non-interactive and clipped by an ancestor with its own containing block | Fixed positioning with containing-block compensation. |
-   | Layer must escape stacking contexts entirely | Portal, and extend outside-click handling to the portal root. |
-   | Target browsers support native anchor positioning | Verify support in primary documentation before choosing it. |
+   | Situation                                                                         | Strategy                                                      |
+   | --------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+   | Panel holds interactive content or must stay in tab order                         | Fixed positioning in place, no portal.                        |
+   | Panel is non-interactive and clipped by an ancestor with its own containing block | Fixed positioning with containing-block compensation.         |
+   | Layer must escape stacking contexts entirely                                      | Portal, and extend outside-click handling to the portal root. |
+   | Target browsers support native anchor positioning                                 | Verify support in primary documentation before choosing it.   |
 
 2. Write a pure placement function.
    - Inputs: anchor box, panel size, viewport size, side, alignment, offset, edge padding.

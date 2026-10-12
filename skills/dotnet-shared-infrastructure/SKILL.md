@@ -51,13 +51,13 @@ description: Design, extract, evolve, or review shared infrastructure used by mu
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| Every consumer requires the behavior | Consider the common bootstrap. |
-| Only some consumers require it | Provide an explicit opt-in extension. |
-| Behavior contains domain vocabulary | Keep it in the owning application. |
-| Consumers configure it differently | Share the primitive and keep host adapters local. |
-| Primitive already exists in a shared dependency | Reuse or extend the existing owner. |
+| Situation                                       | Decision                                          |
+| ----------------------------------------------- | ------------------------------------------------- |
+| Every consumer requires the behavior            | Consider the common bootstrap.                    |
+| Only some consumers require it                  | Provide an explicit opt-in extension.             |
+| Behavior contains domain vocabulary             | Keep it in the owning application.                |
+| Consumers configure it differently              | Share the primitive and keep host adapters local. |
+| Primitive already exists in a shared dependency | Reuse or extend the existing owner.               |
 
 ## Constraints
 

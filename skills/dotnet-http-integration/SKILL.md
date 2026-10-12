@@ -50,13 +50,13 @@ description: Design, implement, or review outbound HTTP integrations in .NET app
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| Operation is not idempotent | Do not retry unless an idempotency contract makes repetition safe. |
-| Server returns retry guidance | Honor it within configured bounds. |
-| Caller cancels | Stop work and do not report a dependency failure. |
-| Destination comes from user input | Apply SSRF-safe validation before resolution and connection. |
-| Response contract differs from application needs | Map it at the integration boundary. |
+| Situation                                        | Decision                                                           |
+| ------------------------------------------------ | ------------------------------------------------------------------ |
+| Operation is not idempotent                      | Do not retry unless an idempotency contract makes repetition safe. |
+| Server returns retry guidance                    | Honor it within configured bounds.                                 |
+| Caller cancels                                   | Stop work and do not report a dependency failure.                  |
+| Destination comes from user input                | Apply SSRF-safe validation before resolution and connection.       |
+| Response contract differs from application needs | Map it at the integration boundary.                                |
 
 ## Constraints
 

@@ -8,34 +8,34 @@ instruction mechanism supported by the target client.
 
 ## Catalog
 
-| Rule | Purpose |
-|---|---|
-| [`agent-execution`](agent-execution.md) | Require explicit approval for tests and project commands |
-| [`code-quality`](code-quality.md) | Keep code single-sourced, cohesive, consistent, and free of dead paths |
+| Rule                                                                | Purpose                                                                                    |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| [`agent-execution`](agent-execution.md)                             | Require explicit approval for tests and project commands                                   |
+| [`code-quality`](code-quality.md)                                   | Keep code single-sourced, cohesive, consistent, and free of dead paths                     |
 | [`component-library-conventions`](component-library-conventions.md) | Keep reusable UI libraries consistent in exports, contracts, localization, and inventories |
-| [`comments-and-documentation`](comments-and-documentation.md) | Keep comments purposeful and project documentation canonical |
-| [`css-modules-conventions`](css-modules-conventions.md) | Keep modular styles token-based, local, and structurally safe |
-| [`dependency-policy`](dependency-policy.md) | Justify and approve every external dependency before adding it |
-| [`dotnet-conventions`](dotnet-conventions.md) | Keep .NET changes consistent, bounded, and contract-aware |
-| [`dotnet-error-handling`](dotnet-error-handling.md) | Classify, map, and disclose .NET failures consistently |
-| [`frontend-accessibility`](frontend-accessibility.md) | Apply semantic, keyboard, focus, and visual accessibility baselines |
-| [`git-and-change-safety`](git-and-change-safety.md) | Protect user changes, history, and public compatibility |
-| [`react-conventions`](react-conventions.md) | Apply React rendering, hooks, state, effect, and context baselines |
-| [`security-boundaries`](security-boundaries.md) | Preserve trust, secret, data, and integration boundaries |
-| [`solidjs-conventions`](solidjs-conventions.md) | Apply SolidJS reactivity, state, component, and async baselines |
-| [`tooling-config-conventions`](tooling-config-conventions.md) | Keep tooling configuration compatible, correctly layered, consumer-resolvable, and safe |
-| [`tsx-component-conventions`](tsx-component-conventions.md) | Keep TSX components small, modular, colocated, and structurally lean |
-| [`typescript-conventions`](typescript-conventions.md) | Keep TypeScript contracts narrow, validated, explicit, and modular |
+| [`comments-and-documentation`](comments-and-documentation.md)       | Keep comments purposeful and project documentation canonical                               |
+| [`css-modules-conventions`](css-modules-conventions.md)             | Keep modular styles token-based, local, and structurally safe                              |
+| [`dependency-policy`](dependency-policy.md)                         | Justify and approve every external dependency before adding it                             |
+| [`dotnet-conventions`](dotnet-conventions.md)                       | Keep .NET changes consistent, bounded, and contract-aware                                  |
+| [`dotnet-error-handling`](dotnet-error-handling.md)                 | Classify, map, and disclose .NET failures consistently                                     |
+| [`frontend-accessibility`](frontend-accessibility.md)               | Apply semantic, keyboard, focus, and visual accessibility baselines                        |
+| [`git-and-change-safety`](git-and-change-safety.md)                 | Protect user changes, history, and public compatibility                                    |
+| [`react-conventions`](react-conventions.md)                         | Apply React rendering, hooks, state, effect, and context baselines                         |
+| [`security-boundaries`](security-boundaries.md)                     | Preserve trust, secret, data, and integration boundaries                                   |
+| [`solidjs-conventions`](solidjs-conventions.md)                     | Apply SolidJS reactivity, state, component, and async baselines                            |
+| [`tooling-config-conventions`](tooling-config-conventions.md)       | Keep tooling configuration compatible, correctly layered, consumer-resolvable, and safe    |
+| [`tsx-component-conventions`](tsx-component-conventions.md)         | Keep TSX components small, modular, colocated, and structurally lean                       |
+| [`typescript-conventions`](typescript-conventions.md)               | Keep TypeScript contracts narrow, validated, explicit, and modular                         |
 
 ## Installation
 
-| Client | Installation |
-|---|---|
-| Generic coding agents | Route the agent to matching files from `AGENTS.md`, or include critical rule bodies in its always-on instruction file |
-| GitHub Copilot / VS Code | Copy the rule into `.github/instructions/<rule-name>.instructions.md` and add an appropriate `applyTo` frontmatter pattern |
-| Claude Code | Copy the rule into `.claude/rules/<rule-name>.md` and add an appropriate `paths` frontmatter list |
-| Cursor | Copy the rule into `.cursor/rules/<rule-name>.mdc` and configure `description`, `globs`, and `alwaysApply` |
-| Clients with repository rules | Copy the file into the client's rules directory and add required metadata |
+| Client                        | Installation                                                                                                               |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Generic coding agents         | Route the agent to matching files from `AGENTS.md`, or include critical rule bodies in its always-on instruction file      |
+| GitHub Copilot / VS Code      | Copy the rule into `.github/instructions/<rule-name>.instructions.md` and add an appropriate `applyTo` frontmatter pattern |
+| Claude Code                   | Copy the rule into `.claude/rules/<rule-name>.md` and add an appropriate `paths` frontmatter list                          |
+| Cursor                        | Copy the rule into `.cursor/rules/<rule-name>.mdc` and configure `description`, `globs`, and `alwaysApply`                 |
+| Clients with repository rules | Copy the file into the client's rules directory and add required metadata                                                  |
 
 The consumer installer deletes and recreates each client's complete rules or
 instructions directory from this canonical source. It derives each adapter's

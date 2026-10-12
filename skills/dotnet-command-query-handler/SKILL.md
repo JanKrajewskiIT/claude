@@ -36,13 +36,13 @@ description: Implement or review application command and query handlers in .NET.
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| Reads and writes have distinct models or consistency needs | Use separate command and query paths. |
-| Separation only duplicates types and delegation | Keep one cohesive use-case path. |
-| Mapping needs dependencies or substantial reusable policy | Use a focused mapper. |
-| A service only forwards one call | Keep behavior in the handler or owning domain type. |
-| Write must publish reliably | Use the repository's explicit outbox or consistency mechanism. |
+| Situation                                                  | Decision                                                       |
+| ---------------------------------------------------------- | -------------------------------------------------------------- |
+| Reads and writes have distinct models or consistency needs | Use separate command and query paths.                          |
+| Separation only duplicates types and delegation            | Keep one cohesive use-case path.                               |
+| Mapping needs dependencies or substantial reusable policy  | Use a focused mapper.                                          |
+| A service only forwards one call                           | Keep behavior in the handler or owning domain type.            |
+| Write must publish reliably                                | Use the repository's explicit outbox or consistency mechanism. |
 
 ## Constraints
 
@@ -61,4 +61,3 @@ description: Implement or review application command and query handlers in .NET.
 - Framework and transport concerns remain at their owning boundaries.
 - Transaction, concurrency, cancellation, idempotency, and publication behavior are intentional.
 - Proposed evidence covers orchestration and relevant runtime boundaries.
-

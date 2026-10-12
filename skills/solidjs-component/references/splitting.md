@@ -4,12 +4,12 @@ Use when a component module exceeds about 250 lines, owns more than one independ
 
 ## Seams
 
-| Code | Destination |
-|---|---|
+| Code                                                     | Destination                                                                                     |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | Independent behavior with signals, effects, or listeners | `create<Behavior>.ts` hook that takes accessors or callbacks and returns accessors and handlers |
-| Markup with its own state or a distinct semantic role | Sub-component in its own file named after its export |
-| Pure computation, formatting, geometry, or layout | Module named for the behavior, with no side effects |
-| Types, constants, and the merged-props type | `<name>Types.ts`, the lowest-level new module |
+| Markup with its own state or a distinct semantic role    | Sub-component in its own file named after its export                                            |
+| Pure computation, formatting, geometry, or layout        | Module named for the behavior, with no side effects                                             |
+| Types, constants, and the merged-props type              | `<name>Types.ts`, the lowest-level new module                                                   |
 
 ## Controller Object
 

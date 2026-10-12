@@ -32,12 +32,12 @@ description: Design, implement, or review soft deletion in a relational persiste
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| No recovery, retention, or reference need exists | Prefer hard deletion. |
-| Deleted rows must retain deletion time | Use a timestamp rather than paired booleans. |
-| A unique value may be reused | Define lifecycle-aware uniqueness explicitly. |
-| Administrators need deleted rows | Provide a separately authorized query path. |
+| Situation                                        | Decision                                      |
+| ------------------------------------------------ | --------------------------------------------- |
+| No recovery, retention, or reference need exists | Prefer hard deletion.                         |
+| Deleted rows must retain deletion time           | Use a timestamp rather than paired booleans.  |
+| A unique value may be reused                     | Define lifecycle-aware uniqueness explicitly. |
+| Administrators need deleted rows                 | Provide a separately authorized query path.   |
 
 ## Constraints
 

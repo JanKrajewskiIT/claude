@@ -42,13 +42,13 @@ description: Add, connect, or review resources in a .NET Aspire distributed appl
 
 ## Decision Rules
 
-| Need | Preferred mechanism |
-|---|---|
-| Discover another service | Resource reference and service discovery |
-| Delay startup until dependency readiness | Explicit wait dependency |
-| Pass a credential | Secret parameter or external secret store |
-| Share telemetry and resilience defaults | Service-defaults project |
-| Persist local infrastructure data | Resource volume or repository convention |
+| Need                                     | Preferred mechanism                       |
+| ---------------------------------------- | ----------------------------------------- |
+| Discover another service                 | Resource reference and service discovery  |
+| Delay startup until dependency readiness | Explicit wait dependency                  |
+| Pass a credential                        | Secret parameter or external secret store |
+| Share telemetry and resilience defaults  | Service-defaults project                  |
+| Persist local infrastructure data        | Resource volume or repository convention  |
 
 ## Constraints
 

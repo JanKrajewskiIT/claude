@@ -51,13 +51,13 @@ description: Design, implement, or review accessible dialogs, drawers, popovers,
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| Background must be unavailable | Use a modal pattern and enforce modality. |
-| User must continue interacting with the page | Use a non-modal surface. |
-| Trigger is removed before close | Restore focus to the nearest logical workflow target. |
-| Overlay contains another overlay | Give the topmost layer dismissal and focus ownership. |
-| Animation conflicts with reduced motion | Reduce or remove nonessential motion. |
+| Situation                                    | Decision                                              |
+| -------------------------------------------- | ----------------------------------------------------- |
+| Background must be unavailable               | Use a modal pattern and enforce modality.             |
+| User must continue interacting with the page | Use a non-modal surface.                              |
+| Trigger is removed before close              | Restore focus to the nearest logical workflow target. |
+| Overlay contains another overlay             | Give the topmost layer dismissal and focus ownership. |
+| Animation conflicts with reduced motion      | Reduce or remove nonessential motion.                 |
 
 ## Constraints
 

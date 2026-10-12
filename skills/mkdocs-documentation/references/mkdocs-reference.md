@@ -22,15 +22,15 @@ Keep configuration and Markdown sources in one build context. Add categories onl
 
 ## Choose The Document Type
 
-| Need | Typical document | Include |
-|---|---|---|
-| Orient a reader | `index.md` | Purpose, boundaries, structure, key links |
-| Enable local use | `getting-started.md` | Prerequisites, startup, endpoints, common setup failures |
-| Explain system shape | `architecture/` | Context, responsibilities, dependencies, data ownership, decisions |
-| Explain implementation | `technical/` | Backend, frontend, database, authentication, shared packages |
-| Explain product behavior | `business/` | Requirements, domain language, invariants, workflows |
-| Support operations | `runbooks/` | Deployment, health, failures, recovery, escalation |
-| Explain external systems | `external/` | Owned boundary, configuration, compatibility, authoritative links |
+| Need                     | Typical document     | Include                                                            |
+| ------------------------ | -------------------- | ------------------------------------------------------------------ |
+| Orient a reader          | `index.md`           | Purpose, boundaries, structure, key links                          |
+| Enable local use         | `getting-started.md` | Prerequisites, startup, endpoints, common setup failures           |
+| Explain system shape     | `architecture/`      | Context, responsibilities, dependencies, data ownership, decisions |
+| Explain implementation   | `technical/`         | Backend, frontend, database, authentication, shared packages       |
+| Explain product behavior | `business/`          | Requirements, domain language, invariants, workflows               |
+| Support operations       | `runbooks/`          | Deployment, health, failures, recovery, escalation                 |
+| Explain external systems | `external/`          | Owned boundary, configuration, compatibility, authoritative links  |
 
 Do not create empty standard pages. Add one only when it helps a real reader act or decide.
 
@@ -65,13 +65,12 @@ Use simple diagram identifiers, reader-facing labels, and a brief textual meanin
 
 ## Common Failure Modes
 
-| Failure | Prevention |
-|---|---|
-| Page cannot be found | Add it to `nav` and link it from the closest task-oriented page. |
-| Prose conflicts with implementation | Treat executable evidence as authoritative and update the page. |
-| Mermaid fails | Keep plugin, superfence, and container dependency configuration aligned. |
-| Build works only locally | Build only from declared files and dependencies inside `docs/`. |
-| Public route is unhealthy | Align container port, healthcheck, proxy target, and documented URL. |
-| External page becomes a copied manual | Explain the local boundary and link the authoritative source. |
-| Runbook lists tools but no action | Connect each signal to interpretation, response, and recovery. |
-
+| Failure                               | Prevention                                                               |
+| ------------------------------------- | ------------------------------------------------------------------------ |
+| Page cannot be found                  | Add it to `nav` and link it from the closest task-oriented page.         |
+| Prose conflicts with implementation   | Treat executable evidence as authoritative and update the page.          |
+| Mermaid fails                         | Keep plugin, superfence, and container dependency configuration aligned. |
+| Build works only locally              | Build only from declared files and dependencies inside `docs/`.          |
+| Public route is unhealthy             | Align container port, healthcheck, proxy target, and documented URL.     |
+| External page becomes a copied manual | Explain the local boundary and link the authoritative source.            |
+| Runbook lists tools but no action     | Connect each signal to interpretation, response, and recovery.           |

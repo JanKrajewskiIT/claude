@@ -57,13 +57,13 @@ description: Design, implement, migrate, or review type-safe internationalizatio
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| Message contains reordered dynamic values | Use one complete message with named parameters. |
-| Count changes grammar | Use locale-aware plural rules. |
-| Library message is generic and required internally | Keep it in the library namespace. |
-| Copy describes product workflow or domain data | Keep it in the application namespace. |
-| Locale is unsupported | Apply the documented fallback chain. |
+| Situation                                          | Decision                                        |
+| -------------------------------------------------- | ----------------------------------------------- |
+| Message contains reordered dynamic values          | Use one complete message with named parameters. |
+| Count changes grammar                              | Use locale-aware plural rules.                  |
+| Library message is generic and required internally | Keep it in the library namespace.               |
+| Copy describes product workflow or domain data     | Keep it in the application namespace.           |
+| Locale is unsupported                              | Apply the documented fallback chain.            |
 
 ## Constraints
 

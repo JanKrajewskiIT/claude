@@ -52,15 +52,15 @@ description: Create, refactor, or review accessible SolidJS components with corr
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| Value can be calculated from reactive input | Derive it; do not mirror it in a signal. |
-| Props must be divided and forwarded | Use `splitProps`. |
-| Defaults must preserve reactive access | Use `mergeProps` or the established equivalent. |
-| Behavior is shared without visual structure | Prefer a primitive or hook. |
-| Compound parts share parent-owned behavior | Use one focused context instead of prop drilling. |
+| Situation                                        | Decision                                                         |
+| ------------------------------------------------ | ---------------------------------------------------------------- |
+| Value can be calculated from reactive input      | Derive it; do not mirror it in a signal.                         |
+| Props must be divided and forwarded              | Use `splitProps`.                                                |
+| Defaults must preserve reactive access           | Use `mergeProps` or the established equivalent.                  |
+| Behavior is shared without visual structure      | Prefer a primitive or hook.                                      |
+| Compound parts share parent-owned behavior       | Use one focused context instead of prop drilling.                |
 | Several parts of one large component share state | Compose hooks into one controller object owned by the component. |
-| Component requires product-specific nouns | Keep it in the product until a neutral API exists. |
+| Component requires product-specific nouns        | Keep it in the product until a neutral API exists.               |
 
 ## Constraints
 

@@ -40,14 +40,14 @@ description: Audit, simplify, or review rendered frontend markup without changin
 
 ## Wrapper Decision
 
-| Wrapper responsibility | Decision |
-|---|---|
-| Unique semantic grouping | Keep it. |
-| Layout for multiple children | Keep it. |
-| Focus, scroll, measurement, or state boundary | Keep it. |
-| Reusable primitive contract | Keep or improve the primitive. |
-| Class or style for one compatible child | Merge it into the child. |
-| No observable responsibility | Remove it. |
+| Wrapper responsibility                        | Decision                       |
+| --------------------------------------------- | ------------------------------ |
+| Unique semantic grouping                      | Keep it.                       |
+| Layout for multiple children                  | Keep it.                       |
+| Focus, scroll, measurement, or state boundary | Keep it.                       |
+| Reusable primitive contract                   | Keep or improve the primitive. |
+| Class or style for one compatible child       | Merge it into the child.       |
+| No observable responsibility                  | Remove it.                     |
 
 ## Constraints
 

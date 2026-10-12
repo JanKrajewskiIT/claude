@@ -24,7 +24,7 @@ saved.
 
 ```ts
 type SaveConflict<TDocument> = {
-  kind: "conflict";
+  kind: 'conflict';
   expectedServerRevision: string;
   actualServerRevision: string;
   localDocument: TDocument;

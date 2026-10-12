@@ -44,13 +44,13 @@ description: Evaluate, extract, or review reusable UI components and interaction
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| Contract uses product nouns | Generalize it or keep it in the application. |
-| Component owns product-specific API or route state | Keep that ownership in an application adapter. |
-| Reuse requires many unrelated switches | Keep iterating locally. |
-| Accessibility depends on shared structure and behavior | Extract them as one coherent primitive. |
-| Source call site becomes harder to understand | Rework the boundary or stop the extraction. |
+| Situation                                              | Decision                                       |
+| ------------------------------------------------------ | ---------------------------------------------- |
+| Contract uses product nouns                            | Generalize it or keep it in the application.   |
+| Component owns product-specific API or route state     | Keep that ownership in an application adapter. |
+| Reuse requires many unrelated switches                 | Keep iterating locally.                        |
+| Accessibility depends on shared structure and behavior | Extract them as one coherent primitive.        |
+| Source call site becomes harder to understand          | Rework the boundary or stop the extraction.    |
 
 ## Collections and Saved Views
 

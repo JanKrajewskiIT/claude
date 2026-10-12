@@ -4,11 +4,11 @@
 
 ```ts
 type FormPhase =
-  | { status: "editing"; stepId: string }
-  | { status: "validating"; stepId: string }
-  | { status: "submitting" }
-  | { status: "succeeded"; resultId: string }
-  | { status: "failed"; kind: "validation" | "conflict" | "transient" };
+  | { status: 'editing'; stepId: string }
+  | { status: 'validating'; stepId: string }
+  | { status: 'submitting' }
+  | { status: 'succeeded'; resultId: string }
+  | { status: 'failed'; kind: 'validation' | 'conflict' | 'transient' };
 
 type FormState<TValues> = {
   values: TValues;

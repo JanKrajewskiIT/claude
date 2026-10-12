@@ -49,21 +49,24 @@ description: Design, implement, or review reliable background saving for editabl
    - Expire obsolete drafts and reconcile them against server revisions.
    - Avoid local persistence for sensitive documents unless explicitly designed.
 10. Implement the protocol.
-   - Keep transport, scheduling, state transitions, and UI presentation separable.
-   - Use [`references/examples.md`](references/examples.md) for sequencing and conflict examples.
+
+- Keep transport, scheduling, state transitions, and UI presentation separable.
+- Use [`references/examples.md`](references/examples.md) for sequencing and conflict examples.
+
 11. Propose validation.
-   - Check rapid edits, edits during save, out-of-order responses, offline recovery, conflicts, reload, navigation, and terminal failures.
-   - List exact commands and ask before running them unless already approved.
+
+- Check rapid edits, edits during save, out-of-order responses, offline recovery, conflicts, reload, navigation, and terminal failures.
+- List exact commands and ask before running them unless already approved.
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| Edit occurs during an in-flight save | Schedule another save for the newer local revision. |
-| Older response arrives after newer edits | Acknowledge only its submitted revision. |
-| Server revision changed independently | Enter conflict state; do not blind-retry. |
-| Network is unavailable | Retain dirty state and pause bounded retries. |
-| Document contains sensitive data | Avoid local persistence unless explicitly approved. |
+| Situation                                | Decision                                            |
+| ---------------------------------------- | --------------------------------------------------- |
+| Edit occurs during an in-flight save     | Schedule another save for the newer local revision. |
+| Older response arrives after newer edits | Acknowledge only its submitted revision.            |
+| Server revision changed independently    | Enter conflict state; do not blind-retry.           |
+| Network is unavailable                   | Retain dirty state and pause bounded retries.       |
+| Document contains sensitive data         | Avoid local persistence unless explicitly approved. |
 
 ## Constraints
 

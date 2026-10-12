@@ -28,13 +28,13 @@ description: Design, implement, review, or test reliable asynchronous message pr
 
 ## Consistency Decisions
 
-| Requirement | Preferred mechanism |
-|---|---|
-| State and message must eventually agree | Transactional outbox with a replayable relay. |
-| Occasional message loss is acceptable | Direct post-commit publication with explicit monitoring. |
-| Caller must know broker acceptance | Await the configured acknowledgement and expose failure. |
-| Duplicate publication is possible | Stable event identity plus idempotent consumer effects. |
-| Per-entity order matters | Stable entity key and compatible partition strategy. |
+| Requirement                             | Preferred mechanism                                      |
+| --------------------------------------- | -------------------------------------------------------- |
+| State and message must eventually agree | Transactional outbox with a replayable relay.            |
+| Occasional message loss is acceptable   | Direct post-commit publication with explicit monitoring. |
+| Caller must know broker acceptance      | Await the configured acknowledgement and expose failure. |
+| Duplicate publication is possible       | Stable event identity plus idempotent consumer effects.  |
+| Per-entity order matters                | Stable entity key and compatible partition strategy.     |
 
 ## Reliability Rules
 

@@ -50,14 +50,14 @@ description: Design, implement, or review accessible multi-step forms and wizard
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| Sections remain visible in one form without guarded navigation or separate lifecycles | Use `frontend-form-state`. |
-| Steps have no meaningful grouping or dependency | Prefer one form. |
-| Later steps depend on current answers | Validate before moving forward. |
-| Earlier edit removes a conditional step | Remove or deliberately retain now-inapplicable data. |
-| Submission can be retried | Make duplicate prevention and idempotency explicit. |
-| Draft contains secrets or payment data | Do not persist it by default. |
+| Situation                                                                             | Decision                                             |
+| ------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| Sections remain visible in one form without guarded navigation or separate lifecycles | Use `frontend-form-state`.                           |
+| Steps have no meaningful grouping or dependency                                       | Prefer one form.                                     |
+| Later steps depend on current answers                                                 | Validate before moving forward.                      |
+| Earlier edit removes a conditional step                                               | Remove or deliberately retain now-inapplicable data. |
+| Submission can be retried                                                             | Make duplicate prevention and idempotency explicit.  |
+| Draft contains secrets or payment data                                                | Do not persist it by default.                        |
 
 ## Constraints
 

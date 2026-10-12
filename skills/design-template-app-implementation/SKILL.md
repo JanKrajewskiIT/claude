@@ -55,14 +55,14 @@ description: Implement a complete application from a design-system template on t
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| Template needs data no endpoint provides | Extend the API additively and record it in the contract matrix. |
-| Previous feature has no screen in the template | List it as omitted; do not rebuild it silently. |
-| Template shows behavior with no backend yet | Persist the setting, state in the report that it has no effect, and do not fake it. |
-| Typed translator rejects a library key | Use the runtime translator for library keys and the typed one for application keys. |
-| Store setter rejects a readonly domain field | Type the draft with a mutable copy of the shape. |
-| Parsed or imported payload carries an empty identifier | Normalize it to absent at the client mapping and at the server boundary. |
+| Situation                                              | Decision                                                                            |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| Template needs data no endpoint provides               | Extend the API additively and record it in the contract matrix.                     |
+| Previous feature has no screen in the template         | List it as omitted; do not rebuild it silently.                                     |
+| Template shows behavior with no backend yet            | Persist the setting, state in the report that it has no effect, and do not fake it. |
+| Typed translator rejects a library key                 | Use the runtime translator for library keys and the typed one for application keys. |
+| Store setter rejects a readonly domain field           | Type the draft with a mutable copy of the shape.                                    |
+| Parsed or imported payload carries an empty identifier | Normalize it to absent at the client mapping and at the server boundary.            |
 
 ## Constraints
 

@@ -5,9 +5,22 @@
 ```ts
 type Side = 'top' | 'bottom' | 'left' | 'right';
 type Align = 'start' | 'center' | 'end';
-interface Box { left: number; top: number; width: number; height: number }
-interface Size { width: number; height: number }
-interface Options { side: Side; align: Align; offset: number; padding: number }
+interface Box {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}
+interface Size {
+  width: number;
+  height: number;
+}
+interface Options {
+  side: Side;
+  align: Align;
+  offset: number;
+  padding: number;
+}
 ```
 
 ## Pure Placement
@@ -18,13 +31,20 @@ const vertical = (side: Side) => side === 'top' || side === 'bottom';
 const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(v, Math.max(min, max)));
 
 const crossStart = (anchorStart: number, anchorSize: number, size: number, align: Align) =>
-  align === 'start' ? anchorStart : align === 'end' ? anchorStart + anchorSize - size : anchorStart + (anchorSize - size) / 2;
+  align === 'start'
+    ? anchorStart
+    : align === 'end'
+      ? anchorStart + anchorSize - size
+      : anchorStart + (anchorSize - size) / 2;
 
 const mainStart = (a: Box, s: Size, side: Side, offset: number) =>
-  side === 'top' ? a.top - s.height - offset
-  : side === 'bottom' ? a.top + a.height + offset
-  : side === 'left' ? a.left - s.width - offset
-  : a.left + a.width + offset;
+  side === 'top'
+    ? a.top - s.height - offset
+    : side === 'bottom'
+      ? a.top + a.height + offset
+      : side === 'left'
+        ? a.left - s.width - offset
+        : a.left + a.width + offset;
 
 const overflow = (a: Box, s: Size, vp: Size, side: Side, o: Options) => {
   const start = mainStart(a, s, side, o.offset);
@@ -39,9 +59,17 @@ export const placeFloating = (a: Box, s: Size, vp: Size, o: Options) => {
   const side = first > 0 && overflow(a, s, vp, flipped, o) < first ? flipped : o.side;
   const main = mainStart(a, s, side, o.offset);
   if (vertical(side)) {
-    return { side, x: clamp(crossStart(a.left, a.width, s.width, o.align), o.padding, vp.width - s.width - o.padding), y: clamp(main, o.padding, vp.height - s.height - o.padding) };
+    return {
+      side,
+      x: clamp(crossStart(a.left, a.width, s.width, o.align), o.padding, vp.width - s.width - o.padding),
+      y: clamp(main, o.padding, vp.height - s.height - o.padding),
+    };
   }
-  return { side, x: clamp(main, o.padding, vp.width - s.width - o.padding), y: clamp(crossStart(a.top, a.height, s.height, o.align), o.padding, vp.height - s.height - o.padding) };
+  return {
+    side,
+    x: clamp(main, o.padding, vp.width - s.width - o.padding),
+    y: clamp(crossStart(a.top, a.height, s.height, o.align), o.padding, vp.height - s.height - o.padding),
+  };
 };
 ```
 
@@ -49,7 +77,9 @@ export const placeFloating = (a: Box, s: Size, vp: Size, o: Options) => {
 
 ```ts
 const createsBlock = (st: CSSStyleDeclaration) =>
-  ['transform', 'perspective', 'filter', 'backdropFilter'].some((p) => st[p as 'transform'] !== '' && st[p as 'transform'] !== 'none') ||
+  ['transform', 'perspective', 'filter', 'backdropFilter'].some(
+    (p) => st[p as 'transform'] !== '' && st[p as 'transform'] !== 'none',
+  ) ||
   /transform|perspective|filter/u.test(st.willChange) ||
   /paint|layout|strict|content/u.test(st.contain);
 

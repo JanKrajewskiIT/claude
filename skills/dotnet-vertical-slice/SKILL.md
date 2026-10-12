@@ -53,13 +53,13 @@ description: Create, extend, or review vertical slices in .NET applications usin
 
 ## Decision Rules
 
-| Question | Decision |
-|---|---|
-| Does behavior belong to one use case? | Keep it inside the slice. |
-| Is an invariant shared by multiple use cases? | Move it into the domain model. |
+| Question                                            | Decision                                     |
+| --------------------------------------------------- | -------------------------------------------- |
+| Does behavior belong to one use case?               | Keep it inside the slice.                    |
+| Is an invariant shared by multiple use cases?       | Move it into the domain model.               |
 | Is technical integration reused by multiple slices? | Use the established infrastructure boundary. |
-| Does a contract cross the HTTP boundary? | Do not expose persistence entities. |
-| Does the repository use MediatR or custom dispatch? | Preserve the existing dispatch model. |
+| Does a contract cross the HTTP boundary?            | Do not expose persistence entities.          |
+| Does the repository use MediatR or custom dispatch? | Preserve the existing dispatch model.        |
 
 ## Constraints
 

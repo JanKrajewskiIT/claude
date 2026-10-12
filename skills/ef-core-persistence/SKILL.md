@@ -58,14 +58,14 @@ description: Design, implement, optimize, or review Entity Framework Core read a
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| Result is read-only | Use no-tracking behavior. |
-| Consumer needs a subset of fields | Project at the database boundary. |
-| Related data creates a broad object graph | Prefer a focused projection or explicit split strategy. |
-| Multiple writers can update the row | Add and handle an optimistic concurrency token. |
-| Operation spans database and external messaging | Use the established consistency mechanism. |
-| Model shape changes storage | Apply `ef-core-migrations`. |
+| Situation                                       | Decision                                                |
+| ----------------------------------------------- | ------------------------------------------------------- |
+| Result is read-only                             | Use no-tracking behavior.                               |
+| Consumer needs a subset of fields               | Project at the database boundary.                       |
+| Related data creates a broad object graph       | Prefer a focused projection or explicit split strategy. |
+| Multiple writers can update the row             | Add and handle an optimistic concurrency token.         |
+| Operation spans database and external messaging | Use the established consistency mechanism.              |
+| Model shape changes storage                     | Apply `ef-core-migrations`.                             |
 
 ## Constraints
 

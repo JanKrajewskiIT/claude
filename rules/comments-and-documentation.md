@@ -33,4 +33,3 @@
 - Architecture and business knowledge lives in the owning documentation location.
 - Links provide necessary context rather than speculative resource lists.
 - Comments and documentation contain no stale or duplicated explanation.
-

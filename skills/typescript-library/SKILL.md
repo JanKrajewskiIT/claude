@@ -62,13 +62,13 @@ description: Create, configure, build, review, or publish a TypeScript library p
 
 ## Decision Rules
 
-| Question | Decision |
-|---|---|
-| Do consumers need one module format? | Publish one explicit format. |
-| Do consumers require ESM and CommonJS? | Use conditional exports and test both. |
-| Is a framework supplied by the host app? | Prefer a peer dependency. |
-| Is a subpath not part of the public contract? | Do not export it. |
-| Does adding `exports` hide prior import paths? | Treat it as potentially breaking. |
+| Question                                       | Decision                               |
+| ---------------------------------------------- | -------------------------------------- |
+| Do consumers need one module format?           | Publish one explicit format.           |
+| Do consumers require ESM and CommonJS?         | Use conditional exports and test both. |
+| Is a framework supplied by the host app?       | Prefer a peer dependency.              |
+| Is a subpath not part of the public contract?  | Do not export it.                      |
+| Does adding `exports` hide prior import paths? | Treat it as potentially breaking.      |
 
 ## Constraints
 
