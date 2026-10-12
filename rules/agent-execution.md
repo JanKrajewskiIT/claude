@@ -47,6 +47,8 @@ Approval is required for:
 - Summarize the implementation without running checks automatically.
 - State which relevant checks remain unrun.
 - Propose the smallest useful validation set with exact commands.
+- Propose a project-defined aggregate verification script as one command instead of its steps one by one.
+- Check that the required tool is installed before proposing it; when dependencies are missing, propose the install first.
 - Ask whether to run those commands only when validation would add useful evidence.
 - Do not repeatedly ask after the user declines validation unless the scope changes.
 

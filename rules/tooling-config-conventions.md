@@ -59,6 +59,7 @@
 - Name secrets after the service they authenticate against, such as an npm registry token rather than a container registry name.
 - Confirm the target registry supports provenance and signature verification before enabling or documenting them.
 - Use a matrix only when it has more than one entry.
+- Give an application one aggregate `verify` script that only composes its existing gate scripts, so one command reproduces the CI gate.
 
 ## Completion Criteria
 

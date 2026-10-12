@@ -30,6 +30,7 @@
 - Define a dimension shared by several variants or components, such as control heights, icon sizes, and breakpoints, once as a token or custom property and derive every use from it.
 - Use one breakpoint set; do not mix values such as 640, 700, 768, and 960 pixels without a named reason.
 - Use `!important` only for user-preference overrides such as reduced motion; never to override another component's styles.
+- Name `@keyframes` in camelCase, matching the shared stylelint preset, and define each animation once in the module that owns it.
 - Use native nesting with `&` for states of the owning selector instead of repeating the full selector for each pseudo-class when the toolchain supports it.
 
 ## Ownership

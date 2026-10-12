@@ -39,6 +39,7 @@ Portable software-engineering skills and provider-neutral agent rules.
 | [`design-system-parity-audit`](skills/design-system-parity-audit/) | Audit a port against its design-system reference and fix the gaps |
 | [`design-system-showcase`](skills/design-system-showcase/) | Build a live showcase app of a component library from a showcase template |
 | [`design-system-solid-port`](skills/design-system-solid-port/) | Port a design-system reference to SolidJS without redesigning it |
+| [`design-template-app-implementation`](skills/design-template-app-implementation/) | Build an application from a design template on a component library and align its backend contract |
 | [`dom-hygiene-audit`](skills/dom-hygiene-audit/) | Simplify rendered markup while preserving semantics and behavior |
 | [`dotnet-command-query-handler`](skills/dotnet-command-query-handler/) | Implement cohesive .NET application commands and queries |
 | [`dotnet-configuration`](skills/dotnet-configuration/) | Bind and validate typed .NET application configuration |

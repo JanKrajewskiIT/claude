@@ -50,6 +50,8 @@
 - Keep transient interaction state near the smallest coordinating component.
 - Keep server-owned data in the query or resource abstraction used by the repository.
 - Create writable drafts only when editing requires divergence from the source value.
+- Type a draft store with a mutable copy of the domain shape when the domain type is `readonly`; store path setters reject readonly properties, and consumers keep the readonly type.
+- Change a list inside a store through one `produce` helper that takes the list name, not through generic path setters.
 - Use stores for structured granular updates and signals for focused values.
 - Keep persisted preferences separate from remote server state.
 - Resolve the initial value of an uncontrolled input synchronously from its default, never from an effect with `defer: true`; the first render and form submission must already see it.

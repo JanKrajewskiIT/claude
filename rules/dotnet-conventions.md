@@ -27,6 +27,7 @@
 - Enforce authorization and resource ownership at server boundaries.
 - Map expected failures to stable application or protocol outcomes.
 - Do not expose stack traces, internal exceptions, or secret configuration values.
+- Treat an empty `Guid` or other default value received for an optional identifier as absent.
 
 ## Persistence
 
@@ -40,6 +41,8 @@
 - Add dependencies only when platform or repository capabilities do not meet the need.
 - Treat serialization, database schema, configuration, and package surfaces as compatibility contracts.
 - Avoid broad solution restructuring for one feature.
+- Carry a new contract field through every layer that owns it: request, command, handler, validator, response, persistence configuration, and migration; register provider-specific types in every runtime and design-time context.
+- Generate a migration only for a persisted column or type change; a response-only field or a field inside a JSON column needs none, which the pending-model-changes check confirms.
 
 ## Completion Criteria
 
@@ -47,3 +50,4 @@
 - Asynchronous work and cancellation flow through the complete call chain.
 - Transport, persistence, host configuration, and domain logic remain at their owning boundaries.
 - Public API, serialization, schema, configuration, and package compatibility are preserved, or the break is reported.
+- Every new contract field reaches each owning layer, and every new persisted change has a reviewed migration.

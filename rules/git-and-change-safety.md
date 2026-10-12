@@ -7,6 +7,12 @@
 - Keep edits limited to the requested behavior and its required contracts.
 - Leave unrelated formatting, generated files, and metadata unchanged.
 
+## Edits
+
+- Modify an existing file in place; never create a sibling file and move it over the original.
+- Preserve each file's indentation style and line endings as defined by the repository editor configuration, and check both after tool-driven edits.
+- Re-read a file after a multi-line structural edit to confirm that delimiters are balanced and no member was lost.
+
 ## History
 
 - Use history or blame only when current code cannot explain an important decision.
@@ -33,6 +39,7 @@
 
 ## Completion Criteria
 
+- Edited files keep their indentation and line endings, and structural edits left no lost or unbalanced code.
 - No user change was discarded, overwritten, or staged outside the requested change.
 - No branch, commit, tag, release, or push occurred without explicit approval for that operation.
 - Shared history remains unchanged unless its rewrite was explicitly requested.

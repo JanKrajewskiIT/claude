@@ -45,6 +45,8 @@ description: Design, evolve, or review stable HTTP API contracts. Use when the p
 7. Assess compatibility.
    - Compare changes from the consumer's perspective, including generated clients.
    - Prefer additive optional fields and new endpoints over changing established meaning.
+   - When adapting an existing API to a redesigned client, list each needed call as a contract matrix of existing, extended, or new before editing handlers.
+   - Return the identifier a client needs next from a create-or-update call instead of an empty success.
    - Version only when compatibility cannot be preserved cleanly.
 8. Document the contract.
    - Keep OpenAPI metadata, examples, validation, and runtime behavior aligned.
@@ -62,6 +64,7 @@ description: Design, evolve, or review stable HTTP API contracts. Use when the p
 | Client may retry a non-idempotent command | Define an idempotency contract. |
 | Multiple writers may update one resource | Require an optimistic concurrency token. |
 | Existing consumers can misinterpret a change | Treat it as breaking even if serialization still succeeds. |
+| Client sends an empty or default identifier for a resource that does not exist yet | Treat it as absent at the boundary and create or upsert. |
 
 ## Constraints
 
