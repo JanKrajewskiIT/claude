@@ -8,24 +8,25 @@ instruction mechanism supported by the target client.
 
 ## Catalog
 
-| Rule                                                                | Purpose                                                                                    |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| [`agent-execution`](agent-execution.md)                             | Require explicit approval for tests and project commands                                   |
-| [`code-quality`](code-quality.md)                                   | Keep code single-sourced, cohesive, consistent, and free of dead paths                     |
-| [`component-library-conventions`](component-library-conventions.md) | Keep reusable UI libraries consistent in exports, contracts, localization, and inventories |
-| [`comments-and-documentation`](comments-and-documentation.md)       | Keep comments purposeful and project documentation canonical                               |
-| [`css-modules-conventions`](css-modules-conventions.md)             | Keep modular styles token-based, local, and structurally safe                              |
-| [`dependency-policy`](dependency-policy.md)                         | Justify and approve every external dependency before adding it                             |
-| [`dotnet-conventions`](dotnet-conventions.md)                       | Keep .NET changes consistent, bounded, and contract-aware                                  |
-| [`dotnet-error-handling`](dotnet-error-handling.md)                 | Classify, map, and disclose .NET failures consistently                                     |
-| [`frontend-accessibility`](frontend-accessibility.md)               | Apply semantic, keyboard, focus, and visual accessibility baselines                        |
-| [`git-and-change-safety`](git-and-change-safety.md)                 | Protect user changes, history, and public compatibility                                    |
-| [`react-conventions`](react-conventions.md)                         | Apply React rendering, hooks, state, effect, and context baselines                         |
-| [`security-boundaries`](security-boundaries.md)                     | Preserve trust, secret, data, and integration boundaries                                   |
-| [`solidjs-conventions`](solidjs-conventions.md)                     | Apply SolidJS reactivity, state, component, and async baselines                            |
-| [`tooling-config-conventions`](tooling-config-conventions.md)       | Keep tooling configuration compatible, correctly layered, consumer-resolvable, and safe    |
-| [`tsx-component-conventions`](tsx-component-conventions.md)         | Keep TSX components small, modular, colocated, and structurally lean                       |
-| [`typescript-conventions`](typescript-conventions.md)               | Keep TypeScript contracts narrow, validated, explicit, and modular                         |
+| Rule                                                                | Purpose                                                                                         |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| [`agent-execution`](agent-execution.md)                             | Require explicit approval for tests and project commands                                        |
+| [`ci-supply-chain`](ci-supply-chain.md)                             | Preserve CI credential boundaries and verified artifact identity through release and deployment |
+| [`code-quality`](code-quality.md)                                   | Keep code single-sourced, cohesive, consistent, and free of dead paths                          |
+| [`component-library-conventions`](component-library-conventions.md) | Keep reusable UI libraries consistent in exports, contracts, localization, and inventories      |
+| [`comments-and-documentation`](comments-and-documentation.md)       | Keep comments purposeful and project documentation canonical                                    |
+| [`css-modules-conventions`](css-modules-conventions.md)             | Keep modular styles token-based, local, and structurally safe                                   |
+| [`dependency-policy`](dependency-policy.md)                         | Justify and approve every external dependency before adding it                                  |
+| [`dotnet-conventions`](dotnet-conventions.md)                       | Keep .NET changes consistent, bounded, and contract-aware                                       |
+| [`dotnet-error-handling`](dotnet-error-handling.md)                 | Classify, map, and disclose .NET failures consistently                                          |
+| [`frontend-accessibility`](frontend-accessibility.md)               | Apply semantic, keyboard, focus, and visual accessibility baselines                             |
+| [`git-and-change-safety`](git-and-change-safety.md)                 | Protect user changes, history, and public compatibility                                         |
+| [`react-conventions`](react-conventions.md)                         | Apply React rendering, hooks, state, effect, and context baselines                              |
+| [`security-boundaries`](security-boundaries.md)                     | Preserve trust, secret, data, and integration boundaries                                        |
+| [`solidjs-conventions`](solidjs-conventions.md)                     | Apply SolidJS reactivity, state, component, and async baselines                                 |
+| [`tooling-config-conventions`](tooling-config-conventions.md)       | Keep tooling configuration compatible, correctly layered, consumer-resolvable, and safe         |
+| [`tsx-component-conventions`](tsx-component-conventions.md)         | Keep TSX components small, modular, colocated, and structurally lean                            |
+| [`typescript-conventions`](typescript-conventions.md)               | Keep TypeScript contracts narrow, validated, explicit, and modular                              |
 
 ## Installation
 

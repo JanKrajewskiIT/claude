@@ -60,6 +60,7 @@ Portable software-engineering skills and provider-neutral agent rules.
 | [`mkdocs-documentation`](skills/mkdocs-documentation/)                             | Maintain standalone containerized MkDocs Material documentation                                   |
 | [`multi-step-form`](skills/multi-step-form/)                                       | Coordinate accessible step navigation, validation, drafts, and submission                         |
 | [`safe-markdown-renderer`](skills/safe-markdown-renderer/)                         | Build a dependency-free Markdown renderer whose output is safe for innerHTML                      |
+| [`secure-release-pipeline`](skills/secure-release-pipeline/)                       | Verify, scan, sign and deliver immutable release artifacts with explicit credential boundaries    |
 | [`solidjs-component`](skills/solidjs-component/)                                   | Build accessible components with correct SolidJS reactivity                                       |
 | [`solidjs-library-audit`](skills/solidjs-library-audit/)                           | Audit a SolidJS component library for quality, consistency, accessibility, and security           |
 | [`solidjs-state-and-query`](skills/solidjs-state-and-query/)                       | Separate local, persisted, and server-owned state in SolidJS applications                         |
@@ -69,24 +70,25 @@ Portable software-engineering skills and provider-neutral agent rules.
 
 ## Rules Catalog
 
-| Rule                                                                      | Purpose                                                                                    |
-| ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| [`agent-execution`](rules/agent-execution.md)                             | Require explicit approval before tests and project commands                                |
-| [`code-quality`](rules/code-quality.md)                                   | Keep code single-sourced, cohesive, consistent, and free of dead paths                     |
-| [`comments-and-documentation`](rules/comments-and-documentation.md)       | Keep comments purposeful and project documentation canonical                               |
-| [`component-library-conventions`](rules/component-library-conventions.md) | Keep reusable UI libraries consistent in exports, contracts, localization, and inventories |
-| [`css-modules-conventions`](rules/css-modules-conventions.md)             | Keep modular styles token-based, local, and structurally safe                              |
-| [`dependency-policy`](rules/dependency-policy.md)                         | Justify and approve every external dependency before adding it                             |
-| [`dotnet-conventions`](rules/dotnet-conventions.md)                       | Keep .NET changes consistent, bounded, and contract-aware                                  |
-| [`dotnet-error-handling`](rules/dotnet-error-handling.md)                 | Classify, map, and disclose .NET failures consistently                                     |
-| [`frontend-accessibility`](rules/frontend-accessibility.md)               | Apply semantic, keyboard, focus, and visual accessibility baselines                        |
-| [`git-and-change-safety`](rules/git-and-change-safety.md)                 | Protect user changes, history, and public compatibility                                    |
-| [`react-conventions`](rules/react-conventions.md)                         | Apply React rendering, hooks, state, effect, and context baselines                         |
-| [`security-boundaries`](rules/security-boundaries.md)                     | Preserve trust, secret, data, and integration boundaries                                   |
-| [`solidjs-conventions`](rules/solidjs-conventions.md)                     | Apply SolidJS reactivity, state, component, and async baselines                            |
-| [`tooling-config-conventions`](rules/tooling-config-conventions.md)       | Keep tooling configuration compatible, correctly layered, consumer-resolvable, and safe    |
-| [`tsx-component-conventions`](rules/tsx-component-conventions.md)         | Keep TSX components small, modular, colocated, and structurally lean                       |
-| [`typescript-conventions`](rules/typescript-conventions.md)               | Keep TypeScript contracts narrow, validated, explicit, and modular                         |
+| Rule                                                                      | Purpose                                                                                         |
+| ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| [`agent-execution`](rules/agent-execution.md)                             | Require explicit approval before tests and project commands                                     |
+| [`ci-supply-chain`](rules/ci-supply-chain.md)                             | Preserve CI credential boundaries and verified artifact identity through release and deployment |
+| [`code-quality`](rules/code-quality.md)                                   | Keep code single-sourced, cohesive, consistent, and free of dead paths                          |
+| [`comments-and-documentation`](rules/comments-and-documentation.md)       | Keep comments purposeful and project documentation canonical                                    |
+| [`component-library-conventions`](rules/component-library-conventions.md) | Keep reusable UI libraries consistent in exports, contracts, localization, and inventories      |
+| [`css-modules-conventions`](rules/css-modules-conventions.md)             | Keep modular styles token-based, local, and structurally safe                                   |
+| [`dependency-policy`](rules/dependency-policy.md)                         | Justify and approve every external dependency before adding it                                  |
+| [`dotnet-conventions`](rules/dotnet-conventions.md)                       | Keep .NET changes consistent, bounded, and contract-aware                                       |
+| [`dotnet-error-handling`](rules/dotnet-error-handling.md)                 | Classify, map, and disclose .NET failures consistently                                          |
+| [`frontend-accessibility`](rules/frontend-accessibility.md)               | Apply semantic, keyboard, focus, and visual accessibility baselines                             |
+| [`git-and-change-safety`](rules/git-and-change-safety.md)                 | Protect user changes, history, and public compatibility                                         |
+| [`react-conventions`](rules/react-conventions.md)                         | Apply React rendering, hooks, state, effect, and context baselines                              |
+| [`security-boundaries`](rules/security-boundaries.md)                     | Preserve trust, secret, data, and integration boundaries                                        |
+| [`solidjs-conventions`](rules/solidjs-conventions.md)                     | Apply SolidJS reactivity, state, component, and async baselines                                 |
+| [`tooling-config-conventions`](rules/tooling-config-conventions.md)       | Keep tooling configuration compatible, correctly layered, consumer-resolvable, and safe         |
+| [`tsx-component-conventions`](rules/tsx-component-conventions.md)         | Keep TSX components small, modular, colocated, and structurally lean                            |
+| [`typescript-conventions`](rules/typescript-conventions.md)               | Keep TypeScript contracts narrow, validated, explicit, and modular                              |
 
 ## Installation
 
@@ -171,6 +173,22 @@ submodule and source of truth. Native rule adapters contain the full rule text;
 the `AGENTS.md` routing block reads rules from the `.agents` submodule, so clone
 consuming repositories with submodules. See the [`rules` installation
 guide](rules/README.md) for adapter details and manual setup.
+
+### Refresh Instructions Only
+
+For an existing consumer, refresh guidance without changing client permission
+profiles, editor settings, `.gitignore`, legacy files or the Git index:
+
+```powershell
+.\.agents\scripts\install-consumer.ps1 -GuidanceOnly
+```
+
+This updates the generated blocks in `AGENTS.md` and `.claude/CLAUDE.md`,
+replaces generated rule adapters and installs identical skill packages for each
+client. It rejects guidance directories reached through a symbolic link or junction.
+Use `-WhatIf` to preview the affected directories. Initial installation still uses
+the full installer. Keep the canonical source and consumer submodule revisions
+aligned when distributing a shared update.
 
 ## Validation
 

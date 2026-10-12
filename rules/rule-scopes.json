@@ -13,39 +13,19 @@
     "description": "Reusable UI component library conventions. Apply when working in a shared component library."
   },
   "css-modules-conventions": {
-    "applyTo": [
-      "**/*.module.css",
-      "**/*.module.scss",
-      "**/*.module.sass",
-      "**/*.module.less"
-    ]
+    "applyTo": ["**/*.module.css", "**/*.module.scss", "**/*.module.sass", "**/*.module.less"]
   },
   "dependency-policy": {
     "applyTo": []
   },
   "dotnet-conventions": {
-    "applyTo": [
-      "**/*.cs",
-      "**/*.csproj",
-      "**/*.fs",
-      "**/*.fsproj",
-      "**/*.sln",
-      "**/*.slnx"
-    ]
+    "applyTo": ["**/*.cs", "**/*.csproj", "**/*.fs", "**/*.fsproj", "**/*.sln", "**/*.slnx"]
   },
   "dotnet-error-handling": {
     "applyTo": ["**/*.cs", "**/*.csproj", "**/*.fs", "**/*.fsproj"]
   },
   "frontend-accessibility": {
-    "applyTo": [
-      "**/*.html",
-      "**/*.htm",
-      "**/*.tsx",
-      "**/*.jsx",
-      "**/*.vue",
-      "**/*.svelte",
-      "**/*.razor"
-    ]
+    "applyTo": ["**/*.html", "**/*.htm", "**/*.tsx", "**/*.jsx", "**/*.vue", "**/*.svelte", "**/*.razor"]
   },
   "git-and-change-safety": {
     "applyTo": []
@@ -85,7 +65,21 @@
       "**/husky/**",
       "**/*.conf",
       "**/.github/workflows/**",
-      "**/.github/dependabot.yml"
+      "**/.github/dependabot.yml",
+      "**/.nvmrc",
+      "**/.node-version",
+      "**/*.code-workspace",
+      "**/knip.*",
+      "**/env.config.*",
+      "**/spa.config.*",
+      "**/Dockerfile*",
+      "**/docker-compose*.yml",
+      "**/docker-compose*.yaml",
+      "**/editor/**",
+      "**/scripts/toolchain.*",
+      "**/scripts/sync-editor.*",
+      "**/scripts/prepare-spa.*",
+      "**/scripts/sync-nginx.*"
     ]
   },
   "tsx-component-conventions": {
@@ -93,5 +87,23 @@
   },
   "typescript-conventions": {
     "applyTo": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"]
+  },
+  "ci-supply-chain": {
+    "applyTo": [
+      "**/.github/workflows/**",
+      "**/.github/dependabot.yml",
+      "**/Dockerfile*",
+      "**/*.Dockerfile",
+      "**/docker-compose*.yml",
+      "**/docker-compose*.yaml",
+      "**/compose*.yml",
+      "**/compose*.yaml",
+      "**/security/**",
+      "**/scripts/scan-*",
+      "**/scripts/security-*",
+      "**/scripts/verify-spa-security.*",
+      "**/scripts/verify-release.*",
+      "**/scripts/dast.*"
+    ]
   }
 }

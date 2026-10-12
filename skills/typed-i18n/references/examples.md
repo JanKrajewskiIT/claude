@@ -5,8 +5,8 @@
 ```ts
 const en = {
   project: {
-    saved: "Project saved",
-    memberCount: "{count, plural, one {# member} other {# members}}",
+    saved: 'Project saved',
+    memberCount: '{count, plural, one {# member} other {# members}}',
   },
 } as const;
 
@@ -30,7 +30,7 @@ rules.
 
 ```ts
 new Intl.DateTimeFormat(locale, {
-  dateStyle: "medium",
+  dateStyle: 'medium',
   timeZone,
 }).format(instant);
 ```

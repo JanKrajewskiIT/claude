@@ -1,6 +1,7 @@
 [CmdletBinding(SupportsShouldProcess)]
 param(
-    [string]$TargetRepository
+    [string]$TargetRepository,
+    [switch]$GuidanceOnly
 )
 
 $ErrorActionPreference = 'Stop'
@@ -78,8 +79,9 @@ function Sync-Skills {
     param([string]$DestinationRoot)
 
     if ($PSCmdlet.ShouldProcess($DestinationRoot, 'Replace with skills from .agents')) {
+        Assert-GeneratedDirectory -DestinationRoot $DestinationRoot
         if (Test-Path $DestinationRoot) {
-            Remove-Item $DestinationRoot -Recurse -Force
+            Remove-Item -LiteralPath $DestinationRoot -Recurse -Force
         }
 
         New-Item -ItemType Directory -Path $DestinationRoot -Force | Out-Null
@@ -87,6 +89,33 @@ function Sync-Skills {
         foreach ($skill in @(Get-ChildItem (Join-Path $guidanceRoot 'skills') -Directory)) {
             $destination = Join-Path $DestinationRoot $skill.Name
             Copy-Item -Path $skill.FullName -Destination $destination -Recurse
+        }
+    }
+}
+
+function Assert-GeneratedDirectory {
+    param([string]$DestinationRoot)
+
+    $resolvedTarget = [IO.Path]::GetFullPath($DestinationRoot)
+    $resolvedRepository = [IO.Path]::GetFullPath($targetRoot).TrimEnd([IO.Path]::DirectorySeparatorChar)
+    $allowedTargets = @($generatedDirectories | ForEach-Object {
+        [IO.Path]::GetFullPath((Join-Path $resolvedRepository $_))
+    })
+    if ($resolvedTarget -notin $allowedTargets) {
+        throw "Refusing to replace a directory outside the generated guidance paths: $resolvedTarget"
+    }
+
+    $current = $resolvedTarget
+    while (-not [string]::Equals($current, $resolvedRepository, [StringComparison]::OrdinalIgnoreCase)) {
+        if (Test-Path -LiteralPath $current) {
+            $item = Get-Item -LiteralPath $current -Force
+            if (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
+                throw "Refusing to replace guidance through a symbolic link or junction: $current"
+            }
+        }
+        $current = Split-Path $current -Parent
+        if (-not $current) {
+            throw 'Generated guidance path did not resolve within its repository.'
         }
     }
 }
@@ -110,8 +139,9 @@ function Sync-ClientFile {
 function Reset-Directory {
     param([string]$DestinationRoot)
 
+    Assert-GeneratedDirectory -DestinationRoot $DestinationRoot
     if (Test-Path $DestinationRoot) {
-        Remove-Item $DestinationRoot -Recurse -Force
+        Remove-Item -LiteralPath $DestinationRoot -Recurse -Force
     }
 
     New-Item -ItemType Directory -Path $DestinationRoot -Force | Out-Null
@@ -350,22 +380,26 @@ if ([IO.Path]::GetFullPath((Join-Path $targetRoot '.agents')) -ne [IO.Path]::Get
 
 $managedSettingsFiles = @()
 $projectOwnedSettingsFiles = @()
-foreach ($settingsFile in $clientSettingsFiles) {
-    if (Test-TrackedFile -RelativePath $settingsFile) {
-        $projectOwnedSettingsFiles += $settingsFile
-        Write-Warning "Skipping tracked project file '$settingsFile'. Merge the shared settings from .agents/$settingsFile manually if needed."
-    }
-    else {
-        $managedSettingsFiles += $settingsFile
+if (-not $GuidanceOnly) {
+    foreach ($settingsFile in $clientSettingsFiles) {
+        if (Test-TrackedFile -RelativePath $settingsFile) {
+            $projectOwnedSettingsFiles += $settingsFile
+            Write-Warning "Skipping tracked project file '$settingsFile'. Merge the shared settings from .agents/$settingsFile manually if needed."
+        }
+        else {
+            $managedSettingsFiles += $settingsFile
+        }
     }
 }
 
 Set-GeneratedBlock -File (Join-Path $targetRoot 'AGENTS.md') -Guidance (Get-SharedGuidance)
 Set-GeneratedBlock -File (Join-Path $targetRoot '.claude\CLAUDE.md') -Guidance (Get-ClaudeGuidance)
-Remove-LegacyClaudeInstructions
-Update-GitIgnore
-foreach ($settingsFile in $managedSettingsFiles) {
-    Sync-ClientFile -SourceFile $settingsFile -DestinationFile (Join-Path $targetRoot $settingsFile)
+if (-not $GuidanceOnly) {
+    Remove-LegacyClaudeInstructions
+    Update-GitIgnore
+    foreach ($settingsFile in $managedSettingsFiles) {
+        Sync-ClientFile -SourceFile $settingsFile -DestinationFile (Join-Path $targetRoot $settingsFile)
+    }
 }
 Sync-Skills -DestinationRoot (Join-Path $targetRoot '.claude\skills')
 Sync-Skills -DestinationRoot (Join-Path $targetRoot '.codex\skills')
@@ -374,4 +408,6 @@ Sync-Skills -DestinationRoot (Join-Path $targetRoot '.github\skills')
 Sync-ClaudeRules -DestinationRoot (Join-Path $targetRoot '.claude\rules')
 Sync-CursorRules -DestinationRoot (Join-Path $targetRoot '.cursor\rules')
 Sync-CopilotRules -DestinationRoot (Join-Path $targetRoot '.github\instructions')
-Remove-GeneratedPathsFromGitIndex
+if (-not $GuidanceOnly) {
+    Remove-GeneratedPathsFromGitIndex
+}

@@ -24,6 +24,7 @@ description: Create, configure, build, review, or publish a TypeScript library p
    - Declare the package module format explicitly with `type` or file extensions.
    - Add dual ESM and CommonJS output only when consumers require both.
    - Order conditional exports from specific conditions to the fallback.
+   - Match the declaration's module identity to the runtime: `.mjs`/`.d.mts` and `.cjs`/`.d.cts` are explicit pairs, while `.js`/`.d.ts` depend on their package scope. Preserve valid scoped alternatives; do not rename only the top-level declaration while leaving its imports or sibling declarations inconsistent.
    - Use [`references/examples.md`](references/examples.md) for export and dependency shapes.
 4. Configure declarations.
    - Generate declarations from source when practical.
@@ -32,12 +33,14 @@ description: Create, configure, build, review, or publish a TypeScript library p
    - Export every type reachable from a public signature; check the declaration surface for types consumers cannot name.
    - Ship the sources referenced by declaration maps and source maps, or disable the maps.
    - Set the compiler `types` list explicitly so development-only globals do not leak into published declarations.
+   - Type-check emitted declarations with dependency checking enabled under a supported NodeNext/Node16 consumer and the relevant bundler mode; source compilation and `skipLibCheck` can hide package defects.
 5. Classify dependencies.
    - Use `dependencies` for runtime requirements owned by the package.
    - Use `peerDependencies` for host-provided frameworks or single-instance integrations.
    - Bound peer ranges to the tested major versions instead of open-ended `>=` ranges.
    - Use `devDependencies` only for development and build tooling.
    - Keep development toolchain versions out of `engines`; declare only consumer runtime requirements there.
+   - Externalize declared host peers and intentional runtime dependencies, including their subpaths. Do not externalize every `node_modules` import indiscriminately or bundle another copy of a host framework.
 6. Control package contents.
    - Include runtime output, declarations, metadata, license, and required assets.
    - Exclude source secrets, tests, caches, local configuration, and unrelated artifacts.
@@ -51,6 +54,7 @@ description: Create, configure, build, review, or publish a TypeScript library p
    - Install the archive into a clean fixture.
    - Test supported import styles, subpaths, types, and runtime environments.
    - Run available package contract tools such as `publint` or Are The Types Wrong.
+   - Include every advertised subpath and supported import condition in the consumer checks. Use a documented, narrow exception only when the consumer-facing behavior is understood; do not suppress resolution failures to make the package appear valid.
    - Report missing behavior tests for parsers, formatters, and public functions as a release risk.
    - Report documentation or configuration that claims verification, such as contract tests, that the scripts no longer run.
 9. Prepare release.
@@ -59,6 +63,7 @@ description: Create, configure, build, review, or publish a TypeScript library p
    - Confirm the target registry supports provenance and signature verification before requiring them.
    - Add a changelog entry for every published version.
    - Publish only after the packed artifact and consumer checks pass.
+   - Use the same verified archive in the publisher; for signing, SBOM or deployment gates, apply the `secure-release-pipeline` skill when that workflow is part of the requested work.
 
 ## Decision Rules
 
@@ -88,3 +93,4 @@ description: Create, configure, build, review, or publish a TypeScript library p
 - Versioning reflects the observable public API change.
 - Development-only diagnostics fire in consumer development builds and disappear from production builds.
 - The changelog documents every published version.
+- Emitted declarations and every supported public entry point were checked in consumer resolution modes, or those checks are explicitly reported as unrun.

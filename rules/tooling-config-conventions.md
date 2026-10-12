@@ -10,9 +10,17 @@
 - Bound peer ranges to the majors the configuration was verified against and use one range syntax across the manifest.
 - Confirm each bundled plugin supports every declared host major through its peer range and through its use of host APIs removed in that major.
 - Do not mask plugin incompatibility with package-manager `overrides` or `resolutions`; they apply only to the root project and never reach consumers.
-- When a bundled plugin supports an older compiler major than the one the project wants, keep the plugin-facing package on the supported major and install the newer compiler under another name; for example `typescript-eslint` requires `typescript <6.1`, so use `"typescript": "npm:@typescript/typescript6@^6"` and `"@typescript/native": "npm:typescript@^7"`, then `tsc` runs 7 and `tsc6` runs 6. Do not widen the peer range to hide the conflict.
+- When a plugin's TypeScript API range differs from the desired compiler range, install the plugin-facing API and compiler under distinct package names. Read supported ranges from current package metadata, verify which package owns each executable, and document the mapping. Do not widen a peer range to hide the conflict.
 - Handle option names renamed between supported majors so a consumer value under either name cannot silently replace the preset value.
 - Set options whose defaults differ between supported majors explicitly, such as TypeScript `types`.
+
+## Toolchain and Ownership
+
+- Derive local, editor, hook, CI and container toolchains from the same repository-owned runtime and package-manager declarations; keep compatibility files synchronized.
+- Separate development toolchain requirements from the runtime requirements of published libraries.
+- Keep reusable defaults in the shared configuration package and product-specific choices in the consumer.
+- Update canonical agent guidance and regenerate client adapters; do not maintain hand-edited shared instructions in provider directories.
+- Keep mutable versions, image digests, advisory exceptions and secret names in executable project configuration or its owning documentation, rather than duplicating them in permanent rules.
 
 ## Layering
 
@@ -23,6 +31,7 @@
 - Compose variants through `extends` or a shared base layer instead of re-listing the parent's values.
 - Return composable fragments, such as selector lists, from rule builders when consumers may combine several into one rule key.
 - Use `warn` only when the consuming pipeline enforces a warning budget; otherwise choose `error` or `off`.
+- Preserve a repository's zero-warning budget in normal lint, fix, staged-file and CI commands; do not downgrade findings to make a gate pass.
 
 ## Inputs and Outputs
 
@@ -37,6 +46,7 @@
 - Set `types` explicitly in a browser-targeted library `tsconfig` so development `@types/*` globals, such as Node timers, do not shape the published types.
 - Publish the sources referenced by declaration maps and source maps, or disable the maps.
 - Document why a toolchain package is installed under an npm alias and confirm aliased packages do not compete for the same binary name.
+- Validate public build environment values before bundling and derive ambient types, runtime validation and substituted values from one schema. Keep deployment credentials out of client build configuration.
 
 ## Hooks
 
@@ -50,6 +60,7 @@
 - Apply long-lived immutable caching only to paths that serve content-hashed file names.
 - Emit one `Cache-Control` header per response.
 - Keep Content Security Policy relaxations such as `'unsafe-inline'` out of defaults unless a named shipped feature requires them.
+- Define the SPA artifact interface explicitly: built files, server configuration, shared includes and required verification metadata. Keep generated output derived from the owning source configuration.
 
 ## CI and Release
 
@@ -71,3 +82,5 @@
 - Repeated server headers have one definition, and immutable caching covers only hashed assets.
 - Secrets are step-scoped, and documented release guarantees are supported by the target registry.
 - No configuration references a missing file, no verification step runs twice, and published maps resolve to shipped sources.
+- Toolchain declarations agree across consumers and execution environments, or unresolved differences are reported explicitly.
+- Public environment inputs have one schema, and generated deployment files have a documented source and artifact contract.

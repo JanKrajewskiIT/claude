@@ -27,6 +27,7 @@ description: Create, extend, or review shareable tooling configuration presets s
    - Read each bundled plugin's peer range for every declared host major.
    - Search each plugin for host APIs removed in a declared major, such as ESLint 10 rule-context methods.
    - Stop and report when a plugin does not support a declared major; do not mask it with `overrides`.
+   - Map dependencies between the preset, libraries and applications, including workflow refs. For coordinated migrations, read [`references/ecosystem-migration.md`](references/ecosystem-migration.md).
 2. Map layers to files.
    - Write a table of layer, file globs, and required capability, such as type information, JSX, or environment globals.
    - Confirm each capability-dependent layer matches only files that receive the capability.
@@ -45,6 +46,8 @@ description: Create, extend, or review shareable tooling configuration presets s
    - Use consumer-relative path tokens for path-valued options in shipped files.
    - Set version-sensitive defaults explicitly.
 5. Check hooks, server, and CI files against the `tooling-config-conventions` rule when the preset ships them.
+   - Trace the runtime/package-manager declarations, editor compiler selection, public environment schema and generated deployment artifact through a library and an application consumer.
+   - Use `secure-release-pipeline` when the requested change includes scanner gates, signing or delivery; keep those mechanisms separate from linter/bundler preset design.
 6. Verify in consumer fixtures.
    - Ask before running commands unless the current request already approves them.
    - Pack the preset and install the archive into one fixture per targeted consumer layout.
@@ -52,6 +55,7 @@ description: Create, extend, or review shareable tooling configuration presets s
    - Lint a file importing a CSS Module, a test outside the source directory, a root configuration file, and an `_`-prefixed unused parameter.
    - Build a library fixture with every supported output format and inspect output file names.
    - Validate server configuration with its syntax check and inspect headers for the entry document, a deep route, a hashed asset, and an unhashed public asset.
+   - Include missing assets and inspect inherited headers, cache cardinality, compression and configured read-only/non-root runtime behavior.
    - Type-check a fixture that calls every exported factory with representative options.
 7. Report.
    - List findings by severity with file and line.
@@ -75,3 +79,4 @@ description: Create, extend, or review shareable tooling configuration presets s
 - No option is ineffective, and every dependent default derives from its source option.
 - Shipped path options resolve inside the consumer fixture.
 - Effective configuration was printed or the exact unrun commands are reported.
+- Affected consumers and workflow refs agree with the migration contract, and publication/installation prerequisites are explicit.
