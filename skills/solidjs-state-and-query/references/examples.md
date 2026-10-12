@@ -7,7 +7,7 @@ the exact wrapper syntax.
 
 ```ts
 const query = createQuery(() => ({
-  queryKey: ['projects', { ownerId: ownerId(), status: status() }],
+  queryKey: ["projects", { ownerId: ownerId(), status: status() }],
   queryFn: () => getProjects({ ownerId: ownerId(), status: status() }),
   enabled: Boolean(ownerId()),
 }));
@@ -19,7 +19,7 @@ inside the tracked options function.
 ## Scoped Invalidation
 
 ```ts
-queryClient.invalidateQueries({ queryKey: ['projects', project.ownerId] });
+queryClient.invalidateQueries({ queryKey: ["projects", project.ownerId] });
 ```
 
 Invalidate the affected key family rather than the entire cache.

@@ -4,8 +4,8 @@
 
 ```tsx
 const Action = (props: ActionProps) => {
-  const merged = mergeProps({ type: 'button' as const }, props);
-  const [local, buttonProps] = splitProps(merged, ['label', 'onPress']);
+  const merged = mergeProps({ type: "button" as const }, props);
+  const [local, buttonProps] = splitProps(merged, ["label", "onPress"]);
 
   return (
     <button {...buttonProps} onClick={local.onPress}>

@@ -3,8 +3,8 @@
 ## Types
 
 ```ts
-type Side = 'top' | 'bottom' | 'left' | 'right';
-type Align = 'start' | 'center' | 'end';
+type Side = "top" | "bottom" | "left" | "right";
+type Align = "start" | "center" | "end";
 interface Box {
   left: number;
   top: number;
@@ -26,23 +26,34 @@ interface Options {
 ## Pure Placement
 
 ```ts
-const OPPOSITE: Record<Side, Side> = { top: 'bottom', bottom: 'top', left: 'right', right: 'left' };
-const vertical = (side: Side) => side === 'top' || side === 'bottom';
-const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(v, Math.max(min, max)));
+const OPPOSITE: Record<Side, Side> = {
+  top: "bottom",
+  bottom: "top",
+  left: "right",
+  right: "left",
+};
+const vertical = (side: Side) => side === "top" || side === "bottom";
+const clamp = (v: number, min: number, max: number) =>
+  Math.max(min, Math.min(v, Math.max(min, max)));
 
-const crossStart = (anchorStart: number, anchorSize: number, size: number, align: Align) =>
-  align === 'start'
+const crossStart = (
+  anchorStart: number,
+  anchorSize: number,
+  size: number,
+  align: Align,
+) =>
+  align === "start"
     ? anchorStart
-    : align === 'end'
+    : align === "end"
       ? anchorStart + anchorSize - size
       : anchorStart + (anchorSize - size) / 2;
 
 const mainStart = (a: Box, s: Size, side: Side, offset: number) =>
-  side === 'top'
+  side === "top"
     ? a.top - s.height - offset
-    : side === 'bottom'
+    : side === "bottom"
       ? a.top + a.height + offset
-      : side === 'left'
+      : side === "left"
         ? a.left - s.width - offset
         : a.left + a.width + offset;
 
@@ -50,25 +61,37 @@ const overflow = (a: Box, s: Size, vp: Size, side: Side, o: Options) => {
   const start = mainStart(a, s, side, o.offset);
   const length = vertical(side) ? s.height : s.width;
   const limit = vertical(side) ? vp.height : vp.width;
-  return Math.max(0, o.padding - start) + Math.max(0, start + length - (limit - o.padding));
+  return (
+    Math.max(0, o.padding - start) +
+    Math.max(0, start + length - (limit - o.padding))
+  );
 };
 
 export const placeFloating = (a: Box, s: Size, vp: Size, o: Options) => {
   const first = overflow(a, s, vp, o.side, o);
   const flipped = OPPOSITE[o.side];
-  const side = first > 0 && overflow(a, s, vp, flipped, o) < first ? flipped : o.side;
+  const side =
+    first > 0 && overflow(a, s, vp, flipped, o) < first ? flipped : o.side;
   const main = mainStart(a, s, side, o.offset);
   if (vertical(side)) {
     return {
       side,
-      x: clamp(crossStart(a.left, a.width, s.width, o.align), o.padding, vp.width - s.width - o.padding),
+      x: clamp(
+        crossStart(a.left, a.width, s.width, o.align),
+        o.padding,
+        vp.width - s.width - o.padding,
+      ),
       y: clamp(main, o.padding, vp.height - s.height - o.padding),
     };
   }
   return {
     side,
     x: clamp(main, o.padding, vp.width - s.width - o.padding),
-    y: clamp(crossStart(a.top, a.height, s.height, o.align), o.padding, vp.height - s.height - o.padding),
+    y: clamp(
+      crossStart(a.top, a.height, s.height, o.align),
+      o.padding,
+      vp.height - s.height - o.padding,
+    ),
   };
 };
 ```
@@ -77,8 +100,8 @@ export const placeFloating = (a: Box, s: Size, vp: Size, o: Options) => {
 
 ```ts
 const createsBlock = (st: CSSStyleDeclaration) =>
-  ['transform', 'perspective', 'filter', 'backdropFilter'].some(
-    (p) => st[p as 'transform'] !== '' && st[p as 'transform'] !== 'none',
+  ["transform", "perspective", "filter", "backdropFilter"].some(
+    (p) => st[p as "transform"] !== "" && st[p as "transform"] !== "none",
   ) ||
   /transform|perspective|filter/u.test(st.willChange) ||
   /paint|layout|strict|content/u.test(st.contain);
