@@ -34,13 +34,13 @@ description: Design, implement, or review Entity Framework Core value conversion
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| Database and API values have different lifecycles | Define independent representations. |
-| Property contains mutable structural data | Supply an appropriate comparer or make the value immutable. |
-| Existing generic JSON shape is sufficient | Reuse it and map typed domain behavior outside the entity when appropriate. |
-| Stored representation changes | Plan compatible reads or an explicit data migration. |
-| Query depends on converted content | Verify provider translation and index use rather than assuming converter methods run client-side. |
+| Situation                                         | Decision                                                                                          |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Database and API values have different lifecycles | Define independent representations.                                                               |
+| Property contains mutable structural data         | Supply an appropriate comparer or make the value immutable.                                       |
+| Existing generic JSON shape is sufficient         | Reuse it and map typed domain behavior outside the entity when appropriate.                       |
+| Stored representation changes                     | Plan compatible reads or an explicit data migration.                                              |
+| Query depends on converted content                | Verify provider translation and index use rather than assuming converter methods run client-side. |
 
 ## Constraints
 
@@ -57,4 +57,3 @@ description: Design, implement, or review Entity Framework Core value conversion
 - Query and raw-SQL paths use the intended provider representation.
 - A real-database round trip proves materialization, writing, tracking, and registration, or the required checks are reported as unrun with exact commands.
 - Incompatible values fail diagnostically rather than becoming incorrect domain values.
-

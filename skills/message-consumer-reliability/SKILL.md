@@ -26,14 +26,14 @@ description: Design, implement, review, or test reliable asynchronous message co
 
 ## Failure Decisions
 
-| Failure | Default handling |
-|---|---|
+| Failure                          | Default handling                                                            |
+| -------------------------------- | --------------------------------------------------------------------------- |
 | Malformed or unsupported payload | Terminal path with diagnostic evidence; do not block the stream repeatedly. |
-| Deterministic business rejection | Intentional discard or quarantine according to the contract. |
-| Transient dependency failure | Bounded retry with jitter or broker-native delay. |
-| Unknown failure | Retry within budget, then dead letter or quarantine with alerting. |
-| Duplicate delivery | Return the established outcome without duplicating durable effects. |
-| Cancellation or shutdown | Propagate immediately; do not classify as business failure. |
+| Deterministic business rejection | Intentional discard or quarantine according to the contract.                |
+| Transient dependency failure     | Bounded retry with jitter or broker-native delay.                           |
+| Unknown failure                  | Retry within budget, then dead letter or quarantine with alerting.          |
+| Duplicate delivery               | Return the established outcome without duplicating durable effects.         |
+| Cancellation or shutdown         | Propagate immediately; do not classify as business failure.                 |
 
 ## Reliability Rules
 
@@ -61,4 +61,3 @@ description: Design, implement, review, or test reliable asynchronous message co
 - Do not invent retention, replay, ordering, or data-loss tolerance.
 - Stop when acknowledgement ownership, replay policy, or data-loss tolerance lacks an accountable decision.
 - Do not modify tests, run brokers, or access external systems without explicit authorization.
-

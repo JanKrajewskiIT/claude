@@ -9,7 +9,7 @@ the exact wrapper syntax.
 const query = createQuery(() => ({
   queryKey: ["projects", { ownerId: ownerId(), status: status() }],
   queryFn: () => getProjects({ ownerId: ownerId(), status: status() }),
-  enabled: Boolean(ownerId())
+  enabled: Boolean(ownerId()),
 }));
 ```
 

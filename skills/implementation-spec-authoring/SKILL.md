@@ -84,4 +84,3 @@ description: Create or refine concise implementation specifications, task files,
 - Deferred items are concrete, traceable, and have a defined lifecycle.
 - Clean-room rebuild specs preserve observable behavior and required contracts without prescribing the legacy implementation.
 - Any removal of existing implementation remains separately authorized and recoverable through the repository history or an approved archive.
-

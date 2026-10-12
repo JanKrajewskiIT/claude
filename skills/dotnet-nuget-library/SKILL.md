@@ -54,18 +54,19 @@ description: Create, evolve, pack, review, or prepare release of a reusable .NET
    - Use a unique prerelease version to avoid stale global-package cache results.
    - Resolve the exact candidate from a clean package source configuration rather than relying on workspace project references or local build output.
 10. Prepare publishing.
-   - Confirm immutable version, source, credentials boundary, signing or provenance requirements, and release notes.
-   - Publish only the inspected artifact after explicit approval.
+
+- Confirm immutable version, source, credentials boundary, signing or provenance requirements, and release notes.
+- Publish only the inspected artifact after explicit approval.
 
 ## Decision Rules
 
-| Question | Decision |
-|---|---|
-| Is another assembly independently reusable? | Prefer a separate package dependency. |
-| Must consumers compile against a dependency API? | Keep compile assets public. |
-| Is a dependency build-only or analyzer-only? | Consider appropriate private assets. |
-| Does a change alter observable public API or behavior? | Apply compatibility and versioning policy. |
-| Is a package version already published? | Create a new version; packages are immutable. |
+| Question                                               | Decision                                      |
+| ------------------------------------------------------ | --------------------------------------------- |
+| Is another assembly independently reusable?            | Prefer a separate package dependency.         |
+| Must consumers compile against a dependency API?       | Keep compile assets public.                   |
+| Is a dependency build-only or analyzer-only?           | Consider appropriate private assets.          |
+| Does a change alter observable public API or behavior? | Apply compatibility and versioning policy.    |
+| Is a package version already published?                | Create a new version; packages are immutable. |
 
 ## Constraints
 

@@ -34,12 +34,12 @@ description: Implement or review ASP.NET Core controller or minimal API endpoint
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| Minimal API and controllers both exist | Follow the owning feature's established style. |
-| Endpoint accepts a body | Keep transport validation and mapping at the host boundary. |
-| Operation creates a retrievable resource | Return the agreed creation status and `Location`. |
-| Failure has a stable shared mapping | Reuse the centralized host handler. |
+| Situation                                     | Decision                                                                 |
+| --------------------------------------------- | ------------------------------------------------------------------------ |
+| Minimal API and controllers both exist        | Follow the owning feature's established style.                           |
+| Endpoint accepts a body                       | Keep transport validation and mapping at the host boundary.              |
+| Operation creates a retrievable resource      | Return the agreed creation status and `Location`.                        |
+| Failure has a stable shared mapping           | Reuse the centralized host handler.                                      |
 | Resource authorization depends on loaded data | Enforce it at the boundary that owns the authoritative resource context. |
 
 ## Constraints
@@ -59,4 +59,3 @@ description: Implement or review ASP.NET Core controller or minimal API endpoint
 - Every expected failure has intentional runtime and OpenAPI behavior.
 - Cancellation reaches cancellable application and integration boundaries.
 - Proposed checks cover valid, invalid, unauthorized, forbidden, and applicable conflict or not-found paths.
-

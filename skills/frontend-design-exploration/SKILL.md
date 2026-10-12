@@ -67,13 +67,13 @@ description: Propose or implement a fresh frontend component or interface withou
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| User requests a new, fresh, alternative, independent, or from-scratch solution | Begin at Stage 1 and exclude the existing solution and its documentation. |
-| User requests normal feature development or consistency with the product | Skip exploration and reuse existing components, fundamentals, patterns, and documentation. |
-| User supplies a fixed independent design | Treat it as the Stage 2 direction without inspecting the current implementation. |
-| User explicitly chooses adaptation | Enter Stage 3 and inspect existing implementation assets. |
-| Approved foundation conflicts with accessibility | Preserve accessibility and report the conflict. |
+| Situation                                                                      | Decision                                                                                   |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| User requests a new, fresh, alternative, independent, or from-scratch solution | Begin at Stage 1 and exclude the existing solution and its documentation.                  |
+| User requests normal feature development or consistency with the product       | Skip exploration and reuse existing components, fundamentals, patterns, and documentation. |
+| User supplies a fixed independent design                                       | Treat it as the Stage 2 direction without inspecting the current implementation.           |
+| User explicitly chooses adaptation                                             | Enter Stage 3 and inspect existing implementation assets.                                  |
+| Approved foundation conflicts with accessibility                               | Preserve accessibility and report the conflict.                                            |
 
 ## Completion Criteria
 

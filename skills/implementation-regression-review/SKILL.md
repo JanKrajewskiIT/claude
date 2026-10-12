@@ -45,12 +45,12 @@ description: Compare a replacement implementation against the previous one and d
    - Read the code that supports each claim, including build tool defaults. Correct earlier claims that evidence contradicts.
 7. Classify.
 
-   | Result | Meaning |
-   |---|---|
-   | Old better | Restore, adapted to the new conventions. |
-   | New better | Keep; say why. |
-   | Equal | No action. |
-   | Intentional | Keep and record the decision. |
+   | Result      | Meaning                                  |
+   | ----------- | ---------------------------------------- |
+   | Old better  | Restore, adapted to the new conventions. |
+   | New better  | Keep; say why.                           |
+   | Equal       | No action.                               |
+   | Intentional | Keep and record the decision.            |
 
 8. Present findings ordered by impact.
    - State breaking-change, dependency and location decisions the user must make.

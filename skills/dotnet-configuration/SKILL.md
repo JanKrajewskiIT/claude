@@ -47,13 +47,13 @@ description: Design, implement, or review configuration in .NET applications. Us
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| Setting is required for startup | Validate it during host construction. |
-| Setting changes safely at runtime | Use monitored options with an atomic consumer update. |
-| Setting is secret | Resolve it from an approved secret provider. |
-| Library needs a setting | Expose a typed registration contract and let the host supply it. |
-| Value represents user or tenant data | Store it outside application configuration. |
+| Situation                             | Decision                                                                      |
+| ------------------------------------- | ----------------------------------------------------------------------------- |
+| Setting is required for startup       | Validate it during host construction.                                         |
+| Setting changes safely at runtime     | Use monitored options with an atomic consumer update.                         |
+| Setting is secret                     | Resolve it from an approved secret provider.                                  |
+| Library needs a setting               | Expose a typed registration contract and let the host supply it.              |
+| Value represents user or tenant data  | Store it outside application configuration.                                   |
 | Collection overrides a shared default | Verify effective replacement or merge behavior and preserve required entries. |
 
 ## Constraints

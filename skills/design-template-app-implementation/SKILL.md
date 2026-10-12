@@ -51,18 +51,21 @@ description: Implement a complete application from a design-system template on t
    - Review statically until commands are approved.
    - Propose the project's aggregate verification script and the backend build and pending-model-changes check as exact commands.
 9. Report.
-   - List what was implemented, the backend changes, previous features the design omits, design features that are stored but have no effect yet, and every unrun check.
+   - List what was implemented, the backend changes, previous features the design omits, design features that are stored but have no effect yet, backend endpoints the new client no longer calls with the reason for each, and every unrun check.
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| Template needs data no endpoint provides | Extend the API additively and record it in the contract matrix. |
-| Previous feature has no screen in the template | List it as omitted; do not rebuild it silently. |
-| Template shows behavior with no backend yet | Persist the setting, state in the report that it has no effect, and do not fake it. |
-| Typed translator rejects a library key | Use the runtime translator for library keys and the typed one for application keys. |
-| Store setter rejects a readonly domain field | Type the draft with a mutable copy of the shape. |
-| Parsed or imported payload carries an empty identifier | Normalize it to absent at the client mapping and at the server boundary. |
+| Situation                                                              | Decision                                                                                                         |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Template needs data no endpoint provides                               | Extend the API additively and record it in the contract matrix.                                                  |
+| Previous feature has no screen in the template                         | List it as omitted; do not rebuild it silently.                                                                  |
+| Template shows behavior with no backend yet                            | Persist the setting, state in the report that it has no effect, and do not fake it.                              |
+| A persisted setting is only stored and the owning endpoint is in scope | Implement its effect in the backend instead of leaving it inert, and send the setting with the calls it affects. |
+| Template interaction is a toggle but the endpoint is one-way           | Align the endpoint with the interaction before the screen ships.                                                 |
+| Dragging into another group should keep the drop position              | Send the position with the status change or follow it with an explicit reorder call.                             |
+| Typed translator rejects a library key                                 | Use the runtime translator for library keys and the typed one for application keys.                              |
+| Store setter rejects a readonly domain field                           | Type the draft with a mutable copy of the shape.                                                                 |
+| Parsed or imported payload carries an empty identifier                 | Normalize it to absent at the client mapping and at the server boundary.                                         |
 
 ## Constraints
 

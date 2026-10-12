@@ -50,6 +50,7 @@ description: Design, evolve, or review stable HTTP API contracts. Use when the p
    - Version only when compatibility cannot be preserved cleanly.
 8. Document the contract.
    - Keep OpenAPI metadata, examples, validation, and runtime behavior aligned.
+   - Declare response types in endpoint metadata; without them a generated schema covers only requests and clients type responses by hand.
    - Use [`references/examples.md`](references/examples.md) when concrete shapes clarify decisions.
 9. Propose validation.
    - Check serialization, validation, authorization, status codes, error shapes, pagination, retries, concurrency, and generated clients.
@@ -57,14 +58,16 @@ description: Design, evolve, or review stable HTTP API contracts. Use when the p
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| Field may be omitted but cannot be null | Model optionality separately from nullability. |
-| Dataset changes during traversal | Prefer stable cursor pagination. |
-| Client may retry a non-idempotent command | Define an idempotency contract. |
-| Multiple writers may update one resource | Require an optimistic concurrency token. |
-| Existing consumers can misinterpret a change | Treat it as breaking even if serialization still succeeds. |
-| Client sends an empty or default identifier for a resource that does not exist yet | Treat it as absent at the boundary and create or upsert. |
+| Situation                                                                          | Decision                                                                                    |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Field may be omitted but cannot be null                                            | Model optionality separately from nullability.                                              |
+| Dataset changes during traversal                                                   | Prefer stable cursor pagination.                                                            |
+| Client may retry a non-idempotent command                                          | Define an idempotency contract.                                                             |
+| Multiple writers may update one resource                                           | Require an optimistic concurrency token.                                                    |
+| Existing consumers can misinterpret a change                                       | Treat it as breaking even if serialization still succeeds.                                  |
+| Client sends an empty or default identifier for a resource that does not exist yet | Treat it as absent at the boundary and create or upsert.                                    |
+| A new request field must not break existing clients                                | Give it a default and keep it optional on the wire.                                         |
+| The client models an action as a toggle                                            | Make the operation toggle, or give it an explicit inverse; do not reject the repeated call. |
 
 ## Constraints
 

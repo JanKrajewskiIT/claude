@@ -39,6 +39,7 @@ description: Design, implement, optimize, or review Entity Framework Core read a
 5. Protect scope.
    - Enforce tenant, user, soft-delete, and resource ownership consistently.
    - Treat query filters as defense in depth, not a substitute for authorization.
+   - When the context applies a global per-user filter, do not repeat the owner condition in handlers, including bulk deletes and updates; keep an explicit condition only where the filter is bypassed.
    - Make any filter bypass explicit and narrowly reviewed.
 6. Handle concurrency and transactions.
    - Use optimistic concurrency when multiple writers may overwrite the same state.
@@ -58,14 +59,14 @@ description: Design, implement, optimize, or review Entity Framework Core read a
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| Result is read-only | Use no-tracking behavior. |
-| Consumer needs a subset of fields | Project at the database boundary. |
-| Related data creates a broad object graph | Prefer a focused projection or explicit split strategy. |
-| Multiple writers can update the row | Add and handle an optimistic concurrency token. |
-| Operation spans database and external messaging | Use the established consistency mechanism. |
-| Model shape changes storage | Apply `ef-core-migrations`. |
+| Situation                                       | Decision                                                |
+| ----------------------------------------------- | ------------------------------------------------------- |
+| Result is read-only                             | Use no-tracking behavior.                               |
+| Consumer needs a subset of fields               | Project at the database boundary.                       |
+| Related data creates a broad object graph       | Prefer a focused projection or explicit split strategy. |
+| Multiple writers can update the row             | Add and handle an optimistic concurrency token.         |
+| Operation spans database and external messaging | Use the established consistency mechanism.              |
+| Model shape changes storage                     | Apply `ef-core-migrations`.                             |
 
 ## Constraints
 

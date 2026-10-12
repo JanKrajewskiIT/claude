@@ -24,10 +24,12 @@
 - Batch multi-signal updates that represent one atomic transition.
 - Compute next values before setters instead of causing side effects inside setter callbacks.
 - Clean up listeners, timers, observers, and subscriptions with the owning reactive scope.
+- Pass a synchronous callback to a component prop and start asynchronous work inside it with a fire-and-forget call such as `mutate`; an `async` callback prop is reported as an async tracked scope.
 
 ## Props And Children
 
 - Do not destructure reactive props when later updates must remain observable.
+- Do not copy members of an object prop into local bindings during setup (`const { state } = props.model`); read through `props.model` at the use site or expose the needed value as a memo on the owner.
 - Use `splitProps` to separate local props from attributes forwarded to an element.
 - Use `mergeProps` or the repository convention when defaults must preserve reactive access.
 - Resolve each defaulted prop in one place instead of repeating `props.value ?? DEFAULT` at every read.

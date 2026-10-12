@@ -51,12 +51,12 @@ description: Design, implement, or review state and remote-data flows in SolidJS
 
 ## Decision Rules
 
-| Value | Owner |
-|---|---|
-| Open state, focus, transient selection | Local signal or store |
-| Unsaved editable input | Local draft |
-| Reload-stable user preference | Persisted local state |
-| Data returned and owned by a service | Query cache |
+| Value                                  | Owner                    |
+| -------------------------------------- | ------------------------ |
+| Open state, focus, transient selection | Local signal or store    |
+| Unsaved editable input                 | Local draft              |
+| Reload-stable user preference          | Persisted local state    |
+| Data returned and owned by a service   | Query cache              |
 | Pure transformation of reactive values | Derived function or memo |
 
 ## Constraints

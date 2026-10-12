@@ -6,8 +6,8 @@
 const en = {
   project: {
     saved: "Project saved",
-    memberCount: "{count, plural, one {# member} other {# members}}"
-  }
+    memberCount: "{count, plural, one {# member} other {# members}}",
+  },
 } as const;
 
 type Dictionary = TranslationOf<typeof en>;
@@ -31,7 +31,7 @@ rules.
 ```ts
 new Intl.DateTimeFormat(locale, {
   dateStyle: "medium",
-  timeZone
+  timeZone,
 }).format(instant);
 ```
 

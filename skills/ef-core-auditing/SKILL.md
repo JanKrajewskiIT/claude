@@ -32,12 +32,12 @@ description: Implement or review Entity Framework Core creation and modification
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| A valid write has no user principal | Record the declared system actor or permitted absence. |
-| Database generates timestamps | Treat generated values and refresh behavior as part of the persistence contract. |
-| Detached or bulk operations bypass normal callbacks | Verify them separately and define how auditing is preserved. |
-| Actor identifiers are sensitive or internal | Keep them out of public contracts unless explicitly authorized. |
+| Situation                                           | Decision                                                                         |
+| --------------------------------------------------- | -------------------------------------------------------------------------------- |
+| A valid write has no user principal                 | Record the declared system actor or permitted absence.                           |
+| Database generates timestamps                       | Treat generated values and refresh behavior as part of the persistence contract. |
+| Detached or bulk operations bypass normal callbacks | Verify them separately and define how auditing is preserved.                     |
+| Actor identifiers are sensitive or internal         | Keep them out of public contracts unless explicitly authorized.                  |
 
 ## Constraints
 

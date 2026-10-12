@@ -13,19 +13,39 @@
     "description": "Reusable UI component library conventions. Apply when working in a shared component library."
   },
   "css-modules-conventions": {
-    "applyTo": ["**/*.module.css", "**/*.module.scss", "**/*.module.sass", "**/*.module.less"]
+    "applyTo": [
+      "**/*.module.css",
+      "**/*.module.scss",
+      "**/*.module.sass",
+      "**/*.module.less"
+    ]
   },
   "dependency-policy": {
     "applyTo": []
   },
   "dotnet-conventions": {
-    "applyTo": ["**/*.cs", "**/*.csproj", "**/*.fs", "**/*.fsproj", "**/*.sln", "**/*.slnx"]
+    "applyTo": [
+      "**/*.cs",
+      "**/*.csproj",
+      "**/*.fs",
+      "**/*.fsproj",
+      "**/*.sln",
+      "**/*.slnx"
+    ]
   },
   "dotnet-error-handling": {
     "applyTo": ["**/*.cs", "**/*.csproj", "**/*.fs", "**/*.fsproj"]
   },
   "frontend-accessibility": {
-    "applyTo": ["**/*.html", "**/*.htm", "**/*.tsx", "**/*.jsx", "**/*.vue", "**/*.svelte", "**/*.razor"]
+    "applyTo": [
+      "**/*.html",
+      "**/*.htm",
+      "**/*.tsx",
+      "**/*.jsx",
+      "**/*.vue",
+      "**/*.svelte",
+      "**/*.razor"
+    ]
   },
   "git-and-change-safety": {
     "applyTo": []

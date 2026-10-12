@@ -11,6 +11,7 @@
 - Extend existing registration, error, validation, and persistence patterns before adding abstractions.
 - Keep changes within the owning project and capability unless a shared contract must change.
 - Preserve public API compatibility by default.
+- Do not name a feature folder or namespace after a shared type it uses, such as `Features.Roles` next to `Roles`; the namespace shadows the type, so alias the shared type with a `using` alias.
 
 ## C#
 

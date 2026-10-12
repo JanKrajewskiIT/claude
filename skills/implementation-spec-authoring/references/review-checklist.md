@@ -40,4 +40,3 @@
 - [ ] Acceptance evidence can evaluate a replacement without comparing source structure.
 - [ ] The approved spec is sufficient for implementation without reopening old source.
 - [ ] Deletion or archival of the old implementation has separate explicit approval.
-

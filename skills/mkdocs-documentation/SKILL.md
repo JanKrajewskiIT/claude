@@ -16,6 +16,7 @@ description: Create, review, or maintain standalone MkDocs Material documentatio
 3. Identify the audience and question.
    - Update the canonical page when one exists; otherwise choose the smallest suitable type from [`references/mkdocs-reference.md`](references/mkdocs-reference.md).
 4. Derive claims from source code, executable configuration, schemas, tests, and verified runtime behavior.
+   - Derive endpoint tables, counts, and handler kinds from route registrations and handler interfaces, and recount after every change instead of editing numbers from memory.
    - Link canonical specifications and runbooks instead of copying volatile values.
 5. Keep implemented behavior in canonical pages and separate requirements, architecture, technical guidance, runbooks, and external-system notes according to the existing navigation model.
 6. Use only Markdown extensions and plugins enabled in `mkdocs.yml`.

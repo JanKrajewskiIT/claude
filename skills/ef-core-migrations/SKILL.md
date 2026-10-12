@@ -57,20 +57,21 @@ description: Create, review, repair, script, or plan deployment of Entity Framew
    - Supply production connections through the deployment secret store.
    - Avoid making every application replica execute migrations during startup.
 10. Propose validation.
-   - Check pending model changes, upgrade from the latest deployed schema, representative data preservation, clean-database creation, and rollback where supported.
-   - Inspect generated SQL for destructive operations, locks, provider syntax, and transaction boundaries.
-   - List exact commands and ask before running them unless already approved.
+
+- Check pending model changes, upgrade from the latest deployed schema, representative data preservation, clean-database creation, and rollback where supported.
+- Inspect generated SQL for destructive operations, locks, provider syntax, and transaction boundaries.
+- List exact commands and ask before running them unless already approved.
 
 ## Decision Rules
 
-| Situation | Decision |
-|---|---|
-| Property rename generated drop and add | Replace with an explicit rename operation. |
-| Existing values require transformation | Use staged schema changes and backfill before cleanup. |
-| Migration reached a shared database | Keep it and add a corrective migration. |
-| Deployment requires SQL review | Generate a versioned SQL script. |
-| Automated deployment needs a standalone artifact | Generate a migration bundle. |
-| Rollback cannot reconstruct data | Require restore or a forward fix instead of unsafe `Down`. |
+| Situation                                        | Decision                                                   |
+| ------------------------------------------------ | ---------------------------------------------------------- |
+| Property rename generated drop and add           | Replace with an explicit rename operation.                 |
+| Existing values require transformation           | Use staged schema changes and backfill before cleanup.     |
+| Migration reached a shared database              | Keep it and add a corrective migration.                    |
+| Deployment requires SQL review                   | Generate a versioned SQL script.                           |
+| Automated deployment needs a standalone artifact | Generate a migration bundle.                               |
+| Rollback cannot reconstruct data                 | Require restore or a forward fix instead of unsafe `Down`. |
 
 ## Constraints
 

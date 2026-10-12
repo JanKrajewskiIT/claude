@@ -53,13 +53,14 @@ description: Create, extend, or review vertical slices in .NET applications usin
 
 ## Decision Rules
 
-| Question | Decision |
-|---|---|
-| Does behavior belong to one use case? | Keep it inside the slice. |
-| Is an invariant shared by multiple use cases? | Move it into the domain model. |
-| Is technical integration reused by multiple slices? | Use the established infrastructure boundary. |
-| Does a contract cross the HTTP boundary? | Do not expose persistence entities. |
-| Does the repository use MediatR or custom dispatch? | Preserve the existing dispatch model. |
+| Question                                             | Decision                                                                                                                                                                                                                                                                                     |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Does behavior belong to one use case?                | Keep it inside the slice.                                                                                                                                                                                                                                                                    |
+| Is an invariant shared by multiple use cases?        | Move it into the domain model.                                                                                                                                                                                                                                                               |
+| Is technical integration reused by multiple slices?  | Use the established infrastructure boundary.                                                                                                                                                                                                                                                 |
+| Does a contract cross the HTTP boundary?             | Do not expose persistence entities.                                                                                                                                                                                                                                                          |
+| Does the repository use MediatR or custom dispatch?  | Preserve the existing dispatch model.                                                                                                                                                                                                                                                        |
+| Does a use case erase a user's data across services? | Give each service an idempotent erase slice that runs in one transaction; run external cleanup after commit as logged best effort; let the client call the services in a fixed order with the identity-bearing record last; state what is not erased, such as the identity provider account. |
 
 ## Constraints
 

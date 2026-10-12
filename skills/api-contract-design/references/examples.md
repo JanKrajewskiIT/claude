@@ -28,9 +28,7 @@ messages may be localized or replaced without changing client logic.
 
 ```json
 {
-  "items": [
-    { "id": "01J...", "createdAt": "2026-08-31T10:15:00Z" }
-  ],
+  "items": [{ "id": "01J...", "createdAt": "2026-08-31T10:15:00Z" }],
   "nextCursor": "opaque-token",
   "hasMore": true
 }

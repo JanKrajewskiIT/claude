@@ -52,12 +52,12 @@ description: Design, implement, or review accessible menus, listboxes, comboboxe
 
 ## Pattern Boundaries
 
-| Pattern | Primary purpose | Typical focus owner |
-|---|---|---|
-| Menu | Invoke an action | Menu item or menu container |
-| Listbox | Select one or more values | Option or listbox container |
-| Combobox | Edit or choose through an input | Input with controlled popup |
-| Native select | Choose a value with platform behavior | Native control |
+| Pattern       | Primary purpose                       | Typical focus owner         |
+| ------------- | ------------------------------------- | --------------------------- |
+| Menu          | Invoke an action                      | Menu item or menu container |
+| Listbox       | Select one or more values             | Option or listbox container |
+| Combobox      | Edit or choose through an input       | Input with controlled popup |
+| Native select | Choose a value with platform behavior | Native control              |
 
 ## Constraints
 

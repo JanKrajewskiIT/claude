@@ -41,6 +41,7 @@
 - Under `noUncheckedIndexedAccess` a module class lookup is `string | undefined`; join classes through one typed helper that skips absent parts instead of computed-key class maps or template strings.
 - Map a finite variant to its class through an explicit lookup object of imported class names; do not index the module by a runtime string, which hides the class from unused-class checks.
 - Share a class between components with `composes` from one shared module instead of importing that module into each component.
+- Import a module into a component only when that component uses every class of the module; split a module whose importers use disjoint subsets, because the unused-class check reports per import.
 - Expose narrow class hooks only for stable internal parts that consumers genuinely need to style.
 
 ## Safety
