@@ -24,6 +24,7 @@
 ## Data
 
 - Collect, persist, expose, and log only data required by the feature.
+- Neutralize formula-like untrusted text in spreadsheet exports, including headers; CSV quoting alone does not prevent formula interpretation. Preserve typed numeric values and document text escaping.
 - Sanitize or encode untrusted values with the repository-approved logging boundary before interpolation; parameterized logging alone does not remove control characters used for log forging.
 - Treat authorization failures as non-disclosing responses.
 - Protect tenant and resource boundaries in every query and mutation.

@@ -34,6 +34,7 @@
 - Use `mergeProps` or the repository convention when defaults must preserve reactive access.
 - Resolve each defaulted prop in one place instead of repeating `props.value ?? DEFAULT` at every read.
 - Use the `children` helper when children are read repeatedly, inspected, or transformed.
+- Never mount the same resolved `JSX.Element` DOM nodes under multiple parents. Repeated content needs independent rendering or an inert presentation copy with unique or removed ids.
 - Compose forwarded event handlers intentionally instead of silently replacing either handler.
 - Spread forwarded attributes before component-owned attributes, or remove handler props the component owns from the forwarded set; a trailing `{...rest}` must never override an internal handler, `ref`, or `class`.
 
