@@ -9,6 +9,7 @@
 
 ## Structure
 
+- Give every component with its own rendered visual surface a colocated `*.module.css`, including independently owned component parts. Do not add empty modules or styling wrappers to providers, logic-only components, or transparent render delegates.
 - Style the owning semantic element directly before adding a wrapper solely as a styling hook.
 - Keep nesting shallow and aligned with the rendered component structure.
 - Use `&` for states, modifiers, pseudo-classes, and pseudo-elements owned by the current selector.
@@ -36,6 +37,8 @@
 ## Ownership
 
 - Keep structural styles required for layout, positioning, stacking, and animation under component ownership.
+- Keep a component's private module private to that component. Siblings share styles only through neutral modules under the project's shared-style boundary.
+- Let each child own its internal presentation; express parent context through supported props, stable part attributes, or CSS custom properties instead of selectors that reach into child internals.
 - Separate structural requirements from replaceable presentation when consumers may restyle a reusable primitive.
 - Compose classes through the repository's established utility or syntax.
 - Under `noUncheckedIndexedAccess` a module class lookup is `string | undefined`; join classes through one typed helper that skips absent parts instead of computed-key class maps or template strings.

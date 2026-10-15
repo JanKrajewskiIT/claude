@@ -12,6 +12,12 @@
 - Use one result shape for sibling hooks, one status vocabulary, and one absence sentinel across the library.
 - Give shared prop helpers names that state their role; do not export a generic `Props` default for library-wide use.
 
+## Composition and Styling
+
+- Build composed components from the library's existing primitives when they provide the needed semantics and behavior; do not reimplement a primitive's role inside each composition.
+- Render text content through `Text` or `Heading`, keeping the semantic heading level independent from its visual typography role. Native controls may own a distinct control-font role; reuse a text role when it fits without harming the control's appearance. Syntax fragments, glyphs, and animated decoration may inherit typography from their surrounding text.
+- Prefer brand styles, foundations, primitives, and semantic tokens before defining component-local styling values. Keep local values for component-specific geometry or behavior; add a shared token only for a reusable design decision.
+
 ## Public Contract
 
 - Type native-attribute pass-through with one documented base shape and keep it identical across sibling components, such as every button-like or input-like component.
