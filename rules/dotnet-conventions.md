@@ -15,6 +15,7 @@
 
 ## C#
 
+- Always use braces for control-flow bodies, including single-statement `if`, `else`, loops, `using`, and `lock` statements. Put opening and closing braces on separate lines and start each statement on a new line inside the block.
 - Use nullable annotations to express actual contracts.
 - Prefer explicit domain and transport types over loosely typed data structures.
 - Keep asynchronous work asynchronous through the complete call chain.

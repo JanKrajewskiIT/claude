@@ -9,7 +9,8 @@
 
 ## Structure
 
-- Give every component with its own rendered visual surface a colocated `*.module.css`, including independently owned component parts. Do not add empty modules or styling wrappers to providers, logic-only components, or transparent render delegates.
+- Give every component that owns visual presentation a colocated `*.module.css`, including independently styled component parts. Providers, logic-only components, and transparent delegates use the owning component's API without an empty stylesheet.
+- Add a module only for real styling requirements; do not introduce wrappers, placeholder classes, or redundant declarations solely to satisfy a file-per-component convention.
 - Style the owning semantic element directly before adding a wrapper solely as a styling hook.
 - Keep nesting shallow and aligned with the rendered component structure.
 - Use `&` for states, modifiers, pseudo-classes, and pseudo-elements owned by the current selector.
@@ -20,6 +21,7 @@
 - Prefer container queries when a reusable component should respond to its available space rather than the viewport.
 - Use media queries for viewport or device preferences, not to compensate for missing component ownership.
 - Keep responsive state in CSS when it changes presentation only; do not duplicate it in component state without a behavioral requirement.
+- Preserve the existing viewport- or container-based responsive contract during styling migrations unless a layout change is requested; equal numeric breakpoints do not make media queries and container queries equivalent.
 
 ## Tokens and Values
 
@@ -37,7 +39,7 @@
 ## Ownership
 
 - Keep structural styles required for layout, positioning, stacking, and animation under component ownership.
-- Keep a component's private module private to that component. Siblings share styles only through neutral modules under the project's shared-style boundary.
+- Keep a component's private module private to that component. Siblings share styles through neutral modules under the project's shared-style boundary.
 - Let each child own its internal presentation; express parent context through supported props, stable part attributes, or CSS custom properties instead of selectors that reach into child internals.
 - Separate structural requirements from replaceable presentation when consumers may restyle a reusable primitive.
 - Compose classes through the repository's established utility or syntax.
@@ -49,6 +51,7 @@
 
 ## Safety
 
+- Preserve the exact case of class names in `composes` and identifiers in ICSS imports and exports; formatter and linter auto-fixes must not normalize these identifiers as CSS keywords.
 - Do not reach into another component with fragile descendant selectors.
 - Do not let consumer overrides remove interaction-critical structure.
 - Do not leave unused selectors after changing rendered markup.

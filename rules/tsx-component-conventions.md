@@ -41,6 +41,13 @@
 - Group sibling draft fields, such as create and edit form values, into one store or object instead of one signal per field.
 - Do not pre-resolve every translated label in the parent and pass it down as a prop; resolve a label in the component that renders it.
 
+## Design System Composition
+
+- Apply these conventions to applications and libraries that use an existing design system. Build composed views from its components and primitives before reimplementing their semantics, behavior, or presentation.
+- Render application text through the project's `Text` and `Heading` components when provided; keep semantic heading levels independent of visual variants. Let library components own the typography of their label, title, and description slots instead of adding redundant text wrappers.
+- Let native controls own a distinct control-font role when required; reuse an existing text role when it fits. Syntax fragments, glyphs, and animated decoration may inherit typography from surrounding text.
+- Prefer brand foundations, semantic tokens, and supported presentation props, such as text `tone`, before defining local style values or overriding a supplied typography role. Keep component-specific geometry local and add shared tokens only for reusable design decisions.
+
 ## Completion Criteria
 
 - Each exported component has one clear responsibility and its own file.
@@ -48,3 +55,4 @@
 - Shared modules have a neutral responsibility and credible consumers.
 - Declarations follow `typescript-conventions`.
 - Every rendered wrapper has an observable purpose.
+- Components using a design system reuse its primitives, text roles, and semantic tokens rather than recreating them locally.

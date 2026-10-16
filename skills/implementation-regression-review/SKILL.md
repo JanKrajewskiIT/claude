@@ -1,6 +1,6 @@
 ---
 name: implementation-regression-review
-description: Compare a replacement implementation against the previous one and decide what to restore, keep or drop. Use when a rewrite or large staged change replaced working code, when asked whether the old implementation had anything better, or before committing a large replacement.
+description: Compare a replacement implementation against the previous one and decide what to restore, keep or drop. Use when a rewrite or large staged change replaced working code, when asked whether the old implementation had anything better, or before committing a large replacement, including broad frontend styling or typography migrations.
 ---
 
 # Implementation Regression Review
@@ -13,6 +13,7 @@ description: Compare a replacement implementation against the previous one and d
 
 - Staged or branch changes delete and recreate large parts of a codebase.
 - The user asks what the previous version did better.
+- A migration replaces styling, typography, or component composition across multiple frontend components.
 
 ## Do Not Use
 
@@ -36,13 +37,17 @@ description: Compare a replacement implementation against the previous one and d
 4. Find outliers.
    - Compare line counts of each mapped pair and inspect pairs where the new side is much smaller.
    - Search old files for feature words such as drag, zoom, confirm, filter, persist, then search the new side.
+   - For frontend styling migrations, compare text roles, default margins, wrapping, and intrinsic widths as well as class names; a typography wrapper can alter layout without changing the displayed words.
+   - Trace responsive behavior on both sides: query container ownership, viewport versus container breakpoints, grid spans, implicit tracks, and minimum content widths. Propose narrow, breakpoint-adjacent, and wide viewport checks when runtime validation is not authorized.
 5. Compare infrastructure.
    - Hooks, utilities, providers, authentication, theming, toast and error handling.
    - Establish the declared consumer scope before replacing integrations: applications sharing infrastructure may intentionally depend on the same authentication package and provider.
    - Package manifest: scripts, peer dependencies, dependencies, externals and size limits.
    - Tooling configs referenced by scripts, README and docs.
+   - For CSS Modules migrations, trace source classes through `composes` and ICSS references to their consumers. Inspect available built artifacts for unresolved or literal `undefined` class tokens and missing runtime exports; report absent or stale artifacts instead of treating source correctness as proof of the shipped package.
 6. Verify claims before reporting.
    - Read the code that supports each claim, including build tool defaults. Correct earlier claims that evidence contradicts.
+   - Separate source inspection, artifact inspection, and observed runtime behavior. Report preserved appearance or responsive behavior as verified only when corresponding runtime evidence exists.
 7. Classify.
 
    | Result      | Meaning                                  |
@@ -79,3 +84,4 @@ description: Compare a replacement implementation against the previous one and d
 - Scripts, externals and peer dependencies match the code that exists.
 - Build artifacts and reference copies in staged changes are reported.
 - The change list is exact and unrun checks are named.
+- Frontend migrations account for typography, responsive layout, and styling references; runtime conclusions are distinguished from static findings.
