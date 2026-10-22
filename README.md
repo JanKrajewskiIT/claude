@@ -41,6 +41,7 @@ Portable software-engineering skills and provider-neutral agent rules.
 | [`design-system-solid-port`](skills/design-system-solid-port/)                     | Port a design-system reference to SolidJS without redesigning it                                  |
 | [`design-template-app-implementation`](skills/design-template-app-implementation/) | Build an application from a design template on a component library and align its backend contract |
 | [`dom-hygiene-audit`](skills/dom-hygiene-audit/)                                   | Simplify rendered markup while preserving semantics and behavior                                  |
+| [`dotnet-code-standards`](skills/dotnet-code-standards/)                           | Normalize .NET formatting, layout, naming, and architecture in reviewable passes                  |
 | [`dotnet-command-query-handler`](skills/dotnet-command-query-handler/)             | Implement cohesive .NET application commands and queries                                          |
 | [`dotnet-configuration`](skills/dotnet-configuration/)                             | Bind and validate typed .NET application configuration                                            |
 | [`dotnet-http-integration`](skills/dotnet-http-integration/)                       | Build bounded, resilient, and secure outbound .NET HTTP integrations                              |
