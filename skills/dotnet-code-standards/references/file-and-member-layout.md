@@ -72,7 +72,7 @@ Applied by hand, because no tool wraps code:
 
 - Use PascalCase for types, members, and constants.
 - Use `I` plus PascalCase for interfaces.
-- Use `_camelCase` for private fields.
+- Use camelCase without an underscore prefix for private fields.
 - Use camelCase for parameters and locals.
 - Use the `Async` suffix on methods that return `Task` or `ValueTask`, except endpoint and handler entry points whose name is fixed by a framework contract.
 - Name a use-case type after the use case: `CreateOrderCommand`, `CreateOrderHandler`, `CreateOrderValidator`, `GetOrderQuery`, `OrderResponse`.
